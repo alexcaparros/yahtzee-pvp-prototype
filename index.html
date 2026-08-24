@@ -337,64 +337,100 @@ body {
 }
 .score-goal {
   display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: min(126px, 100%);
+  margin: 6px auto 0;
+  padding: 4px 6px 5px;
+  border: 1px solid rgba(255,211,77,0.85);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255,211,77,0.3), rgba(6,33,78,0.28));
+  box-shadow: 0 2px 0 rgba(0,0,0,0.2),
+              inset 0 1px 0 rgba(255,255,255,0.28);
+}
+.score-goal-top {
+  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 4px;
-  width: min(88px, 100%);
-  margin: 4px auto 0;
+  min-width: 0;
+  line-height: 1;
+}
+.score-goal-copy {
+  flex: 1;
+  min-width: 0;
+  color: #FFE477;
+  font-size: 10px;
+  font-weight: 1000;
+  line-height: 1;
+  text-align: left;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.35);
+  white-space: nowrap;
 }
 .score-goal-track {
   position: relative;
-  flex: 1;
-  min-width: 38px;
-  height: 6px;
+  width: 100%;
+  height: 9px;
   overflow: hidden;
+  border: 1px solid rgba(3,24,58,0.6);
   border-radius: 999px;
-  background: rgba(7,39,85,0.48);
-  box-shadow: inset 0 1px 1px rgba(0,0,0,0.35),
-              0 1px 0 rgba(255,255,255,0.16);
+  background: rgba(7,39,85,0.62);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.45),
+              0 1px 0 rgba(255,255,255,0.18);
 }
 .score-goal-fill {
   position: absolute;
   inset: 0 auto 0 0;
   width: 0%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #FFD34D, #FFF076);
+  background: linear-gradient(90deg, #FFD34D, #FFF5A8);
+  box-shadow: 0 0 8px rgba(255,211,77,0.65);
   transition: width 0.25s ease;
 }
 .score-goal-label {
-  min-width: 27px;
-  color: rgba(255,255,255,0.82);
-  font-size: 8px;
-  font-weight: 900;
+  flex-shrink: 0;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 1000;
   line-height: 1;
   text-align: right;
-  text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.38);
 }
 .score-goal-star {
-  color: rgba(255,255,255,0.55);
-  font-size: 13px;
+  flex-shrink: 0;
+  color: #FFD34D;
+  font-size: 16px;
   line-height: 1;
-  text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.4),
+               0 0 7px rgba(255,211,77,0.55);
+}
+.hud-plate.active .score-goal {
+  background: linear-gradient(180deg, rgba(255,226,119,0.72), rgba(255,211,77,0.3));
+  border-color: #C58B00;
+  box-shadow: 0 2px 0 rgba(11,61,145,0.18),
+              inset 0 1px 0 rgba(255,255,255,0.55);
+}
+.hud-plate.active .score-goal-copy,
+.hud-plate.active .score-goal-label {
+  color: #0b3d91;
+  text-shadow: none;
 }
 .hud-plate.active .score-goal-track {
-  background: rgba(11,61,145,0.22);
-  box-shadow: inset 0 1px 1px rgba(11,61,145,0.28),
-              0 1px 0 rgba(255,255,255,0.35);
+  background: rgba(11,61,145,0.28);
+  border-color: rgba(11,61,145,0.45);
+  box-shadow: inset 0 1px 1px rgba(11,61,145,0.32),
+              0 1px 0 rgba(255,255,255,0.42);
 }
-.hud-plate.active .score-goal-label {
-  color: rgba(11,61,145,0.7);
-  text-shadow: none;
-}
-.hud-plate.active .score-goal-star {
-  color: rgba(11,61,145,0.42);
-  text-shadow: none;
+.score-goal.complete,
+.hud-plate.active .score-goal.complete {
+  background: linear-gradient(180deg, #FFE477, #F3B332);
+  border-color: #9E6E00;
 }
 .score-goal.complete .score-goal-star,
 .hud-plate.active .score-goal.complete .score-goal-star {
-  color: #FFD34D;
+  color: #fff;
   text-shadow: 0 1px 0 rgba(0,0,0,0.35),
-               0 0 7px rgba(255,211,77,0.75);
+               0 0 9px rgba(255,255,255,0.85);
 }
 
 /* Opponent layout: score/name to the LEFT of avatar */
@@ -1466,11 +1502,14 @@ body {
           <div class="hud-score" id="hudP1Score">0</div>
           <div class="hud-name">You</div>
           <div class="score-goal" id="hudP1Goal" aria-label="0 of 250 points toward star">
+            <div class="score-goal-top">
+              <span class="score-goal-star" aria-hidden="true">★</span>
+              <span class="score-goal-copy">250 GOAL</span>
+              <span class="score-goal-label" id="hudP1GoalLabel">0/250</span>
+            </div>
             <div class="score-goal-track" aria-hidden="true">
               <div class="score-goal-fill" id="hudP1GoalFill"></div>
             </div>
-            <span class="score-goal-label" id="hudP1GoalLabel">0/250</span>
-            <span class="score-goal-star" aria-hidden="true">★</span>
           </div>
         </div>
       </div>

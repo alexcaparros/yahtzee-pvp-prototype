@@ -8,6 +8,6 @@ This variant is based on the published prototype at:
 
 The published variant URL is:
 
-`https://alexcaparros.github.io/yahtzee-pvp-prototype/?v=250-star`
+`https://alexcaparros.github.io/yahtzee-pvp-prototype/?v=df3843e-250-star-prominent`
 
 Open `index.html` directly for a local preview, or serve this folder with any static HTTP server for realtime Firebase behavior.
