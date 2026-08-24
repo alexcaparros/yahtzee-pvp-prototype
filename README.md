@@ -11,6 +11,9 @@ The lobby also adds simple tiered matchmaking:
 - Tier 3: win meta +12, 250 meta +4, win reward +18 BRs, entry cost 10 BRs.
 
 Manual create, join, and public-game tools remain available behind the user icon in the lobby.
+They open as a dedicated full-screen room browser with a back action to return to matchmaking.
+
+The lobby and in-game BR displays use one persistent local player wallet. Entry costs, in-game spending, purchases, rewards, and Admin balance edits all update that same wallet.
 
 This variant is based on the published prototype at:
 

@@ -1752,7 +1752,7 @@ body {
   pointer-events: none;
   background: linear-gradient(115deg, rgba(255,255,255,0.08), transparent 34% 72%, rgba(27,12,108,0.12));
 }
-.lobby > * { position: relative; z-index: 1; }
+.lobby > * { z-index: 1; }
 .lobby h1 {
   margin: 112px 0 2px;
   font-size: 30px;
@@ -1769,9 +1769,11 @@ body {
 .lobby .admin-open-btn:active {
   transform: translate(-50%, 2px);
 }
-.lobby-wallet {
+.lobby > .lobby-wallet {
+  position: absolute;
   top: 22px;
-  right: 22px;
+  left: 22px;
+  right: auto;
   display: inline-flex;
   align-items: baseline;
   gap: 5px;
@@ -2083,25 +2085,180 @@ body {
   height: 18px;
 }
 .lobby-user-panel {
-  left: 18px;
-  right: 18px;
-  bottom: 82px;
-  max-height: 640px;
-  padding: 16px;
-  border-color: rgba(157,237,255,0.48);
-  border-radius: 22px;
-  background: linear-gradient(180deg, rgba(13,66,132,0.98), rgba(16,38,91,0.98));
-  box-shadow: 0 18px 44px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.15);
-  z-index: 6;
+  position: absolute;
+  inset: 0;
+  max-height: none;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background:
+    radial-gradient(circle at 50% 8%, rgba(84,223,255,0.24), transparent 31%),
+    linear-gradient(180deg, #03a9e4 0%, #197bd4 45%, #5136d1 100%);
+  box-shadow: none;
+  gap: 0;
+  text-align: left;
+  z-index: 20;
+}
+.lobby-user-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, rgba(255,255,255,0.08), transparent 34% 72%, rgba(27,12,108,0.12));
+}
+.room-tools-header {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 78px;
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.16);
+  background: rgba(4,51,114,0.14);
+}
+.lobby .room-tools-back {
+  width: 44px;
+  height: 44px;
+  padding: 0 0 4px !important;
+  border: 2px solid rgba(255,255,255,0.44) !important;
+  border-radius: 14px !important;
+  background: rgba(5,63,130,0.34) !important;
+  color: #fff !important;
+  font-size: 34px !important;
+  line-height: 1 !important;
+  box-shadow: 0 3px 0 rgba(5,35,84,0.26) !important;
+}
+.room-tools-header-copy {
+  min-width: 0;
 }
 .lobby-user-panel-title {
-  color: #a6f1ff;
+  display: block;
+  color: #fff;
+  font-size: 19px;
+  line-height: 1.05;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.room-tools-header-copy small {
+  display: block;
+  margin-top: 2px;
+  color: rgba(225,247,255,0.7);
+  font-size: 10px;
+}
+.room-tools-wallet {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 7px 9px;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 999px;
+  background: rgba(6,54,116,0.3);
+  color: rgba(255,255,255,0.76);
+  font-size: 9px;
+}
+.room-tools-wallet strong {
+  color: #fff4a9;
   font-size: 12px;
+  white-space: nowrap;
+}
+.room-tools-body {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 14px 22px 22px;
+}
+.room-tools-hero {
+  flex: 0 0 auto;
+  padding: 3px 2px 1px;
+}
+.room-tools-hero span {
+  color: #a8f2ff;
+  font-size: 10px;
+  font-weight: 900;
   letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.room-tools-hero h2 {
+  margin-top: 2px;
+  font-size: 24px;
+  line-height: 1.05;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.2);
+}
+.room-tools-hero p {
+  margin-top: 3px;
+  color: rgba(230,248,255,0.76);
+  font-size: 11px;
 }
 .lobby-user-panel .lobby-section {
-  border-color: rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.07);
+  flex: 0 0 auto;
+  align-items: stretch;
+  gap: 9px;
+  padding: 13px 14px;
+  border-color: rgba(255,255,255,0.2);
+  border-radius: 17px;
+  background: linear-gradient(135deg, rgba(27,107,193,0.72), rgba(24,62,149,0.72));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 5px 0 rgba(7,42,103,0.16);
+}
+.room-tools-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.room-tools-card-copy {
+  min-width: 0;
+}
+.room-tools-card-copy strong {
+  display: block;
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.1;
+}
+.room-tools-card-copy small {
+  display: block;
+  margin-top: 2px;
+  color: rgba(230,248,255,0.7);
+  font-size: 10px;
+}
+.lobby-user-panel .room-tools-action {
+  flex: 0 0 auto;
+  padding: 9px 16px;
+  font-size: 13px;
+}
+.lobby-user-panel .lobby-row-join {
+  width: 100%;
+}
+.lobby-user-panel .lobby-row-join input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  height: 42px;
+  font-size: 18px;
+}
+.lobby-user-panel .lobby-row-join button {
+  flex: 0 0 auto;
+  padding: 10px 18px;
+  font-size: 14px;
+}
+.lobby-user-panel .room-tools-public {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.room-tools-public .lobby-public-label {
+  color: #aaf2ff;
+  opacity: 1;
+}
+.room-tools-public .lobby-public-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
 }
 
 /* Public games list */
@@ -2233,26 +2390,50 @@ body {
       <div class="match-status" id="matchStatus" aria-live="polite"></div>
     </div>
 
-    <button type="button" class="lobby-user-trigger" onclick="toggleUserPanel()" aria-label="Open room tools" aria-controls="lobbyUserPanel" aria-expanded="false"><span class="lobby-user-icon" aria-hidden="true"></span></button>
-    <div class="lobby-user-panel" id="lobbyUserPanel" hidden>
-      <div class="lobby-user-panel-title">Room tools</div>
-      <div class="lobby-section">
-        <button type="button" onclick="createRoom()">Create game</button>
+    <button type="button" class="lobby-user-trigger" onclick="openRoomTools()" aria-label="Open room tools" aria-controls="lobbyUserPanel" aria-expanded="false"><span class="lobby-user-icon" aria-hidden="true"></span></button>
+    <div class="lobby-user-panel" id="lobbyUserPanel" role="region" aria-label="Room tools" hidden>
+      <div class="room-tools-header">
+        <button type="button" class="room-tools-back" id="roomToolsBackButton" onclick="closeUserPanel()" aria-label="Back to main lobby">‹</button>
+        <div class="room-tools-header-copy">
+          <span class="lobby-user-panel-title">Room tools</span>
+          <small>Private and public games</small>
+        </div>
+        <div class="room-tools-wallet"><span>Wallet</span><strong id="roomToolsWallet">100 BRs</strong></div>
+      </div>
+      <div class="room-tools-body">
+        <div class="room-tools-hero">
+          <span>Play together</span>
+          <h2>Choose a room</h2>
+          <p>Create a private match, enter a code, or join a public game.</p>
+        </div>
+      <div class="lobby-section room-tools-create">
+        <div class="room-tools-card-head">
+          <div class="room-tools-card-copy">
+            <strong>Create a game</strong>
+            <small>Share the four-letter room code with a friend.</small>
+          </div>
+          <button type="button" class="room-tools-action" onclick="createRoom()">Create</button>
+        </div>
         <div class="lobby-code" id="lobbyCode" hidden></div>
         <div class="lobby-status" id="lobbyStatus" hidden>Waiting for the other player…</div>
       </div>
       <div class="lobby-section">
+        <div class="room-tools-card-copy">
+          <strong>Join with a code</strong>
+          <small>Enter the code shared by the room creator.</small>
+        </div>
         <div class="lobby-row-join">
           <input id="joinCodeInput" placeholder="CODE" maxlength="4" autocomplete="off" />
           <button type="button" onclick="joinRoom()">Join</button>
         </div>
         <div class="lobby-error" id="lobbyError"></div>
       </div>
-      <div class="lobby-section">
+      <div class="lobby-section room-tools-public">
         <div class="lobby-public-label">Public games</div>
         <div class="lobby-public-list" id="publicLobbyList">
           <div class="lobby-public-empty">No public games</div>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -2753,14 +2934,42 @@ function writeDailyState(meta) {
   return safe;
 }
 
+function playerWalletBr() {
+  return readDailyState().walletBr;
+}
+
+function applyPlayerWalletBr(amount, options = {}) {
+  const balance = cleanInt(amount, DEFAULT_WALLET_BR);
+  creatorConfig.initialBonusRolls = balance;
+  const input = document.getElementById('initialBonusRollsInput');
+  if (input && document.activeElement !== input) input.value = balance;
+  if (options.syncMatch !== false && myRole && state && state.players && state.players[myRole]) {
+    state.players[myRole].bonusRolls = balance;
+  }
+  return balance;
+}
+
+function savePlayerWalletBr(amount, options = {}) {
+  const daily = readDailyState();
+  daily.walletBr = cleanInt(amount, DEFAULT_WALLET_BR);
+  const saved = writeDailyState(daily);
+  return applyPlayerWalletBr(saved.walletBr, options);
+}
+
+function syncPlayerWalletFromStorage(options = {}) {
+  return applyPlayerWalletBr(playerWalletBr(), options);
+}
+
 function renderLobbyHome() {
   const daily = readDailyState();
+  applyPlayerWalletBr(daily.walletBr, { syncMatch: false });
   const goal = dailyGoalFromConfig(creatorConfig);
   const rewardBr = dailyRewardFromConfig(creatorConfig);
   const progress = Math.min(daily.dailyProgress, goal);
   const progressPct = Math.round((progress / goal) * 100);
   const tier = currentTierConfig();
   const walletEl = document.getElementById('lobbyWallet');
+  const roomToolsWallet = document.getElementById('roomToolsWallet');
   const root = document.getElementById('lobbyDaily');
   const goalText = document.getElementById('lobbyDailyGoalText');
   const label = document.getElementById('lobbyDailyLabel');
@@ -2774,6 +2983,7 @@ function renderLobbyHome() {
   const playBtn = document.getElementById('matchPlayBtn');
   const status = document.getElementById('matchStatus');
   if (walletEl) walletEl.textContent = brText(daily.walletBr);
+  if (roomToolsWallet) roomToolsWallet.textContent = brText(daily.walletBr);
   if (goalText) goalText.textContent = `Earn ${goal} daily points`;
   if (label) label.textContent = `${progress}/${goal}`;
   if (fill) fill.style.width = `${progressPct}%`;
@@ -2874,6 +3084,7 @@ function awardDailyProgressForGameOver(playerId, gameOver, scores) {
   daily.walletBr += parts.winRewardBr;
   daily.awardedGameIds.push(key);
   const saved = writeDailyState(daily);
+  if (playerId === myRole) applyPlayerWalletBr(saved.walletBr);
   renderLobbyHome();
   return {
     parts,
@@ -2902,7 +3113,9 @@ function ensureMatchEntryCharged() {
   daily.walletBr = Math.max(0, daily.walletBr - cost);
   daily.chargedEntryGameIds.push(key);
   const saved = writeDailyState(daily);
+  applyPlayerWalletBr(saved.walletBr);
   renderLobbyHome();
+  if (applyingRemote) setTimeout(() => persistState(), 0);
   return { charged: before - saved.walletBr, walletBr: saved.walletBr };
 }
 function createGameOver(winner, reason, includeScores = false) {
@@ -3158,6 +3371,9 @@ function spendBonusRolls(player, amount) {
       || !hasMatchBonusRollCapacity(player, cost)) return false;
   player.bonusRolls = (Number(player.bonusRolls) || 0) - cost;
   player.bonusRollsSpent = bonusRollsSpent(player) + cost;
+  if (myRole && state && state.players && state.players[myRole] === player) {
+    savePlayerWalletBr(player.bonusRolls, { syncMatch: false });
+  }
   return true;
 }
 
@@ -3410,6 +3626,7 @@ function confirmBonusPurchase() {
     }
 
     me.bonusRolls = (me.bonusRolls || 0) + selectedBonusPack.amount;
+    savePlayerWalletBr(me.bonusRolls, { syncMatch: false });
     render();
     if (action) action.textContent = '✓ Done';
     if (status) status.textContent = 'Done';
@@ -3687,7 +3904,7 @@ function endTurn() {
 }
 
 function resetGame() {
-  state = freshState();
+  state = freshState({ ...creatorConfig, initialBonusRolls: playerWalletBr() });
   if (roomCode) state.turnStartedAt = Date.now();
   gameOverHandled = false;
   render();
@@ -3744,14 +3961,19 @@ function setCreatorConfig(key, value) {
   renderLobbyHome();
 }
 function setCreatorBonusRolls(value) {
-  creatorConfig.initialBonusRolls = value === ''
+  const amount = value === ''
     ? 0
     : Math.max(0, Math.floor(Number(value) || 0));
+  savePlayerWalletBr(amount);
+  renderLobbyHome();
+  if (roomCode) persistState();
 }
 function normalizeCreatorBonusRolls(input) {
   const amount = Math.max(0, Math.floor(Number(input.value) || 0));
   input.value = amount;
-  creatorConfig.initialBonusRolls = amount;
+  savePlayerWalletBr(amount);
+  renderLobbyHome();
+  if (roomCode) persistState();
 }
 function setCreatorNumberConfig(key, value) {
   creatorConfig[key] = Math.max(0, Math.floor(Number(value) || 0));
@@ -4010,6 +4232,7 @@ function subscribeRoom() {
     applyingRemote = true;
     try {
       state = normalizeState(data.state);
+      if (myRole) syncPlayerWalletFromStorage();
       const lobbyOpen = !document.getElementById('lobby').classList.contains('hidden');
       if (myRole === 'p1' && data.p2Joined && lobbyOpen) {
         enterGame();
@@ -4137,19 +4360,33 @@ function renderLobbyList(data) {
   }
 }
 
-function toggleUserPanel() {
+let roomToolsReturnFocus = null;
+function openRoomTools() {
   const panel = document.getElementById('lobbyUserPanel');
   const trigger = document.querySelector('.lobby-user-trigger');
-  if (panel) {
-    panel.hidden = !panel.hidden;
-    if (trigger) trigger.setAttribute('aria-expanded', String(!panel.hidden));
-  }
+  if (!panel) return;
+  roomToolsReturnFocus = document.activeElement;
+  panel.hidden = false;
+  if (trigger) trigger.setAttribute('aria-expanded', 'true');
+  window.requestAnimationFrame(() => {
+    const backButton = document.getElementById('roomToolsBackButton');
+    if (backButton) backButton.focus({ preventScroll: true });
+  });
+}
+function toggleUserPanel() {
+  const panel = document.getElementById('lobbyUserPanel');
+  if (panel && panel.hidden) openRoomTools();
+  else closeUserPanel();
 }
 function closeUserPanel() {
   const panel = document.getElementById('lobbyUserPanel');
   if (panel) panel.hidden = true;
   const trigger = document.querySelector('.lobby-user-trigger');
   if (trigger) trigger.setAttribute('aria-expanded', 'false');
+  if (roomToolsReturnFocus && typeof roomToolsReturnFocus.focus === 'function') {
+    roomToolsReturnFocus.focus({ preventScroll: true });
+  }
+  roomToolsReturnFocus = null;
 }
 function setMatchStatus(message, locked = false) {
   const status = document.getElementById('matchStatus');
@@ -4248,6 +4485,7 @@ async function createQueuedMatchmakingRoom() {
   matchmakingQueued = true;
   state = freshState({
     ...creatorConfig,
+    initialBonusRolls: playerWalletBr(),
     matchMode: 'matchmaking',
     matchTier: selectedTierId,
     matchId: roomCode,
@@ -4307,6 +4545,7 @@ async function createRoom() {
   matchmakingQueued = false;
   state = freshState({
     ...creatorConfig,
+    initialBonusRolls: playerWalletBr(),
     matchMode: 'manual',
     matchTier: selectedTierId,
     matchId: roomCode,
@@ -4378,6 +4617,8 @@ async function joinRoomByCode(code, options = {}) {
     }
   }
   claimedState.players.p2.name = myName;
+  claimedState.players.p2.bonusRolls = playerWalletBr();
+  claimedState.players.p2.bonusRollsSpent = 0;
   if (!claimedState.turnStartedAt) {
     claimedState.turnStartedAt = Date.now();
     claimedState.extraTime = false;
@@ -4431,6 +4672,7 @@ function enterGame() {
   setCreatorPanelVisible(false);
   closeSettingsOverlay();
   closeAdminOverlay();
+  syncPlayerWalletFromStorage();
   ensureMatchEntryCharged();
   if (!state.turnStartedAt && !state.gameOver) {
     state.turnStartedAt = Date.now();
@@ -4481,7 +4723,13 @@ function bindSettingsOverlayControls() {
     });
   }
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && overlay && !overlay.hidden) closeSettingsOverlay();
+    if (event.key !== 'Escape') return;
+    if (overlay && !overlay.hidden) {
+      closeSettingsOverlay();
+      return;
+    }
+    const roomTools = document.getElementById('lobbyUserPanel');
+    if (roomTools && !roomTools.hidden) closeUserPanel();
   });
 }
 function openAdminOverlay() {
@@ -4806,7 +5054,7 @@ function backToLobby() {
   matchmakingQueued = false;
   gameOverHandled = false;
   prevCurrentTurn = null;
-  state = freshState();
+  state = freshState({ ...creatorConfig, initialBonusRolls: playerWalletBr() });
   document.getElementById('gameOver').hidden = true;
   document.getElementById('lobby').classList.remove('hidden');
   setCreatorPanelVisible(true);
@@ -4915,6 +5163,7 @@ function commitSimulReveal() {
 window.addEventListener('DOMContentLoaded', () => {
   bindSettingsOverlayControls();
   initMyNameInput();
+  syncPlayerWalletFromStorage({ syncMatch: false });
   renderLobbyHome();
   subscribeLobbyList();
 });
@@ -5048,9 +5297,9 @@ window.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
       <div class="creator-panel-group">
-        <h3>Bonus rolls</h3>
+        <h3>Player wallet</h3>
         <label class="creator-field" for="initialBonusRollsInput">
-          <span>Starting BR balance</span>
+          <span>Persistent BR balance</span>
           <input
             id="initialBonusRollsInput"
             class="creator-number-input"
