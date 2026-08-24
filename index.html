@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -50,56 +50,119 @@ body {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0,0,0,0.9);
+  background: rgba(4,15,34,0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
 }
 .admin-overlay[hidden] { display: none !important; }
 .admin-overlay-box {
-  background: #0f2c5c;
-  border: 2px solid rgba(255,255,255,0.2);
-  border-radius: 16px;
-  padding: 16px;
+  background: linear-gradient(180deg, #153f77 0%, #102d59 100%);
+  border: 2px solid rgba(255,255,255,0.24);
+  border-radius: 24px;
+  padding: 18px;
   width: 100%;
-  max-width: 310px;
-  max-height: 100%;
+  max-width: 356px;
+  max-height: min(760px, 100%);
   overflow: auto;
   color: #fff;
   font-weight: 800;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-shadow:
+    0 24px 70px rgba(0,0,0,0.48),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+}
+.settings-dialog {
+  padding: 0;
+  overflow: hidden;
+}
+.settings-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 18px 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.14);
+  background: rgba(8,31,67,0.44);
+}
+.settings-eyebrow {
+  display: block;
+  color: #8eeaff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+.settings-header h2 {
+  margin-top: 2px;
+  font-size: 22px;
+  line-height: 1.05;
+  color: #fff;
+}
+.settings-x {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border: 2px solid rgba(255,255,255,0.22);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font: 900 24px/1 'Nunito', sans-serif;
+  cursor: pointer;
+}
+.settings-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px 16px 6px;
+}
+.settings-scroll::-webkit-scrollbar { width: 7px; }
+.settings-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.22);
+  border-radius: 99px;
+}
+.settings-dialog > .admin-overlay-close {
+  flex: 0 0 auto;
+  margin: 4px 16px 16px;
 }
 .admin-overlay-close {
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  border: 2px solid rgba(255,255,255,0.3);
-  padding: 10px;
-  border-radius: 10px;
-  font-size: 14px;
+  background: linear-gradient(180deg, #ffe071, #ffc93d);
+  color: #583500;
+  border: 2px solid rgba(255,255,255,0.7);
+  padding: 12px;
+  border-radius: 13px;
+  font-size: 15px;
   font-weight: 900;
   cursor: pointer;
   font-family: inherit;
   letter-spacing: 0.5px;
+  box-shadow: 0 4px 0 rgba(5,18,40,0.34);
 }
-.admin-overlay-close:active { transform: translateY(1px); }
+.admin-overlay-close:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(5,18,40,0.34); }
 
 /* Trigger button (lobby + HUD) to open the admin overlay */
 .admin-open-btn {
-  background: rgba(0,0,0,0.3);
-  border: 2px solid rgba(255,255,255,0.35);
-  color: #fff;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 12px;
+  background: linear-gradient(180deg, #ffe071, #ffc93d);
+  border: 2px solid rgba(255,255,255,0.72);
+  color: #593600;
+  padding: 9px 17px;
+  border-radius: 13px;
+  font-size: 14px;
   font-weight: 900;
   letter-spacing: 0.5px;
   cursor: pointer;
   font-family: inherit;
+  box-shadow: 0 4px 0 rgba(6,37,75,0.34);
 }
-.admin-open-btn:hover { background: rgba(0,0,0,0.45); }
+.admin-open-btn:hover { filter: brightness(1.04); }
+.admin-open-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(6,37,75,0.34); }
 
 /* Creator (prototype) settings panel — shown in lobby; admin panel shown in game */
 .creator-panel,
@@ -135,8 +198,21 @@ body {
   letter-spacing: 0.5px;
   color: rgba(255,255,255,0.85);
 }
-.creator-panel-group { margin-bottom: 16px; }
+.creator-panel-group {
+  margin-bottom: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 15px;
+  background: rgba(255,255,255,0.07);
+}
 .creator-panel-group:last-child { margin-bottom: 0; }
+.creator-panel-group h3 {
+  margin-bottom: 10px;
+  color: #9eefff;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
 .creator-btn-row {
   display: flex;
   gap: 6px;
@@ -1658,6 +1734,376 @@ body {
   padding: 12px;
 }
 
+/* Polished daily-match lobby */
+.lobby {
+  --lobby-panel: rgba(13,67,139,0.76);
+  --lobby-line: rgba(255,255,255,0.22);
+  gap: 10px;
+  padding: 22px 24px 22px;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(84,223,255,0.24), transparent 30%),
+    linear-gradient(180deg, #03a9e4 0%, #197bd4 45%, #5136d1 100%);
+  overflow: hidden;
+}
+.lobby::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, rgba(255,255,255,0.08), transparent 34% 72%, rgba(27,12,108,0.12));
+}
+.lobby > * { position: relative; z-index: 1; }
+.lobby h1 {
+  margin: 112px 0 2px;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.6px;
+  text-shadow: 0 3px 0 rgba(8,54,111,0.28);
+}
+.lobby .admin-open-btn {
+  top: 66px;
+  padding: 10px 20px;
+  border-radius: 13px;
+  font-size: 15px;
+}
+.lobby .admin-open-btn:active {
+  transform: translate(-50%, 2px);
+}
+.lobby-wallet {
+  top: 22px;
+  right: 22px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 999px;
+  background: rgba(6,54,116,0.3);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+  font-size: 11px;
+  letter-spacing: 0.25px;
+}
+.lobby-wallet strong { color: #fff4a9; font-size: 13px; }
+.lobby-name {
+  min-height: 44px;
+}
+#myNameInput {
+  width: 258px;
+  height: 44px;
+  border-color: rgba(255,255,255,0.3);
+  border-radius: 13px;
+  background: rgba(5,58,122,0.35);
+  box-shadow: inset 0 2px 4px rgba(4,31,73,0.2);
+  font-size: 16px;
+}
+#myNameInput:focus {
+  border-color: rgba(174,245,255,0.9);
+  box-shadow: 0 0 0 3px rgba(104,229,255,0.2), inset 0 2px 4px rgba(4,31,73,0.2);
+}
+.lobby-daily {
+  width: 100%;
+  margin: 0;
+  padding: 14px 15px 13px;
+  border: 2px solid rgba(144,235,255,0.42);
+  border-radius: 19px;
+  background:
+    linear-gradient(135deg, rgba(22,126,205,0.95), rgba(17,72,154,0.92));
+  box-shadow:
+    0 7px 0 rgba(8,46,105,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+  gap: 8px;
+  text-align: left;
+}
+.lobby-daily-head {
+  align-items: flex-start;
+}
+.lobby-daily-heading {
+  min-width: 0;
+}
+.lobby-daily-eyebrow {
+  display: block;
+  color: #9ff3ff;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+}
+.lobby-daily-title {
+  display: block;
+  margin: 3px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1.1;
+}
+.lobby-daily-reward-chip {
+  flex: 0 0 auto;
+  min-width: 82px;
+  padding: 6px 9px;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 11px;
+  background: linear-gradient(180deg, #fff3ad, #ffd85c);
+  color: #613b00;
+  text-align: center;
+  box-shadow: 0 3px 0 rgba(5,39,86,0.26);
+}
+.lobby-daily-reward-chip > span {
+  display: block;
+  font-size: 8px;
+  line-height: 1;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.lobby-daily-reward {
+  display: block;
+  margin-top: 2px;
+  color: #613b00;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.lobby-daily-reward.complete { color: #0e6b3d; text-shadow: none; }
+.lobby-daily-progress-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+.lobby-daily-track {
+  height: 16px;
+  border: 2px solid rgba(4,35,84,0.42);
+  background: rgba(2,40,91,0.44);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.14);
+}
+.lobby-daily-fill {
+  background: linear-gradient(90deg, #ff9f2b 0%, #ffd84f 75%, #fff0a0 100%);
+  box-shadow: 0 0 12px rgba(255,215,74,0.62), inset 0 1px 0 rgba(255,255,255,0.55);
+}
+.lobby-daily-label {
+  min-width: 46px;
+  color: #fff;
+  font-size: 15px;
+  text-align: right;
+}
+.lobby-daily-text {
+  color: rgba(232,249,255,0.84);
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: left;
+}
+.match-card {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 292px;
+  margin: 0;
+  padding: 15px 16px 52px;
+  border: 2px solid var(--lobby-line);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(61,150,239,0.26), transparent 43%),
+    linear-gradient(180deg, rgba(31,86,174,0.92), rgba(42,54,161,0.92));
+  box-shadow:
+    0 10px 0 rgba(17,34,111,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.14);
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 9px;
+  text-align: left;
+  overflow: hidden;
+}
+.match-card::after {
+  content: "";
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  right: -105px;
+  top: -130px;
+  border-radius: 50%;
+  border: 32px solid rgba(255,255,255,0.035);
+  pointer-events: none;
+}
+.match-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.match-card-title {
+  font-size: 11px;
+  line-height: 1;
+  color: #9fefff;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+}
+.match-tier-label {
+  padding: 4px 9px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 999px;
+  background: rgba(4,32,86,0.28);
+  color: #fff;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+.match-card h2 {
+  font-size: 23px;
+  line-height: 1.05;
+  color: #fff;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.2);
+}
+.match-card-reward-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 13px;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 14px;
+  background: rgba(7,40,105,0.28);
+}
+.match-card-reward-copy span {
+  display: block;
+  color: rgba(228,246,255,0.72);
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+}
+.match-card-reward-copy strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+}
+.match-card-reward {
+  color: #fff3a2;
+  font-size: 29px;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.22);
+}
+.match-card-meta {
+  color: rgba(235,248,255,0.84);
+  font-size: 11px;
+  text-align: center;
+}
+.tier-control {
+  width: 100%;
+  min-height: 70px;
+  margin: 0;
+  padding: 8px;
+  border: 2px solid rgba(255,255,255,0.72);
+  border-radius: 21px;
+  grid-template-columns: 48px 1fr 48px;
+  gap: 8px;
+  background: linear-gradient(180deg, #fffdf6, #eee8de);
+  box-shadow: 0 5px 0 rgba(5,28,78,0.33), inset 0 2px 0 rgba(255,255,255,0.7);
+}
+.tier-step {
+  width: 44px;
+  height: 44px;
+  padding: 0 !important;
+  border-radius: 12px !important;
+  font-size: 29px;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.45), 0 3px 0 rgba(0,0,0,0.22) !important;
+}
+.match-play-btn {
+  width: 100%;
+  height: 50px;
+  padding: 0 14px !important;
+  border: 3px solid rgba(11,91,14,0.55) !important;
+  border-radius: 16px !important;
+  font-size: 25px !important;
+  letter-spacing: 0.7px;
+  box-shadow: inset 0 3px 0 rgba(255,255,255,0.45), 0 4px 0 rgba(0,0,0,0.24) !important;
+}
+.match-play-btn:active { box-shadow: inset 0 2px 0 rgba(255,255,255,0.35), 0 2px 0 rgba(0,0,0,0.24) !important; }
+.match-cost {
+  position: static;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.1;
+  text-align: center;
+}
+.match-status {
+  position: absolute;
+  left: 64px;
+  right: 16px;
+  bottom: 15px;
+  min-height: 18px;
+  margin: 0;
+  color: #fff0a0;
+  font-size: 11px;
+  text-align: right;
+}
+.lobby-user-trigger {
+  left: 25px;
+  bottom: 24px;
+  width: 48px;
+  height: 48px;
+  padding: 0 !important;
+  border: 2px solid rgba(255,255,255,0.46) !important;
+  border-radius: 50% !important;
+  background: linear-gradient(180deg, #57d7ff, #187ccc) !important;
+  box-shadow: 0 4px 0 rgba(6,31,83,0.34), inset 0 2px 0 rgba(255,255,255,0.32) !important;
+  color: #fff;
+  font-size: 0;
+  z-index: 5;
+}
+.lobby-user-trigger:active { transform: translateY(2px); }
+.lobby-user-icon,
+.lobby-user-icon::before,
+.lobby-user-icon::after {
+  position: absolute;
+  left: 50%;
+  display: block;
+  content: "";
+  transform: translateX(-50%);
+}
+.lobby-user-icon {
+  top: 25px;
+  width: 25px;
+  height: 12px;
+  border: 3px solid #fff;
+  border-bottom: 0;
+  border-radius: 14px 14px 3px 3px;
+}
+.lobby-user-icon::before {
+  top: -17px;
+  width: 11px;
+  height: 11px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: transparent;
+}
+.lobby-user-icon::after {
+  top: 4px;
+  width: 30px;
+  height: 18px;
+}
+.lobby-user-panel {
+  left: 18px;
+  right: 18px;
+  bottom: 82px;
+  max-height: 640px;
+  padding: 16px;
+  border-color: rgba(157,237,255,0.48);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(13,66,132,0.98), rgba(16,38,91,0.98));
+  box-shadow: 0 18px 44px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.15);
+  z-index: 6;
+}
+.lobby-user-panel-title {
+  color: #a6f1ff;
+  font-size: 12px;
+  letter-spacing: 1.2px;
+}
+.lobby-user-panel .lobby-section {
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.07);
+}
+
 /* Public games list */
 .lobby-public-label { font-size: 13px; font-weight: 800; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
 .lobby-public-list {
@@ -1738,38 +2184,56 @@ body {
 
   <!-- Lobby (PvP via localStorage) -->
   <div class="lobby" id="lobby">
-    <button type="button" class="admin-open-btn" onclick="openSettingsOverlay()">⚙ Admin</button>
-    <div class="lobby-wallet" id="lobbyWallet">Wallet: 100 BRs</div>
+    <button type="button" class="admin-open-btn" id="lobbyAdminButton" aria-haspopup="dialog" aria-controls="settingsOverlay">⚙ Admin</button>
+    <div class="lobby-wallet"><span>Wallet</span><strong id="lobbyWallet">100 BRs</strong></div>
     <h1>Yahtzee PvP</h1>
     <div class="lobby-name">
       <input id="myNameInput" placeholder="Your name" maxlength="20" autocomplete="off" oninput="onMyNameInput(this.value)" />
     </div>
     <div class="lobby-daily" id="lobbyDaily" aria-label="0 of 20 daily goal progress">
       <div class="lobby-daily-head">
-        <span class="lobby-daily-title">Daily Goal</span>
+        <div class="lobby-daily-heading">
+          <span class="lobby-daily-eyebrow">Daily goal</span>
+          <span class="lobby-daily-title" id="lobbyDailyGoalText">Earn 20 daily points</span>
+        </div>
+        <div class="lobby-daily-reward-chip">
+          <span>Reward</span>
+          <strong class="lobby-daily-reward" id="lobbyDailyReward">5 BRs</strong>
+        </div>
+      </div>
+      <div class="lobby-daily-progress-row">
+        <div class="lobby-daily-track" aria-hidden="true">
+          <div class="lobby-daily-fill" id="lobbyDailyFill"></div>
+        </div>
         <span class="lobby-daily-label" id="lobbyDailyLabel">0/20</span>
       </div>
-      <div class="lobby-daily-track" aria-hidden="true">
-        <div class="lobby-daily-fill" id="lobbyDailyFill"></div>
-      </div>
-      <div class="lobby-daily-text" id="lobbyDailyText">Win +2 · 250 goal +1</div>
-      <div class="lobby-daily-reward" id="lobbyDailyReward">Reward: 5 BR</div>
+      <div class="lobby-daily-text" id="lobbyDailyText">Random match win +2 · Reach 250 points +1</div>
     </div>
 
     <div class="match-card">
-      <div class="match-card-title">Reward</div>
-      <div class="match-card-reward" id="matchReward">3 BRs</div>
-      <div class="match-card-meta" id="matchMetaReward">Win +2 · 250 +1 daily</div>
+      <div class="match-card-head">
+        <div class="match-card-title">Random match</div>
+        <div class="match-tier-label" id="matchTierLabel">Tier 1</div>
+      </div>
+      <h2>Play for rewards</h2>
+      <div class="match-card-reward-row">
+        <div class="match-card-reward-copy">
+          <span>Immediate reward</span>
+          <strong>Winner takes</strong>
+        </div>
+        <div class="match-card-reward" id="matchReward">+3 BRs</div>
+      </div>
+      <div class="match-card-meta" id="matchMetaReward">Daily progress · Win +2 · Reach 250 +1</div>
       <div class="tier-control">
         <button type="button" class="tier-step dec" onclick="changeMatchTier(-1)" aria-label="Lower wager tier">−</button>
         <button type="button" class="match-play-btn" id="matchPlayBtn" onclick="onMatchPlayClick()">PLAY</button>
         <button type="button" class="tier-step inc" onclick="changeMatchTier(1)" aria-label="Raise wager tier">+</button>
       </div>
-      <div class="match-cost" id="matchCost">Cost: 2 BR</div>
+      <div class="match-cost" id="matchCost">Entry: 2 BRs</div>
+      <div class="match-status" id="matchStatus" aria-live="polite"></div>
     </div>
-    <div class="match-status" id="matchStatus"></div>
 
-    <button type="button" class="lobby-user-trigger" onclick="toggleUserPanel()" aria-label="Open room tools">♙</button>
+    <button type="button" class="lobby-user-trigger" onclick="toggleUserPanel()" aria-label="Open room tools" aria-controls="lobbyUserPanel" aria-expanded="false"><span class="lobby-user-icon" aria-hidden="true"></span></button>
     <div class="lobby-user-panel" id="lobbyUserPanel" hidden>
       <div class="lobby-user-panel-title">Room tools</div>
       <div class="lobby-section">
@@ -2298,30 +2762,35 @@ function renderLobbyHome() {
   const tier = currentTierConfig();
   const walletEl = document.getElementById('lobbyWallet');
   const root = document.getElementById('lobbyDaily');
+  const goalText = document.getElementById('lobbyDailyGoalText');
   const label = document.getElementById('lobbyDailyLabel');
   const fill = document.getElementById('lobbyDailyFill');
   const text = document.getElementById('lobbyDailyText');
   const reward = document.getElementById('lobbyDailyReward');
+  const tierLabel = document.getElementById('matchTierLabel');
   const matchReward = document.getElementById('matchReward');
   const matchMeta = document.getElementById('matchMetaReward');
   const matchCost = document.getElementById('matchCost');
   const playBtn = document.getElementById('matchPlayBtn');
   const status = document.getElementById('matchStatus');
-  if (walletEl) walletEl.textContent = `Wallet: ${brText(daily.walletBr)}`;
+  if (walletEl) walletEl.textContent = brText(daily.walletBr);
+  if (goalText) goalText.textContent = `Earn ${goal} daily points`;
   if (label) label.textContent = `${progress}/${goal}`;
   if (fill) fill.style.width = `${progressPct}%`;
-  if (text) text.textContent = `Progress: win +${tier.winMetaReward}, 250 goal +${tier.goalMetaReward}`;
+  if (text) text.textContent = `Random match win +${tier.winMetaReward} · Reach 250 points +${tier.goalMetaReward}`;
   if (reward) {
     const complete = daily.dailyProgress >= goal;
     reward.textContent = complete
-      ? `Daily reward ${brText(rewardBr)} ${daily.dailyRewardClaimed ? 'claimed' : 'ready'}`
-      : `Complete it for ${brText(rewardBr)}`;
+      ? (daily.dailyRewardClaimed ? 'Claimed' : `${brText(rewardBr)} ready`)
+      : brText(rewardBr);
     reward.classList.toggle('complete', complete);
+    if (root) root.classList.toggle('complete', complete);
   }
   if (root) root.setAttribute('aria-label', `${progress} of ${goal} daily goal progress`);
-  if (matchReward) matchReward.textContent = `• ${brText(tier.winRewardBr)}`;
-  if (matchMeta) matchMeta.textContent = `Daily win +${tier.winMetaReward} · 250 +${tier.goalMetaReward}`;
-  if (matchCost) matchCost.textContent = `Cost: ${brText(tier.entryCostBr)}`;
+  if (tierLabel) tierLabel.textContent = tier.label;
+  if (matchReward) matchReward.textContent = `+${brText(tier.winRewardBr)}`;
+  if (matchMeta) matchMeta.textContent = `Daily progress · Win +${tier.winMetaReward} · Reach 250 +${tier.goalMetaReward}`;
+  if (matchCost) matchCost.textContent = `Entry: ${brText(tier.entryCostBr)}`;
   if (playBtn) {
     const canAfford = daily.walletBr >= tier.entryCostBr;
     playBtn.textContent = matchmakingQueued ? 'QUEUED' : matchmakingBusy ? '…' : 'PLAY';
@@ -3670,11 +4139,17 @@ function renderLobbyList(data) {
 
 function toggleUserPanel() {
   const panel = document.getElementById('lobbyUserPanel');
-  if (panel) panel.hidden = !panel.hidden;
+  const trigger = document.querySelector('.lobby-user-trigger');
+  if (panel) {
+    panel.hidden = !panel.hidden;
+    if (trigger) trigger.setAttribute('aria-expanded', String(!panel.hidden));
+  }
 }
 function closeUserPanel() {
   const panel = document.getElementById('lobbyUserPanel');
   if (panel) panel.hidden = true;
+  const trigger = document.querySelector('.lobby-user-trigger');
+  if (trigger) trigger.setAttribute('aria-expanded', 'false');
 }
 function setMatchStatus(message, locked = false) {
   const status = document.getElementById('matchStatus');
@@ -3968,15 +4443,46 @@ function enterGame() {
 function setCreatorPanelVisible(_visible) {
   // No-op: admin/settings now live in modal overlays, toggled by explicit buttons.
 }
+let settingsReturnFocus = null;
 function openSettingsOverlay() {
-  hideCurrencyPopup();
-  hideTimeoutFeedback();
   const el = document.getElementById('settingsOverlay');
-  if (el) el.hidden = false;
+  if (!el) return;
+  settingsReturnFocus = document.activeElement;
+  el.hidden = false;
+  el.setAttribute('aria-hidden', 'false');
+  try { hideCurrencyPopup(); } catch (e) { console.warn('[settings] bonus popup cleanup failed', e); }
+  try { hideTimeoutFeedback(); } catch (e) { console.warn('[settings] timeout cleanup failed', e); }
+  window.requestAnimationFrame(() => {
+    const closeButton = document.getElementById('settingsCloseButton');
+    if (closeButton) closeButton.focus({ preventScroll: true });
+  });
 }
 function closeSettingsOverlay() {
   const el = document.getElementById('settingsOverlay');
-  if (el) el.hidden = true;
+  if (!el) return;
+  el.hidden = true;
+  el.setAttribute('aria-hidden', 'true');
+  if (settingsReturnFocus && typeof settingsReturnFocus.focus === 'function') {
+    settingsReturnFocus.focus({ preventScroll: true });
+  }
+  settingsReturnFocus = null;
+}
+function bindSettingsOverlayControls() {
+  const openButton = document.getElementById('lobbyAdminButton');
+  const overlay = document.getElementById('settingsOverlay');
+  if (openButton && !openButton.dataset.settingsBound) {
+    openButton.dataset.settingsBound = 'true';
+    openButton.addEventListener('click', openSettingsOverlay);
+  }
+  if (overlay && !overlay.dataset.settingsBound) {
+    overlay.dataset.settingsBound = 'true';
+    overlay.addEventListener('click', (event) => {
+      if (event.target === overlay) closeSettingsOverlay();
+    });
+  }
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && overlay && !overlay.hidden) closeSettingsOverlay();
+  });
 }
 function openAdminOverlay() {
   hideCurrencyPopup();
@@ -4407,6 +4913,7 @@ function commitSimulReveal() {
 // No auto-render: lobby is shown first and render() fires when a room is entered.
 // Lobby init: prefill the name input and subscribe to the public games list.
 window.addEventListener('DOMContentLoaded', () => {
+  bindSettingsOverlayControls();
   initMyNameInput();
   renderLobbyHome();
   subscribeLobbyList();
@@ -4414,8 +4921,16 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <!-- Settings overlay (lobby → prototype config) -->
-<div class="admin-overlay" id="settingsOverlay" hidden>
-    <div class="admin-overlay-box">
+<div class="admin-overlay settings-overlay" id="settingsOverlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" aria-hidden="true" hidden>
+    <div class="admin-overlay-box settings-dialog">
+      <div class="settings-header">
+        <div>
+          <span class="settings-eyebrow">Prototype tools</span>
+          <h2 id="settingsTitle">Admin settings</h2>
+        </div>
+        <button type="button" class="settings-x" id="settingsCloseButton" onclick="closeSettingsOverlay()" aria-label="Close admin settings">×</button>
+      </div>
+      <div class="settings-scroll">
       <div class="creator-panel-group">
         <h3>Daily goal</h3>
         <label class="creator-field" for="dailyGoalInput">
@@ -4559,7 +5074,8 @@ window.addEventListener('DOMContentLoaded', () => {
           <button type="button" class="creator-btn active" data-value="none" onclick="setCreatorConfig('brCapPerGame', 'none')">No cap</button>
         </div>
       </div>
-      <button type="button" class="admin-overlay-close" onclick="closeSettingsOverlay()">Close</button>
+      </div>
+      <button type="button" class="admin-overlay-close" onclick="closeSettingsOverlay()">Done</button>
     </div>
   </div>
 
