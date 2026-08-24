@@ -278,6 +278,23 @@ body {
   min-width: 0;
   z-index: 1;
 }
+.hud-player.me {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 6px;
+  row-gap: 4px;
+  align-items: center;
+}
+.hud-player.me .hud-avatar {
+  grid-column: 1;
+  grid-row: 1;
+}
+.hud-player.me .hud-plate {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+}
 .hud-avatar {
   width: 58px; height: 58px;
   border-radius: 50%;
@@ -338,21 +355,26 @@ body {
 .score-goal {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  width: min(126px, 100%);
-  margin: 6px auto 0;
-  padding: 4px 6px 5px;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 5px 7px 6px;
   border: 1px solid rgba(255,211,77,0.85);
-  border-radius: 8px;
+  border-radius: 9px;
   background: linear-gradient(180deg, rgba(255,211,77,0.3), rgba(6,33,78,0.28));
   box-shadow: 0 2px 0 rgba(0,0,0,0.2),
               inset 0 1px 0 rgba(255,255,255,0.28);
+}
+.hud-player.me .score-goal {
+  grid-column: 1 / -1;
+  grid-row: 2;
 }
 .score-goal-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4px;
+  gap: 5px;
   min-width: 0;
   line-height: 1;
 }
@@ -360,7 +382,7 @@ body {
   flex: 1;
   min-width: 0;
   color: #FFE477;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 1000;
   line-height: 1;
   text-align: left;
@@ -370,7 +392,7 @@ body {
 .score-goal-track {
   position: relative;
   width: 100%;
-  height: 9px;
+  height: 13px;
   overflow: hidden;
   border: 1px solid rgba(3,24,58,0.6);
   border-radius: 999px;
@@ -390,7 +412,7 @@ body {
 .score-goal-label {
   flex-shrink: 0;
   color: #fff;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 1000;
   line-height: 1;
   text-align: right;
@@ -399,7 +421,7 @@ body {
 .score-goal-star {
   flex-shrink: 0;
   color: #FFD34D;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1;
   text-shadow: 0 1px 0 rgba(0,0,0,0.4),
                0 0 7px rgba(255,211,77,0.55);
@@ -1501,16 +1523,16 @@ body {
         <div class="hud-plate-content">
           <div class="hud-score" id="hudP1Score">0</div>
           <div class="hud-name">You</div>
-          <div class="score-goal" id="hudP1Goal" aria-label="0 of 250 points toward star">
-            <div class="score-goal-top">
-              <span class="score-goal-star" aria-hidden="true">★</span>
-              <span class="score-goal-copy">250 GOAL</span>
-              <span class="score-goal-label" id="hudP1GoalLabel">0/250</span>
-            </div>
-            <div class="score-goal-track" aria-hidden="true">
-              <div class="score-goal-fill" id="hudP1GoalFill"></div>
-            </div>
-          </div>
+        </div>
+      </div>
+      <div class="score-goal" id="hudP1Goal" aria-label="0 of 250 points toward star">
+        <div class="score-goal-top">
+          <span class="score-goal-star" aria-hidden="true">★</span>
+          <span class="score-goal-copy">250 GOAL</span>
+          <span class="score-goal-label" id="hudP1GoalLabel">0/250</span>
+        </div>
+        <div class="score-goal-track" aria-hidden="true">
+          <div class="score-goal-fill" id="hudP1GoalFill"></div>
         </div>
       </div>
     </div>
