@@ -1414,6 +1414,71 @@ body {
   font-size: 16px;
 }
 #myNameInput::placeholder { letter-spacing: 1px; }
+.lobby-meta {
+  width: 100%;
+  max-width: 320px;
+  margin-top: -4px;
+  padding: 10px 12px;
+  border: 2px solid rgba(255,211,77,0.35);
+  border-radius: 14px;
+  background: rgba(0,0,0,0.18);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.lobby-meta-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 900;
+}
+.lobby-meta-title {
+  font-size: 13px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #FFE477;
+}
+.lobby-meta-label {
+  font-size: 13px;
+  color: #fff;
+}
+.lobby-meta-tokens {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  width: 100%;
+}
+.lobby-meta-die {
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.16);
+  color: rgba(255,255,255,0.42);
+  font-size: 18px;
+  line-height: 1;
+  filter: grayscale(1);
+}
+.lobby-meta-die.filled {
+  background: linear-gradient(180deg, #FFE477, #F3B332);
+  border-color: #9E6E00;
+  color: #5a3200;
+  filter: none;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.18);
+}
+.lobby-meta-rules {
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.78);
+}
+.lobby-meta-rules.complete {
+  color: #FFE477;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+}
 
 /* Public games list */
 .lobby-public-label { font-size: 13px; font-weight: 800; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
@@ -1447,6 +1512,23 @@ body {
   text-align: left;
 }
 .lobby-public-item .lp-code { font-size: 11px; opacity: 0.6; font-weight: 700; letter-spacing: 1px; }
+.lobby-public-meta {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.lobby-public-meta .mini-die {
+  font-size: 11px;
+  line-height: 1;
+  color: rgba(255,255,255,0.28);
+  filter: grayscale(1);
+}
+.lobby-public-meta .mini-die.filled {
+  color: #FFD34D;
+  filter: none;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.28);
+}
 .lobby-public-item button {
   font-size: 13px !important;
   padding: 6px 14px !important;
@@ -1490,6 +1572,14 @@ body {
     <h1>Yahtzee PvP</h1>
     <div class="lobby-name">
       <input id="myNameInput" placeholder="Your name" maxlength="20" autocomplete="off" oninput="onMyNameInput(this.value)" />
+    </div>
+    <div class="lobby-meta" id="lobbyMeta" aria-label="0 of 5 dice tokens collected">
+      <div class="lobby-meta-head">
+        <span class="lobby-meta-title">Dice token goal</span>
+        <span class="lobby-meta-label" id="lobbyMetaLabel">0/5 dice</span>
+      </div>
+      <div class="lobby-meta-tokens" id="lobbyMetaTokens" aria-hidden="true"></div>
+      <div class="lobby-meta-rules" id="lobbyMetaRules">Win +2 · 250 goal +1</div>
     </div>
     <div class="lobby-section">
       <button type="button" onclick="createRoom()">Create game</button>
@@ -1644,6 +1734,7 @@ body {
       <div class="game-over-title" id="gameOverTitle">You win!</div>
       <div class="game-over-sub" id="gameOverScores"></div>
       <div class="game-over-goal" id="gameOverGoal" hidden></div>
+      <div class="game-over-goal" id="gameOverMeta" hidden></div>
       <div class="game-over-sub">Returning to lobby…</div>
     </div>
   </div>
@@ -1881,6 +1972,10 @@ function totalScore(sc){
 }
 
 const SECONDARY_GOAL_SCORE = 250;
+const META_TOKEN_GOAL = 5;
+const META_WIN_TOKENS = 2;
+const META_SECONDARY_GOAL_TOKENS = 1;
+const META_STORAGE_KEY = 'yahtzee_pvp_meta_dice_tokens_v1';
 function currentScores() {
   return {
     p1: totalScore(state.players.p1.scorecard),
@@ -1905,9 +2000,110 @@ function renderScoreGoal(prefix, score) {
   goal.classList.toggle('complete', score >= SECONDARY_GOAL_SCORE);
   goal.setAttribute('aria-label', `${score} of ${SECONDARY_GOAL_SCORE} points toward star`);
 }
+function clampMetaTokens(value) {
+  return Math.max(0, Math.min(META_TOKEN_GOAL, Number(value) || 0));
+}
+function readMetaState() {
+  const fallback = { tokens: 0, awardedGameIds: [] };
+  try {
+    const parsed = JSON.parse(localStorage.getItem(META_STORAGE_KEY) || 'null');
+    if (!parsed || typeof parsed !== 'object') return fallback;
+    return {
+      tokens: clampMetaTokens(parsed.tokens),
+      awardedGameIds: Array.isArray(parsed.awardedGameIds)
+        ? parsed.awardedGameIds.filter(Boolean).slice(-40)
+        : [],
+    };
+  } catch (e) {
+    return fallback;
+  }
+}
+function writeMetaState(meta) {
+  const safe = {
+    tokens: clampMetaTokens(meta && meta.tokens),
+    awardedGameIds: Array.isArray(meta && meta.awardedGameIds)
+      ? meta.awardedGameIds.filter(Boolean).slice(-40)
+      : [],
+  };
+  try { localStorage.setItem(META_STORAGE_KEY, JSON.stringify(safe)); } catch (e) {}
+  return safe;
+}
+function renderDiceTokens(container, count, tokenClass) {
+  if (!container) return;
+  const tokens = clampMetaTokens(count);
+  container.innerHTML = '';
+  for (let i = 0; i < META_TOKEN_GOAL; i++) {
+    const die = document.createElement('span');
+    die.className = `${tokenClass}${i < tokens ? ' filled' : ''}`;
+    die.textContent = i < tokens ? '⚄' : '⚀';
+    container.appendChild(die);
+  }
+}
+function renderLobbyMeta() {
+  const meta = readMetaState();
+  const root = document.getElementById('lobbyMeta');
+  const label = document.getElementById('lobbyMetaLabel');
+  const tokens = document.getElementById('lobbyMetaTokens');
+  const rules = document.getElementById('lobbyMetaRules');
+  renderDiceTokens(tokens, meta.tokens, 'lobby-meta-die');
+  if (label) label.textContent = `${meta.tokens}/${META_TOKEN_GOAL} dice`;
+  if (rules) {
+    const complete = meta.tokens >= META_TOKEN_GOAL;
+    rules.textContent = complete ? 'Goal complete!' : 'Win +2 · 250 goal +1';
+    rules.classList.toggle('complete', complete);
+  }
+  if (root) root.setAttribute('aria-label', `${meta.tokens} of ${META_TOKEN_GOAL} dice tokens collected`);
+}
+function renderMiniMetaTokens(container, count) {
+  renderDiceTokens(container, count, 'mini-die');
+}
+function metaRewardParts(playerId, gameOver, scores) {
+  const stars = (gameOver && gameOver.stars) || starsForScores(scores || currentScores());
+  const winTokens = gameOver && gameOver.winner === playerId ? META_WIN_TOKENS : 0;
+  const goalTokens = stars && stars[playerId] ? META_SECONDARY_GOAL_TOKENS : 0;
+  return { winTokens, goalTokens, total: winTokens + goalTokens };
+}
+function metaRewardKey(playerId, gameOver, scores) {
+  const scoreSnapshot = scores || currentScores();
+  const base = gameOver && gameOver.metaId
+    ? gameOver.metaId
+    : `${roomCode || 'local'}:${gameOver && gameOver.winner}:${gameOver && gameOver.reason}:${scoreSnapshot.p1}-${scoreSnapshot.p2}`;
+  return `${base}:${playerId}`;
+}
+function formatMetaRewardParts(parts) {
+  const bits = [];
+  if (parts.winTokens) bits.push(`win +${parts.winTokens}`);
+  if (parts.goalTokens) bits.push(`250 goal +${parts.goalTokens}`);
+  return bits.join(' · ');
+}
+function awardMetaTokensForGameOver(playerId, gameOver, scores) {
+  const parts = metaRewardParts(playerId, gameOver, scores);
+  const meta = readMetaState();
+  if (!parts.total) return { parts, awarded: 0, tokens: meta.tokens, duplicate: false };
+  const key = metaRewardKey(playerId, gameOver, scores);
+  if (meta.awardedGameIds.includes(key)) {
+    return { parts, awarded: 0, tokens: meta.tokens, duplicate: true };
+  }
+  const before = meta.tokens;
+  meta.tokens = clampMetaTokens(meta.tokens + parts.total);
+  meta.awardedGameIds.push(key);
+  const saved = writeMetaState(meta);
+  renderLobbyMeta();
+  return {
+    parts,
+    awarded: Math.max(0, saved.tokens - before),
+    tokens: saved.tokens,
+    duplicate: false,
+  };
+}
 function createGameOver(winner, reason, includeScores = false) {
   const scores = currentScores();
-  const gameOver = { winner, reason, stars: starsForScores(scores) };
+  const gameOver = {
+    winner,
+    reason,
+    stars: starsForScores(scores),
+    metaId: `${roomCode || 'local'}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+  };
   if (includeScores) gameOver.scores = scores;
   return gameOver;
 }
@@ -3053,6 +3249,10 @@ function renderLobbyList(data) {
     const name = document.createElement('div');
     name.className = 'lp-name';
     name.textContent = (info && info.name) || 'Player';
+    const meta = document.createElement('div');
+    meta.className = 'lobby-public-meta';
+    renderMiniMetaTokens(meta, info && info.metaTokens);
+    meta.setAttribute('aria-label', `${clampMetaTokens(info && info.metaTokens)} of ${META_TOKEN_GOAL} dice tokens`);
     const codeEl = document.createElement('div');
     codeEl.className = 'lp-code';
     codeEl.textContent = code;
@@ -3061,6 +3261,7 @@ function renderLobbyList(data) {
     btn.textContent = 'Join';
     btn.onclick = () => joinRoomByCode(code);
     row.appendChild(name);
+    row.appendChild(meta);
     row.appendChild(codeEl);
     row.appendChild(btn);
     list.appendChild(row);
@@ -3109,6 +3310,7 @@ async function createRoom() {
     // Public listing entry so other players can discover this room.
     await window.FB.set(window.FB.ref(window.FB.db, `lobbies/${roomCode}`), {
       name: getMyName(),
+      metaTokens: readMetaState().tokens,
       createdAt: Date.now(),
     });
     // If this client disconnects, also remove the public listing entry.
@@ -3497,6 +3699,7 @@ function maybeShowGameOver() {
   }
   const scoreSnapshot = scores || currentScores();
   const stars = state.gameOver.stars || starsForScores(scoreSnapshot);
+  const metaAward = awardMetaTokensForGameOver(myId, state.gameOver, scoreSnapshot);
   const earnedStars = [];
   if (stars[myId]) earnedStars.push('You ★');
   if (stars[oppId]) earnedStars.push('Opponent ★');
@@ -3506,6 +3709,23 @@ function maybeShowGameOver() {
       ? `250-point goal: ${earnedStars.join(' · ')}`
       : '';
     goalEl.hidden = earnedStars.length === 0;
+  }
+  const metaEl = document.getElementById('gameOverMeta');
+  if (metaEl) {
+    if (metaAward.parts.total > 0) {
+      const partsText = formatMetaRewardParts(metaAward.parts);
+      if (metaAward.duplicate) {
+        metaEl.textContent = `Dice meta: ${metaAward.tokens}/${META_TOKEN_GOAL}`;
+      } else if (metaAward.awarded > 0) {
+        metaEl.textContent = `Dice meta: +${metaAward.awarded} (${partsText}) · ${metaAward.tokens}/${META_TOKEN_GOAL}`;
+      } else {
+        metaEl.textContent = `Dice meta complete (${partsText}) · ${metaAward.tokens}/${META_TOKEN_GOAL}`;
+      }
+      metaEl.hidden = false;
+    } else {
+      metaEl.textContent = '';
+      metaEl.hidden = true;
+    }
   }
   document.getElementById('gameOver').hidden = false;
   if (gameOverAutoBack) clearTimeout(gameOverAutoBack);
@@ -3541,6 +3761,7 @@ function backToLobby() {
   document.getElementById('lobbyError').textContent = '';
   document.getElementById('joinCodeInput').value = '';
   initMyNameInput();
+  renderLobbyMeta();
   subscribeLobbyList();
 }
 
@@ -3637,6 +3858,7 @@ function commitSimulReveal() {
 // Lobby init: prefill the name input and subscribe to the public games list.
 window.addEventListener('DOMContentLoaded', () => {
   initMyNameInput();
+  renderLobbyMeta();
   subscribeLobbyList();
 });
 </script>
