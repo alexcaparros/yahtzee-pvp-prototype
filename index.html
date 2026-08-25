@@ -3634,7 +3634,7 @@ function totalScore(sc){
 const SECONDARY_GOAL_SCORE = 250;
 const DEFAULT_WALLET_BR = 100;
 const DEFAULT_DAILY_GOAL = 20;
-const DEFAULT_DAILY_REWARD_BR = 5;
+const DEFAULT_DAILY_REWARD_BR = 20;
 const DAILY_STORAGE_KEY = 'yahtzee_pvp_daily_goal_v1';
 const PLAYER_META_STORAGE_KEY = 'yahtzee_pvp_player_meta_v2';
 const BR_ANALYTICS_PLAYER_KEY = 'yahtzee_pvp_br_analytics_player_v1';
@@ -6416,7 +6416,7 @@ window.addEventListener('DOMContentLoaded', () => {
             type="number"
             min="0"
             step="1"
-            value="5"
+            value="20"
             inputmode="numeric"
             oninput="setCreatorNumberConfig('dailyRewardBr', this.value)"
             onblur="normalizeCreatorNumberConfig(this, 'dailyRewardBr')"
