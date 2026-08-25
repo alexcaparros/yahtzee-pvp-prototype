@@ -42,6 +42,13 @@ assert.match(analyticsCss, /\.economy-summary[\s\S]*grid-template-columns:\s*rep
 assert.ok(html.includes('id="economyPanel"'), 'Analytics screen should be mounted inside the lobby');
 assert.ok(html.includes('id="economyTrigger"'), 'Lobby should expose the analytics shortcut');
 
+assert.match(
+  html,
+  /\.lobby:not\(\.hidden\) \.lobby-daily-preview::after\s*\{[\s\S]*?animation:\s*daily-preview-shine 1\.75s ease-in-out infinite/,
+  'Daily preview shine should loop only while the lobby is visible',
+);
+assert.match(html, /@keyframes daily-preview-shine/, 'Daily preview shine keyframes should exist');
+
 const openDivs = (html.match(/<div\b/g) || []).length;
 const closeDivs = (html.match(/<\/div>/g) || []).length;
 assert.equal(openDivs, closeDivs, 'HTML div structure should remain balanced');
