@@ -13,7 +13,7 @@ The lobby also adds simple tiered matchmaking:
 Manual create, join, and public-game tools remain available behind the user icon in the lobby.
 They open as a dedicated full-screen room browser with a back action to return to matchmaking.
 
-The lobby and in-game BR displays use one persistent local player wallet. Entry costs, in-game spending, purchases, rewards, and Admin balance edits all update that same wallet.
+Each player tab owns a session-scoped wallet and daily meta record. Within that tab, the lobby and in-game BR displays use the same persistent balance, and entry costs, in-game spending, purchases, rewards, and Admin edits all update it without affecting the other player.
 
 This variant is based on the published prototype at:
 

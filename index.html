@@ -2811,6 +2811,8 @@ const DEFAULT_WALLET_BR = 100;
 const DEFAULT_DAILY_GOAL = 20;
 const DEFAULT_DAILY_REWARD_BR = 5;
 const DAILY_STORAGE_KEY = 'yahtzee_pvp_daily_goal_v1';
+const PLAYER_META_STORAGE_KEY = 'yahtzee_pvp_player_meta_v2';
+let playerMetaMemory = null;
 const TIER_IDS = ['tier1', 'tier2', 'tier3'];
 const TIER_DEFAULTS = {
   tier1: { label: 'Tier 1', winMetaReward: 2, goalMetaReward: 1, winRewardBr: 3, entryCostBr: 2 },
@@ -2886,36 +2888,46 @@ function normalizeTierConfigs(tiers) {
 }
 function readDailyState() {
   const today = todayKey();
+  let startingWallet = DEFAULT_WALLET_BR;
+  try {
+    const legacy = JSON.parse(localStorage.getItem(DAILY_STORAGE_KEY) || 'null');
+    if (legacy && typeof legacy === 'object') startingWallet = cleanInt(legacy.walletBr, DEFAULT_WALLET_BR);
+  } catch (e) {}
   const fallback = {
     date: today,
-    walletBr: DEFAULT_WALLET_BR,
+    walletBr: startingWallet,
     dailyProgress: 0,
     dailyRewardClaimed: false,
     awardedGameIds: [],
     chargedEntryGameIds: [],
   };
+  let parsed = playerMetaMemory;
   try {
-    const parsed = JSON.parse(localStorage.getItem(DAILY_STORAGE_KEY) || 'null');
-    if (!parsed || typeof parsed !== 'object') return fallback;
-    const walletBr = cleanInt(parsed.walletBr, DEFAULT_WALLET_BR);
-    if (parsed.date !== today) {
-      return { ...fallback, walletBr };
-    }
-    return {
-      date: today,
-      walletBr,
-      dailyProgress: cleanInt(parsed.dailyProgress),
-      dailyRewardClaimed: !!parsed.dailyRewardClaimed,
-      awardedGameIds: Array.isArray(parsed.awardedGameIds)
-        ? parsed.awardedGameIds.filter(Boolean).slice(-40)
-        : [],
-      chargedEntryGameIds: Array.isArray(parsed.chargedEntryGameIds)
-        ? parsed.chargedEntryGameIds.filter(Boolean).slice(-40)
-        : [],
-    };
-  } catch (e) {
-    return fallback;
+    const stored = JSON.parse(sessionStorage.getItem(PLAYER_META_STORAGE_KEY) || 'null');
+    if (stored && typeof stored === 'object') parsed = stored;
+  } catch (e) {}
+  if (!parsed || typeof parsed !== 'object') {
+    playerMetaMemory = fallback;
+    try { sessionStorage.setItem(PLAYER_META_STORAGE_KEY, JSON.stringify(fallback)); } catch (e) {}
+    return { ...fallback };
   }
+  const walletBr = cleanInt(parsed.walletBr, DEFAULT_WALLET_BR);
+  const normalized = parsed.date !== today
+    ? { ...fallback, walletBr }
+    : {
+        date: today,
+        walletBr,
+        dailyProgress: cleanInt(parsed.dailyProgress),
+        dailyRewardClaimed: !!parsed.dailyRewardClaimed,
+        awardedGameIds: Array.isArray(parsed.awardedGameIds)
+          ? parsed.awardedGameIds.filter(Boolean).slice(-40)
+          : [],
+        chargedEntryGameIds: Array.isArray(parsed.chargedEntryGameIds)
+          ? parsed.chargedEntryGameIds.filter(Boolean).slice(-40)
+          : [],
+      };
+  playerMetaMemory = normalized;
+  return { ...normalized };
 }
 function writeDailyState(meta) {
   const safe = {
@@ -2930,7 +2942,8 @@ function writeDailyState(meta) {
       ? meta.chargedEntryGameIds.filter(Boolean).slice(-40)
       : [],
   };
-  try { localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(safe)); } catch (e) {}
+  playerMetaMemory = safe;
+  try { sessionStorage.setItem(PLAYER_META_STORAGE_KEY, JSON.stringify(safe)); } catch (e) {}
   return safe;
 }
 

@@ -117,14 +117,21 @@ class MockElement {
   focus() {}
 }
 
-function createClient(label, firebase) {
+function storageFacade(storage) {
+  return {
+    getItem: (key) => storage.get(key) ?? null,
+    setItem: (key, value) => storage.set(key, String(value)),
+    removeItem: (key) => storage.delete(key),
+  };
+}
+
+function createClient(label, firebase, sharedLocalStorage, playerSessionStorage = new Map()) {
   const elements = new Map();
   const element = (id) => {
     if (!elements.has(id)) elements.set(id, new MockElement(id));
     return elements.get(id);
   };
   const lobby = element('lobby');
-  const storage = new Map([['yahtzee_name_custom', label]]);
   const document = {
     activeElement: null,
     getElementById: element,
@@ -141,15 +148,13 @@ function createClient(label, firebase) {
     requestAnimationFrame(callback) { callback(); },
   };
   window.window = window;
-  const localStorage = {
-    getItem: (key) => storage.get(key) ?? null,
-    setItem: (key, value) => storage.set(key, String(value)),
-    removeItem: (key) => storage.delete(key),
-  };
+  const localStorage = storageFacade(sharedLocalStorage);
+  const sessionStorage = storageFacade(playerSessionStorage);
   const context = vm.createContext({
     window,
     document,
     localStorage,
+    sessionStorage,
     console,
     setTimeout,
     clearTimeout,
@@ -162,21 +167,32 @@ function createClient(label, firebase) {
     performance: { now: () => 0 },
   });
   vm.runInContext(appScript[2], context, { timeout: 5000 });
+  vm.runInContext(`_sessionName = ${JSON.stringify(label)};`, context);
   vm.runInContext(`
     enterGame = function enterGameForProtocolTest() {
       matchmakingQueued = false;
       document.getElementById('lobby').classList.add('hidden');
       window.__enteredGame = true;
-      if (myRole === 'p1') setTimeout(() => persistState(), 0);
+      syncPlayerWalletFromStorage();
+      ensureMatchEntryCharged();
+      setTimeout(() => persistState(), 0);
     };
   `, context);
-  return { context, lobby };
+  return { context, lobby, playerSessionStorage };
 }
 
 async function run() {
   const firebase = createRealtimeDatabase();
-  const host = createClient('Host', firebase);
-  const guest = createClient('Guest', firebase);
+  const sharedLocalStorage = new Map();
+  const host = createClient('Host', firebase, sharedLocalStorage);
+  const guest = createClient('Guest', firebase, sharedLocalStorage);
+
+  host.context.setCreatorBonusRolls(70);
+  guest.context.setCreatorBonusRolls(30);
+  assert.equal(host.context.playerWalletBr(), 70, 'Host should retain its own Admin wallet value');
+  assert.equal(guest.context.playerWalletBr(), 30, 'Guest should retain its own Admin wallet value');
+  const reloadedHost = createClient('HostReload', firebase, sharedLocalStorage, host.playerSessionStorage);
+  assert.equal(reloadedHost.context.playerWalletBr(), 70, 'Host wallet should survive a refresh in the same tab session');
 
   await host.context.createQueuedMatchmakingRoom();
   const waitingRooms = Object.keys(firebase.data.lobbies || {});
@@ -193,8 +209,17 @@ async function run() {
   assert.ok(firebase.data.rooms[roomCode].p2ClaimId, 'Host persistence must retain the guest claim ID');
   assert.equal(vm.runInContext('matchmakingQueued', guest.context), false, 'Guest should leave the queue');
   assert.equal(vm.runInContext('roomCode', guest.context), roomCode, 'Both clients should use the same room');
+  assert.equal(host.context.playerWalletBr(), 68, 'Host wallet should pay only the host entry cost');
+  assert.equal(guest.context.playerWalletBr(), 28, 'Guest wallet should pay only the guest entry cost');
+  assert.equal(firebase.data.rooms[roomCode].state.players.p1.bonusRolls, 68, 'Host in-game wallet should match host meta');
+  assert.equal(firebase.data.rooms[roomCode].state.players.p2.bonusRolls, 28, 'Guest in-game wallet should match guest meta');
+  assert.notEqual(
+    host.playerSessionStorage.get('yahtzee_pvp_player_meta_v2'),
+    guest.playerSessionStorage.get('yahtzee_pvp_player_meta_v2'),
+    'Each player tab should own a separate meta record',
+  );
 
-  console.log(`matchmakingProtocol=ok room=${roomCode} hostEntered=true guestEntered=true`);
+  console.log(`matchmakingProtocol=ok room=${roomCode} hostWallet=68 guestWallet=28 isolatedSessions=true`);
 }
 
 run().catch((error) => {
