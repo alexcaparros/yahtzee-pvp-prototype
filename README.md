@@ -15,6 +15,8 @@ They open as a dedicated full-screen room browser with a back action to return t
 
 Each player tab owns a session-scoped wallet and daily meta record. Within that tab, the lobby and in-game BR displays use the same persistent balance, and entry costs, in-game spending, purchases, rewards, and Admin edits all update it without affecting the other player.
 
+In-game feedback includes a compact wallet pulse with the deducted BR amount and a brief dice glow/label when a settled roll is a Yahtzee. Both effects respect reduced-motion preferences.
+
 This variant is based on the published prototype at:
 
 `https://saraamaral-commits.github.io/yahtzee-pvp-prototype/?v=df3843e`

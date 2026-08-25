@@ -178,7 +178,7 @@ function createClient(label, firebase, sharedLocalStorage, playerSessionStorage 
       setTimeout(() => persistState(), 0);
     };
   `, context);
-  return { context, lobby, playerSessionStorage };
+  return { context, lobby, playerSessionStorage, element };
 }
 
 async function run() {
@@ -219,7 +219,22 @@ async function run() {
     'Each player tab should own a separate meta record',
   );
 
-  console.log(`matchmakingProtocol=ok room=${roomCode} hostWallet=68 guestWallet=28 isolatedSessions=true`);
+  const spent = vm.runInContext('spendBonusRolls(state.players.p1, 2)', host.context);
+  assert.equal(spent, true, 'A valid BR spend should succeed');
+  assert.equal(host.element('walletButton').classList.contains('is-spending'), true, 'Wallet spend pulse should start');
+  assert.equal(host.element('brSpendFeedback').classList.contains('show'), true, 'BR spend label should show');
+  assert.equal(host.element('brSpendFeedback').textContent, '-2 BR', 'BR spend label should show the deducted amount');
+
+  host.element('yahtzeeRollFeedback').hidden = true;
+  const nonYahtzeeAnimated = vm.runInContext('animateYahtzeeRoll([1,2,3,4,5])', host.context);
+  assert.equal(nonYahtzeeAnimated, false, 'A normal roll should not trigger Yahtzee feedback');
+  const yahtzeeAnimated = vm.runInContext('animateYahtzeeRoll([6,6,6,6,6])', host.context);
+  assert.equal(yahtzeeAnimated, true, 'A Yahtzee roll should trigger feedback');
+  assert.equal(host.element('diceRow').classList.contains('yahtzee-roll'), true, 'Yahtzee dice glow should start');
+  assert.equal(host.element('yahtzeeRollFeedback').classList.contains('show'), true, 'Yahtzee label should show');
+  assert.equal(host.element('yahtzeeRollFeedback').hidden, false, 'Yahtzee label should be visible');
+
+  console.log(`matchmakingProtocol=ok room=${roomCode} hostWallet=66 guestWallet=28 animations=ok isolatedSessions=true`);
 }
 
 run().catch((error) => {
