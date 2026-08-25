@@ -194,6 +194,30 @@ async function run() {
   const reloadedHost = createClient('HostReload', firebase, sharedLocalStorage, host.playerSessionStorage);
   assert.equal(reloadedHost.context.playerWalletBr(), 70, 'Host wallet should survive a refresh in the same tab session');
 
+  host.context.writeDailyState({
+    date: host.context.todayKey(),
+    walletBr: 70,
+    dailyProgress: 4,
+    dailyRewardClaimed: false,
+    awardedGameIds: [],
+    chargedEntryGameIds: [],
+  });
+  vm.runInContext(`selectedTierId = 'tier3'; renderLobbyHome();`, host.context);
+  assert.equal(host.element('lobbyDailyFill').style.width, '20%', 'Earned daily progress should remain solid');
+  assert.equal(host.element('lobbyDailyWinPreview').style.left, '20%', 'Win preview should begin after earned progress');
+  assert.equal(host.element('lobbyDailyWinPreview').style.width, '60%', 'Tier 3 win should preview twelve daily points');
+  assert.equal(host.element('lobbyDailyGoalPreview').style.left, '80%', '250 preview should begin after the win reward');
+  assert.equal(host.element('lobbyDailyGoalPreview').style.width, '20%', 'Tier 3 250 reward should preview four daily points');
+  assert.equal(host.element('lobbyDailyPotentialLabel').textContent, 'Tier 3 preview');
+  assert.equal(host.element('lobbyDailyPotentialTotal').textContent, 'Up to +16');
+  assert.equal(host.element('tierIncreaseBtn').disabled, true, 'Increase should disable at Tier 3');
+  assert.equal(host.element('tierDecreaseBtn').disabled, false, 'Decrease should remain available at Tier 3');
+  host.context.changeMatchTier(-1);
+  assert.equal(host.element('matchCard').classList.contains('tier-change-down'), true, 'Tier changes should animate the reward card');
+  vm.runInContext(`selectedTierId = 'tier1'; renderLobbyHome();`, host.context);
+  assert.equal(host.element('tierDecreaseBtn').disabled, true, 'Decrease should disable at Tier 1');
+  assert.equal(host.element('tierIncreaseBtn').disabled, false, 'Increase should remain available at Tier 1');
+
   await host.context.createQueuedMatchmakingRoom();
   const waitingRooms = Object.keys(firebase.data.lobbies || {});
   assert.equal(waitingRooms.length, 1, 'Host should create one waiting matchmaking room');

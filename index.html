@@ -1776,12 +1776,31 @@ body {
   box-shadow: inset 0 2px 3px rgba(0,0,0,0.28);
 }
 .lobby-daily-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
   height: 100%;
   width: 0%;
   border-radius: inherit;
   background: linear-gradient(90deg, #FF931E, #FFD34D);
   box-shadow: 0 0 10px rgba(255,211,77,0.65);
   transition: width 0.25s ease;
+}
+.lobby-daily-preview {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  opacity: 0.92;
+  transition: left 0.42s cubic-bezier(.2,.85,.25,1), width 0.42s cubic-bezier(.2,.85,.25,1);
+}
+.lobby-daily-preview.win {
+  background: repeating-linear-gradient(135deg, #58e9ff 0 6px, #20b9ee 6px 12px);
+  box-shadow: inset 2px 0 0 rgba(255,255,255,0.85), 0 0 10px rgba(65,221,255,0.7);
+}
+.lobby-daily-preview.goal {
+  background: repeating-linear-gradient(135deg, #dba4ff 0 6px, #9d59f5 6px 12px);
+  box-shadow: inset 2px 0 0 rgba(255,255,255,0.85), 0 0 10px rgba(190,112,255,0.68);
 }
 .lobby-daily-text,
 .lobby-daily-reward {
@@ -1846,8 +1865,8 @@ body {
   cursor: pointer;
   box-shadow: inset 0 2px 0 rgba(255,255,255,0.45), 0 3px 0 rgba(0,0,0,0.22);
 }
-.tier-step.dec { background: linear-gradient(180deg, #36BEFF, #0074D9); }
-.tier-step.inc { background: linear-gradient(180deg, #C4B9A5, #6E655C); }
+.tier-step.dec { background: linear-gradient(180deg, #ff8171, #d9363e); }
+.tier-step.inc { background: linear-gradient(180deg, #68ed73, #13a33c); }
 .tier-step:disabled {
   opacity: 0.55;
   filter: grayscale(0.75);
@@ -2100,6 +2119,54 @@ body {
   line-height: 1.2;
   text-align: left;
 }
+.lobby-daily-potential {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  color: rgba(232,249,255,0.72);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.25px;
+  white-space: nowrap;
+}
+.lobby-daily-potential-label {
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+.lobby-daily-potential-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 999px;
+  background: rgba(2,35,91,0.28);
+  color: #fff;
+}
+.lobby-daily-potential-swatch {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+}
+.lobby-daily-potential-item.win .lobby-daily-potential-swatch { background: #35d5f7; }
+.lobby-daily-potential-item.goal .lobby-daily-potential-swatch { background: #b875ff; }
+.lobby-daily-potential-total {
+  color: #fff3a2;
+  font-size: 10px;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+.lobby-daily.tier-preview-up .lobby-daily-preview {
+  animation: daily-preview-spark 0.72s ease-out;
+}
+@keyframes daily-preview-spark {
+  0% { filter: brightness(1); }
+  35% { filter: brightness(1.65) saturate(1.2); }
+  100% { filter: brightness(1); }
+}
 .match-card {
   width: 100%;
   flex: 1 1 auto;
@@ -2131,6 +2198,22 @@ body {
   border-radius: 50%;
   border: 32px solid rgba(255,255,255,0.035);
   pointer-events: none;
+}
+.match-card.tier-change-up {
+  animation: tier-card-up 0.58s cubic-bezier(.2,.85,.25,1);
+}
+.match-card.tier-change-down {
+  animation: tier-card-down 0.34s ease-out;
+}
+@keyframes tier-card-up {
+  0% { transform: scale(1); box-shadow: 0 10px 0 rgba(17,34,111,0.18), inset 0 1px 0 rgba(255,255,255,0.14); }
+  45% { transform: scale(1.018); box-shadow: 0 10px 0 rgba(17,34,111,0.18), 0 0 25px rgba(255,226,92,0.44), inset 0 1px 0 rgba(255,255,255,0.28); }
+  100% { transform: scale(1); box-shadow: 0 10px 0 rgba(17,34,111,0.18), inset 0 1px 0 rgba(255,255,255,0.14); }
+}
+@keyframes tier-card-down {
+  0% { transform: scale(1); }
+  45% { transform: scale(0.992); }
+  100% { transform: scale(1); }
 }
 .match-card-head {
   display: flex;
@@ -2214,6 +2297,14 @@ body {
   font-size: 29px;
   box-shadow: inset 0 2px 0 rgba(255,255,255,0.45), 0 3px 0 rgba(0,0,0,0.22) !important;
 }
+.tier-step.dec { border-color: rgba(119,19,27,0.48) !important; }
+.tier-step.inc { border-color: rgba(8,103,45,0.52) !important; }
+.tier-step:not(:disabled):hover { filter: brightness(1.08); }
+.tier-step:disabled {
+  opacity: 0.34;
+  filter: grayscale(0.82);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.24), 0 2px 0 rgba(0,0,0,0.16) !important;
+}
 .match-play-btn {
   width: 100%;
   height: 50px;
@@ -2242,6 +2333,12 @@ body {
   color: #fff0a0;
   font-size: 11px;
   text-align: right;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lobby-daily-preview { transition: none; }
+  .lobby-daily.tier-preview-up .lobby-daily-preview,
+  .match-card.tier-change-up,
+  .match-card.tier-change-down { animation: none; }
 }
 .lobby-user-trigger {
   left: 25px;
@@ -2565,13 +2662,20 @@ body {
       <div class="lobby-daily-progress-row">
         <div class="lobby-daily-track" aria-hidden="true">
           <div class="lobby-daily-fill" id="lobbyDailyFill"></div>
+          <div class="lobby-daily-preview win" id="lobbyDailyWinPreview"></div>
+          <div class="lobby-daily-preview goal" id="lobbyDailyGoalPreview"></div>
         </div>
         <span class="lobby-daily-label" id="lobbyDailyLabel">0/20</span>
       </div>
-      <div class="lobby-daily-text" id="lobbyDailyText">Random match win +2 · Reach 250 points +1</div>
+      <div class="lobby-daily-potential" id="lobbyDailyText">
+        <span class="lobby-daily-potential-label" id="lobbyDailyPotentialLabel">Tier 1 preview</span>
+        <span class="lobby-daily-potential-item win"><i class="lobby-daily-potential-swatch"></i><span id="lobbyDailyWinText">Win +2</span></span>
+        <span class="lobby-daily-potential-item goal"><i class="lobby-daily-potential-swatch"></i><span id="lobbyDailyGoalRewardText">250 +1</span></span>
+        <strong class="lobby-daily-potential-total" id="lobbyDailyPotentialTotal">Up to +3</strong>
+      </div>
     </div>
 
-    <div class="match-card">
+    <div class="match-card" id="matchCard">
       <div class="match-card-head">
         <div class="match-card-title">Random match</div>
         <div class="match-tier-label" id="matchTierLabel">Tier 1</div>
@@ -2586,9 +2690,9 @@ body {
       </div>
       <div class="match-card-meta" id="matchMetaReward">Daily progress · Win +2 · Reach 250 +1</div>
       <div class="tier-control">
-        <button type="button" class="tier-step dec" onclick="changeMatchTier(-1)" aria-label="Lower wager tier">−</button>
+        <button type="button" class="tier-step dec" id="tierDecreaseBtn" onclick="changeMatchTier(-1)" aria-label="Lower wager tier" title="Lower tier">−</button>
         <button type="button" class="match-play-btn" id="matchPlayBtn" onclick="onMatchPlayClick()">PLAY</button>
-        <button type="button" class="tier-step inc" onclick="changeMatchTier(1)" aria-label="Raise wager tier">+</button>
+        <button type="button" class="tier-step inc" id="tierIncreaseBtn" onclick="changeMatchTier(1)" aria-label="Raise wager tier" title="Raise tier">+</button>
       </div>
       <div class="match-cost" id="matchCost">Entry: 2 BRs</div>
       <div class="match-status" id="matchStatus" aria-live="polite"></div>
@@ -3211,15 +3315,24 @@ function renderLobbyHome() {
   const goal = dailyGoalFromConfig(creatorConfig);
   const rewardBr = dailyRewardFromConfig(creatorConfig);
   const progress = Math.min(daily.dailyProgress, goal);
-  const progressPct = Math.round((progress / goal) * 100);
+  const progressPct = (progress / goal) * 100;
   const tier = currentTierConfig();
+  const winPreviewProgress = Math.min(goal, progress + tier.winMetaReward);
+  const fullPreviewProgress = Math.min(goal, winPreviewProgress + tier.goalMetaReward);
+  const winPreviewPct = ((winPreviewProgress - progress) / goal) * 100;
+  const goalPreviewPct = ((fullPreviewProgress - winPreviewProgress) / goal) * 100;
   const walletEl = document.getElementById('lobbyWallet');
   const roomToolsWallet = document.getElementById('roomToolsWallet');
   const root = document.getElementById('lobbyDaily');
   const goalText = document.getElementById('lobbyDailyGoalText');
   const label = document.getElementById('lobbyDailyLabel');
   const fill = document.getElementById('lobbyDailyFill');
-  const text = document.getElementById('lobbyDailyText');
+  const winPreview = document.getElementById('lobbyDailyWinPreview');
+  const goalPreview = document.getElementById('lobbyDailyGoalPreview');
+  const potentialLabel = document.getElementById('lobbyDailyPotentialLabel');
+  const winText = document.getElementById('lobbyDailyWinText');
+  const goalRewardText = document.getElementById('lobbyDailyGoalRewardText');
+  const potentialTotal = document.getElementById('lobbyDailyPotentialTotal');
   const reward = document.getElementById('lobbyDailyReward');
   const tierLabel = document.getElementById('matchTierLabel');
   const matchReward = document.getElementById('matchReward');
@@ -3232,7 +3345,18 @@ function renderLobbyHome() {
   if (goalText) goalText.textContent = `Earn ${goal} daily points`;
   if (label) label.textContent = `${progress}/${goal}`;
   if (fill) fill.style.width = `${progressPct}%`;
-  if (text) text.textContent = `Random match win +${tier.winMetaReward} · Reach 250 points +${tier.goalMetaReward}`;
+  if (winPreview) {
+    winPreview.style.left = `${progressPct}%`;
+    winPreview.style.width = `${winPreviewPct}%`;
+  }
+  if (goalPreview) {
+    goalPreview.style.left = `${(winPreviewProgress / goal) * 100}%`;
+    goalPreview.style.width = `${goalPreviewPct}%`;
+  }
+  if (potentialLabel) potentialLabel.textContent = `${tier.label} preview`;
+  if (winText) winText.textContent = `Win +${tier.winMetaReward}`;
+  if (goalRewardText) goalRewardText.textContent = `250 +${tier.goalMetaReward}`;
+  if (potentialTotal) potentialTotal.textContent = `Up to +${tier.winMetaReward + tier.goalMetaReward}`;
   if (reward) {
     const complete = daily.dailyProgress >= goal;
     reward.textContent = complete
@@ -3241,7 +3365,7 @@ function renderLobbyHome() {
     reward.classList.toggle('complete', complete);
     if (root) root.classList.toggle('complete', complete);
   }
-  if (root) root.setAttribute('aria-label', `${progress} of ${goal} daily goal progress`);
+  if (root) root.setAttribute('aria-label', `${progress} of ${goal} daily goal progress. ${tier.label} can add ${tier.winMetaReward} for a win and ${tier.goalMetaReward} for reaching 250 points.`);
   if (tierLabel) tierLabel.textContent = tier.label;
   if (matchReward) matchReward.textContent = `+${brText(tier.winRewardBr)}`;
   if (matchMeta) matchMeta.textContent = `Daily progress · Win +${tier.winMetaReward} · Reach 250 +${tier.goalMetaReward}`;
@@ -3252,7 +3376,11 @@ function renderLobbyHome() {
     playBtn.classList.toggle('queued', matchmakingQueued);
     playBtn.disabled = matchmakingBusy || (!matchmakingQueued && !canAfford);
   }
-  document.querySelectorAll('.tier-step').forEach(btn => { btn.disabled = matchmakingQueued || matchmakingBusy; });
+  const tierIndex = TIER_IDS.indexOf(selectedTierId);
+  const decreaseBtn = document.getElementById('tierDecreaseBtn');
+  const increaseBtn = document.getElementById('tierIncreaseBtn');
+  if (decreaseBtn) decreaseBtn.disabled = matchmakingQueued || matchmakingBusy || tierIndex <= 0;
+  if (increaseBtn) increaseBtn.disabled = matchmakingQueued || matchmakingBusy || tierIndex >= TIER_IDS.length - 1;
   if (status && !matchmakingQueued && daily.walletBr < tier.entryCostBr) {
     status.textContent = `Need ${brText(tier.entryCostBr)} to enter ${tier.label}`;
   } else if (status && !matchmakingQueued && !status.dataset.locked) {
@@ -4674,9 +4802,29 @@ function changeMatchTier(delta) {
   if (matchmakingQueued || matchmakingBusy) return;
   const idx = TIER_IDS.indexOf(selectedTierId);
   const next = Math.max(0, Math.min(TIER_IDS.length - 1, idx + delta));
+  if (next === idx) return;
   selectedTierId = TIER_IDS[next];
   setMatchStatus('');
   renderLobbyHome();
+  animateTierChange(next > idx ? 'up' : 'down');
+}
+function animateTierChange(direction) {
+  const card = document.getElementById('matchCard');
+  const daily = document.getElementById('lobbyDaily');
+  if (card) {
+    card.classList.remove('tier-change-up', 'tier-change-down');
+    void card.offsetWidth;
+    card.classList.add(direction === 'up' ? 'tier-change-up' : 'tier-change-down');
+    setTimeout(() => card.classList.remove('tier-change-up', 'tier-change-down'), 650);
+  }
+  if (daily) {
+    daily.classList.remove('tier-preview-up');
+    void daily.offsetWidth;
+    if (direction === 'up') {
+      daily.classList.add('tier-preview-up');
+      setTimeout(() => daily.classList.remove('tier-preview-up'), 760);
+    }
+  }
 }
 function lobbySnapshotForListing(mode) {
   const daily = readDailyState();
