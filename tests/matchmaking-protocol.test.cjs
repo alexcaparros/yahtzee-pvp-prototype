@@ -8,6 +8,9 @@ const html = fs.readFileSync(indexPath, 'utf8');
 const scripts = [...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/gi)];
 const appScript = scripts.find((match) => !/module/i.test(match[1]) && match[2].includes('function startMatchmaking'));
 assert.ok(appScript, 'Main prototype script was not found');
+for (const reason of ['win_reward', 'daily_reward', 'bonus_purchase', 'admin_adjustment', 'match_entry', 'extra_roll', 'turn_restart']) {
+  assert.ok(appScript[2].includes(`'${reason}'`), `BR ledger should map ${reason}`);
+}
 
 function clone(value) {
   return value == null ? value : JSON.parse(JSON.stringify(value));
@@ -111,6 +114,7 @@ class MockElement {
   addEventListener() {}
   setAttribute() {}
   appendChild(child) { this.children.push(child); return child; }
+  replaceChildren(...children) { this.children = [...children]; }
   querySelector() { return new MockElement(); }
   querySelectorAll() { return []; }
   remove() {}
@@ -187,6 +191,25 @@ async function run() {
   const host = createClient('Host', firebase, sharedLocalStorage);
   const guest = createClient('Guest', firebase, sharedLocalStorage);
 
+  await host.context.recordBrFlow('source', 'win_reward', 8, { eventId: 'test_host_win' });
+  await host.context.recordBrFlow('sink', 'extra_roll', 3, { eventId: 'test_host_roll' });
+  await guest.context.recordBrFlow('source', 'daily_reward', 5, { eventId: 'test_guest_daily' });
+  const ledger = firebase.data.analytics.brEconomyV1;
+  assert.equal(ledger.totals.sourceBr, 13, 'Global ledger should aggregate sources from every player session');
+  assert.equal(ledger.totals.sinkBr, 3, 'Global ledger should aggregate sinks from every player session');
+  assert.equal(Object.keys(ledger.players).length, 2, 'Global ledger should retain per-player aggregates');
+  await host.context.recordBrFlow('source', 'win_reward', 8, { eventId: 'test_host_win' });
+  assert.equal(ledger.totals.sourceBr, 13, 'Stable event IDs should prevent duplicated BR flow');
+  host.context.openBrAnalytics();
+  assert.equal(host.element('economyPanel').hidden, false, 'Analytics shortcut should open a full-screen panel');
+  assert.equal(host.element('economySourceTotal').textContent, '+13');
+  assert.equal(host.element('economySinkTotal').textContent, '−3');
+  assert.equal(host.element('economyNetTotal').textContent, '+10');
+  assert.equal(host.element('economyStatus').textContent, '2 players · 3 events');
+  assert.equal(host.element('economyPlayerList').children.length, 2, 'Analytics should render every tracked player session');
+  host.context.closeBrAnalytics();
+  assert.equal(host.element('economyPanel').hidden, true, 'Analytics back action should return to the lobby');
+
   host.context.setCreatorBonusRolls(70);
   guest.context.setCreatorBonusRolls(30);
   assert.equal(host.context.playerWalletBr(), 70, 'Host should retain its own Admin wallet value');
@@ -217,6 +240,47 @@ async function run() {
   vm.runInContext(`selectedTierId = 'tier1'; renderLobbyHome();`, host.context);
   assert.equal(host.element('tierDecreaseBtn').disabled, true, 'Decrease should disable at Tier 1');
   assert.equal(host.element('tierIncreaseBtn').disabled, false, 'Increase should remain available at Tier 1');
+  assert.equal(host.element('roomToolsTierCost').textContent, 'Entry: 2 BRs', 'Room tools should show the private-room entry cost');
+  assert.equal(host.element('roomToolsTierMeta').textContent, 'Win +2 daily · 250 +1 daily', 'Room tools should preview private-room daily rewards');
+  assert.equal(host.element('roomTierTier1').classList.contains('active'), true, 'Room tools should mark the selected tier');
+
+  const privateFirebase = createRealtimeDatabase();
+  const privateStorage = new Map();
+  const privateHost = createClient('PrivateHost', privateFirebase, privateStorage);
+  const privateGuest = createClient('PrivateGuest', privateFirebase, privateStorage);
+  privateHost.context.writeDailyState({
+    date: privateHost.context.todayKey(),
+    walletBr: 40,
+    dailyProgress: 0,
+    dailyRewardClaimed: false,
+    awardedGameIds: [],
+    chargedEntryGameIds: [],
+  });
+  privateGuest.context.writeDailyState({
+    date: privateGuest.context.todayKey(),
+    walletBr: 30,
+    dailyProgress: 0,
+    dailyRewardClaimed: false,
+    awardedGameIds: [],
+    chargedEntryGameIds: [],
+  });
+  vm.runInContext(`selectedTierId = 'tier2'; renderLobbyHome();`, privateHost.context);
+  await privateHost.context.createRoom();
+  const privateCode = Object.keys(privateFirebase.data.lobbies || {})[0];
+  assert.ok(privateCode, 'Creating a private room should publish a lobby listing');
+  assert.equal(privateFirebase.data.lobbies[privateCode].mode, 'private', 'Private rooms should advertise a paid private mode');
+  assert.equal(privateFirebase.data.lobbies[privateCode].tier, 'tier2', 'Private rooms should advertise the selected tier');
+  assert.equal(privateFirebase.data.lobbies[privateCode].tierConfig.entryCostBr, 5, 'Private room listings should carry the selected tier cost');
+  await privateGuest.context.joinRoomByCode(privateCode);
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.equal(privateHost.context.window.__enteredGame, true, 'Private room host should enter when the guest joins');
+  assert.equal(privateGuest.context.window.__enteredGame, true, 'Private room guest should enter after joining');
+  assert.equal(privateHost.context.playerWalletBr(), 35, 'Private room host should pay the selected tier entry');
+  assert.equal(privateGuest.context.playerWalletBr(), 25, 'Private room guest should pay the selected tier entry');
+  assert.equal(privateFirebase.data.analytics.brEconomyV1.sinks.match_entry, 10, 'Private room entry fees should be tracked as BR sinks');
+  assert.equal(privateFirebase.data.rooms[privateCode].state.config.matchMode, 'private', 'Private room state should retain paid private mode');
+  assert.equal(privateFirebase.data.rooms[privateCode].state.players.p1.bonusRolls, 35, 'Private host in-game wallet should match charged wallet');
+  assert.equal(privateFirebase.data.rooms[privateCode].state.players.p2.bonusRolls, 25, 'Private guest in-game wallet should match charged wallet');
 
   await host.context.createQueuedMatchmakingRoom();
   const waitingRooms = Object.keys(firebase.data.lobbies || {});
@@ -235,6 +299,7 @@ async function run() {
   assert.equal(vm.runInContext('roomCode', guest.context), roomCode, 'Both clients should use the same room');
   assert.equal(host.context.playerWalletBr(), 68, 'Host wallet should pay only the host entry cost');
   assert.equal(guest.context.playerWalletBr(), 28, 'Guest wallet should pay only the guest entry cost');
+  assert.equal(firebase.data.analytics.brEconomyV1.sinks.match_entry, 4, 'Both player entry fees should be tracked as BR sinks');
   assert.equal(firebase.data.rooms[roomCode].state.players.p1.bonusRolls, 68, 'Host in-game wallet should match host meta');
   assert.equal(firebase.data.rooms[roomCode].state.players.p2.bonusRolls, 28, 'Guest in-game wallet should match guest meta');
   assert.notEqual(
@@ -258,7 +323,7 @@ async function run() {
   assert.equal(host.element('yahtzeeRollFeedback').classList.contains('show'), true, 'Yahtzee label should show');
   assert.equal(host.element('yahtzeeRollFeedback').hidden, false, 'Yahtzee label should be visible');
 
-  console.log(`matchmakingProtocol=ok room=${roomCode} hostWallet=66 guestWallet=28 animations=ok isolatedSessions=true`);
+  console.log(`matchmakingProtocol=ok room=${roomCode} hostWallet=66 guestWallet=28 animations=ok analytics=ok isolatedSessions=true`);
 }
 
 run().catch((error) => {

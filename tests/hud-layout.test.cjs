@@ -30,6 +30,18 @@ assert.ok(scorePlateWidth >= 90, `Score plate is too narrow: ${scorePlateWidth}p
 assert.ok(estimatedGoalContentWidth < playerCardWidth, 'Goal content should fit inside the player card');
 assert.ok(timerWidthWithMaxWallet >= 250, 'Timer should retain enough width beside the wallet');
 
+const analyticsMarker = '/* Shared BR economy analytics */';
+const analyticsStart = html.indexOf(analyticsMarker);
+const analyticsEnd = html.indexOf('/* Public games list */', analyticsStart);
+assert.ok(analyticsStart > 0 && analyticsEnd > analyticsStart, 'Analytics screen styles should exist');
+const analyticsCss = html.slice(analyticsStart, analyticsEnd);
+assert.match(analyticsCss, /\.economy-trigger[\s\S]*top:\s*19px[\s\S]*right:\s*22px/);
+assert.match(analyticsCss, /\.economy-panel[\s\S]*inset:\s*0[\s\S]*overflow:\s*hidden/);
+assert.match(analyticsCss, /\.economy-body[\s\S]*overflow-y:\s*auto/);
+assert.match(analyticsCss, /\.economy-summary[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+assert.ok(html.includes('id="economyPanel"'), 'Analytics screen should be mounted inside the lobby');
+assert.ok(html.includes('id="economyTrigger"'), 'Lobby should expose the analytics shortcut');
+
 const openDivs = (html.match(/<div\b/g) || []).length;
 const closeDivs = (html.match(/<\/div>/g) || []).length;
 assert.equal(openDivs, closeDivs, 'HTML div structure should remain balanced');

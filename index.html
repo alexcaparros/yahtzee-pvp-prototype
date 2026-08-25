@@ -2533,6 +2533,79 @@ body {
   padding: 9px 16px;
   font-size: 13px;
 }
+.room-tools-tier {
+  display: grid;
+  gap: 10px;
+}
+.room-tools-tier-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.room-tools-tier-copy {
+  min-width: 0;
+}
+.room-tools-tier-copy strong {
+  display: block;
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.1;
+}
+.room-tools-tier-copy small {
+  display: block;
+  margin-top: 2px;
+  color: rgba(230,248,255,0.7);
+  font-size: 10px;
+}
+.room-tools-tier-cost {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 999px;
+  background: rgba(6,54,116,0.32);
+  color: #fff3a2;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+.room-tools-tier-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+.lobby-user-panel .room-tools-tier-btn {
+  min-width: 0;
+  padding: 8px 4px !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  border-radius: 11px !important;
+  background: rgba(6,48,111,0.34) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 2px 0 rgba(4,30,79,0.18) !important;
+  color: rgba(232,249,255,0.76) !important;
+  font-size: 11px !important;
+  line-height: 1.05 !important;
+}
+.lobby-user-panel .room-tools-tier-btn.active {
+  border-color: rgba(255,229,106,0.72) !important;
+  background: linear-gradient(180deg, #ffdb61, #ffc447) !important;
+  color: #5a3700 !important;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.45), 0 3px 0 rgba(87,57,0,0.24) !important;
+}
+.room-tools-tier-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: rgba(232,249,255,0.78);
+  font-size: 10px;
+  font-weight: 800;
+}
+.room-tools-tier-meta strong {
+  color: #fff3a2;
+  font-size: 11px;
+  white-space: nowrap;
+}
 .lobby-user-panel .lobby-row-join {
   width: 100%;
 }
@@ -2560,6 +2633,317 @@ body {
   flex: 1 1 auto;
   min-height: 0;
   max-height: none;
+}
+
+/* Shared BR economy analytics */
+.economy-trigger {
+  position: absolute;
+  top: 19px;
+  right: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 6px 9px !important;
+  border: 1px solid rgba(255,255,255,0.25) !important;
+  border-radius: 999px !important;
+  background: rgba(5,55,124,0.24) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12) !important;
+  color: rgba(239,251,255,0.86) !important;
+  font-size: 9px !important;
+  letter-spacing: 0.55px;
+  text-transform: uppercase;
+  z-index: 6;
+}
+.economy-trigger:active { transform: translateY(1px) !important; }
+.economy-trigger-icon {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  width: 13px;
+  height: 12px;
+}
+.economy-trigger-icon i {
+  width: 3px;
+  border-radius: 2px 2px 0 0;
+  background: #aef4ff;
+  box-shadow: 0 0 5px rgba(116,231,255,0.45);
+}
+.economy-trigger-icon i:nth-child(1) { height: 5px; }
+.economy-trigger-icon i:nth-child(2) { height: 9px; }
+.economy-trigger-icon i:nth-child(3) { height: 12px; }
+.economy-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 82% 7%, rgba(92,235,255,0.2), transparent 27%),
+    linear-gradient(180deg, #075dae 0%, #14368c 52%, #2e216f 100%);
+  color: #fff;
+  text-align: left;
+  z-index: 30 !important;
+}
+.economy-panel[hidden] { display: none; }
+.economy-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(125deg, rgba(255,255,255,0.06), transparent 32% 72%, rgba(8,5,58,0.16));
+}
+.economy-header {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 78px;
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 17px 20px 9px;
+  border-bottom: 1px solid rgba(255,255,255,0.14);
+  background: rgba(2,31,89,0.16);
+}
+.lobby .economy-back {
+  width: 42px;
+  height: 42px;
+  padding: 0 0 4px !important;
+  border: 2px solid rgba(255,255,255,0.35) !important;
+  border-radius: 13px !important;
+  background: rgba(3,43,103,0.34) !important;
+  box-shadow: 0 3px 0 rgba(2,22,64,0.24), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+  color: #fff !important;
+  font-size: 30px !important;
+}
+.economy-header-copy span {
+  display: block;
+  color: #9eeeff;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.economy-header-copy h2 {
+  margin: 2px 0 0;
+  font-size: 21px;
+  line-height: 1;
+}
+.economy-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  border: 1px solid rgba(109,246,166,0.35);
+  border-radius: 999px;
+  background: rgba(10,100,65,0.28);
+  color: #aaffcb;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+.economy-live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5cff9c;
+  box-shadow: 0 0 7px rgba(92,255,156,0.8);
+}
+.economy-body {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 17px 20px 28px;
+  scrollbar-width: none;
+}
+.economy-body::-webkit-scrollbar { display: none; }
+.economy-intro {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 13px;
+}
+.economy-intro h3 {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1.02;
+}
+.economy-intro p {
+  margin: 4px 0 0;
+  color: rgba(224,246,255,0.68);
+  font-size: 10px;
+}
+.economy-status {
+  flex: 0 0 auto;
+  color: #b4f5ff;
+  font-size: 9px;
+  font-weight: 900;
+  text-align: right;
+}
+.economy-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+.economy-metric {
+  min-width: 0;
+  padding: 11px 9px 10px;
+  border: 1px solid rgba(255,255,255,0.17);
+  border-radius: 14px;
+  background: rgba(3,34,91,0.35);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.09), 0 4px 0 rgba(3,20,67,0.13);
+}
+.economy-metric span {
+  display: block;
+  color: rgba(222,245,255,0.66);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.75px;
+  text-transform: uppercase;
+}
+.economy-metric strong {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  color: #fff;
+  font-size: 21px;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.economy-metric.source strong { color: #75f0ad; }
+.economy-metric.sink strong { color: #ff9c94; }
+.economy-metric.net.positive strong { color: #fff29d; }
+.economy-metric.net.negative strong { color: #ffb0aa; }
+.economy-balance {
+  margin-top: 10px;
+  padding: 11px 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 14px;
+  background: rgba(3,29,79,0.27);
+}
+.economy-balance-head {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(226,247,255,0.72);
+  font-size: 9px;
+  font-weight: 900;
+}
+.economy-balance-track {
+  display: flex;
+  width: 100%;
+  height: 10px;
+  margin-top: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(0,17,57,0.46);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.32);
+}
+.economy-balance-source,
+.economy-balance-sink { width: 0%; transition: width 0.35s ease; }
+.economy-balance-source { background: linear-gradient(90deg, #23bd70, #75f0ad); }
+.economy-balance-sink { background: linear-gradient(90deg, #ff776d, #e34d5c); }
+.economy-section {
+  margin-top: 13px;
+  padding: 13px;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 16px;
+  background: rgba(4,31,82,0.31);
+}
+.economy-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.economy-section-title h4 {
+  margin: 0;
+  font-size: 14px;
+}
+.economy-section-title span {
+  color: rgba(224,246,255,0.58);
+  font-size: 9px;
+}
+.economy-breakdown { display: grid; gap: 9px; }
+.economy-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 800;
+}
+.economy-row-top span { color: rgba(235,249,255,0.8); }
+.economy-row-top strong { color: #fff; }
+.economy-row-track {
+  height: 5px;
+  margin-top: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(0,17,57,0.48);
+}
+.economy-row-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.35s ease;
+}
+.economy-section.sources .economy-row-fill { background: linear-gradient(90deg, #2cc779, #8ff2ba); }
+.economy-section.sinks .economy-row-fill { background: linear-gradient(90deg, #ff847b, #ef5261); }
+.economy-player-list { display: grid; gap: 7px; }
+.economy-player {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 9px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.065);
+}
+.economy-player-copy { min-width: 0; }
+.economy-player-name {
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.economy-player-copy small {
+  display: block;
+  margin-top: 2px;
+  color: rgba(221,244,255,0.58);
+  font-size: 8px;
+}
+.economy-player-net {
+  font-size: 12px;
+  font-weight: 1000;
+}
+.economy-player-net.positive { color: #87f3b8; }
+.economy-player-net.negative { color: #ff9f98; }
+.economy-empty {
+  padding: 12px 5px;
+  color: rgba(224,246,255,0.58);
+  font-size: 10px;
+  line-height: 1.35;
+  text-align: center;
+}
+.economy-footnote {
+  margin: 12px 4px 0;
+  color: rgba(218,241,255,0.48);
+  font-size: 8px;
+  line-height: 1.35;
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .economy-balance-source,
+  .economy-balance-sink,
+  .economy-row-fill { transition: none; }
 }
 
 /* Public games list */
@@ -2595,7 +2979,7 @@ body {
 }
 .lobby-public-item .lp-code { font-size: 11px; opacity: 0.6; font-weight: 700; letter-spacing: 1px; }
 .lobby-public-meta {
-  min-width: 44px;
+  min-width: 82px;
   flex-shrink: 0;
   font-size: 11px;
   font-weight: 900;
@@ -2698,6 +3082,93 @@ body {
       <div class="match-status" id="matchStatus" aria-live="polite"></div>
     </div>
 
+    <button type="button" class="economy-trigger" id="economyTrigger" onclick="openBrAnalytics()" aria-label="Open BR economy analytics" aria-controls="economyPanel" aria-expanded="false">
+      <span class="economy-trigger-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>Economy</span>
+    </button>
+    <div class="economy-panel" id="economyPanel" role="region" aria-label="BR economy analytics" hidden>
+      <div class="economy-header">
+        <button type="button" class="economy-back" id="economyBackButton" onclick="closeBrAnalytics()" aria-label="Back to main lobby">‹</button>
+        <div class="economy-header-copy">
+          <span>All players</span>
+          <h2>BR economy</h2>
+        </div>
+        <div class="economy-live">Live</div>
+      </div>
+      <div class="economy-body">
+        <div class="economy-intro">
+          <div>
+            <h3>Sources &amp; sinks</h3>
+            <p>Tracked activity across every player session.</p>
+          </div>
+          <div class="economy-status" id="economyStatus" aria-live="polite">Connecting…</div>
+        </div>
+
+        <div class="economy-summary">
+          <div class="economy-metric source">
+            <span>Sources</span>
+            <strong id="economySourceTotal">+0</strong>
+          </div>
+          <div class="economy-metric sink">
+            <span>Sinks</span>
+            <strong id="economySinkTotal">−0</strong>
+          </div>
+          <div class="economy-metric net" id="economyNetCard">
+            <span>Net flow</span>
+            <strong id="economyNetTotal">0</strong>
+          </div>
+        </div>
+
+        <div class="economy-balance">
+          <div class="economy-balance-head">
+            <span>BR created</span>
+            <span>BR consumed</span>
+          </div>
+          <div class="economy-balance-track" aria-hidden="true">
+            <div class="economy-balance-source" id="economySourceShare"></div>
+            <div class="economy-balance-sink" id="economySinkShare"></div>
+          </div>
+        </div>
+
+        <section class="economy-section sources" aria-labelledby="economySourcesTitle">
+          <div class="economy-section-title">
+            <h4 id="economySourcesTitle">Where BRs come from</h4>
+            <span>Sources</span>
+          </div>
+          <div class="economy-breakdown">
+            <div class="economy-row"><div class="economy-row-top"><span>Match wins</span><strong id="economySourceWinValue">0</strong></div><div class="economy-row-track"><div class="economy-row-fill" id="economySourceWinBar"></div></div></div>
+            <div class="economy-row"><div class="economy-row-top"><span>Daily goal rewards</span><strong id="economySourceDailyValue">0</strong></div><div class="economy-row-track"><div class="economy-row-fill" id="economySourceDailyBar"></div></div></div>
+            <div class="economy-row"><div class="economy-row-top"><span>Bonus packs</span><strong id="economySourcePurchaseValue">0</strong></div><div class="economy-row-track"><div class="economy-row-fill" id="economySourcePurchaseBar"></div></div></div>
+            <div class="economy-row"><div class="economy-row-top"><span>Admin grants</span><strong id="economySourceAdminValue">0</strong></div><div class="economy-row-track"><div class="economy-row-fill" id="economySourceAdminBar"></div></div></div>
+          </div>
+        </section>
+
+        <section class="economy-section sinks" aria-labelledby="economySinksTitle">
+          <div class="economy-section-title">
+            <h4 id="economySinksTitle">Where BRs are spent</h4>
+            <span>Sinks</span>
+          </div>
+          <div class="economy-breakdown">
+            <div class="economy-row"><div class="economy-row-top"><span>Match entries</span><strong id="economySinkEntryValue">0</strong></div><div class="economy-row-track"><div class="economy-row-fill" id="economySinkEntryBar"></div></div></div>
+            <div class="economy-row"><div class="economy-row-top"><span>Extra rolls</span><strong id="economySinkRollValue">0</strong></div><div class="economy-row-track"><div class="economy-row-fill" id="economySinkRollBar"></div></div></div>
+            <div class="economy-row"><div class="economy-row-top"><span>Turn restarts</span><strong id="economySinkRestartValue">0</strong></div><div class="economy-row-track"><div class="economy-row-fill" id="economySinkRestartBar"></div></div></div>
+            <div class="economy-row"><div class="economy-row-top"><span>Admin reductions</span><strong id="economySinkAdminValue">0</strong></div><div class="economy-row-track"><div class="economy-row-fill" id="economySinkAdminBar"></div></div></div>
+          </div>
+        </section>
+
+        <section class="economy-section" aria-labelledby="economyPlayersTitle">
+          <div class="economy-section-title">
+            <h4 id="economyPlayersTitle">Player sessions</h4>
+            <span id="economyPlayerCount">0 tracked</span>
+          </div>
+          <div class="economy-player-list" id="economyPlayerList">
+            <div class="economy-empty">No BR activity tracked yet.</div>
+          </div>
+        </section>
+        <p class="economy-footnote">Flow tracking begins with this prototype version. Starting wallet balances are excluded; Admin changes are included.</p>
+      </div>
+    </div>
+
     <button type="button" class="lobby-user-trigger" onclick="openRoomTools()" aria-label="Open room tools" aria-controls="lobbyUserPanel" aria-expanded="false"><span class="lobby-user-icon" aria-hidden="true"></span></button>
     <div class="lobby-user-panel" id="lobbyUserPanel" role="region" aria-label="Room tools" hidden>
       <div class="room-tools-header">
@@ -2709,18 +3180,36 @@ body {
         <div class="room-tools-wallet"><span>Wallet</span><strong id="roomToolsWallet">100 BRs</strong></div>
       </div>
       <div class="room-tools-body">
-        <div class="room-tools-hero">
-          <span>Play together</span>
-          <h2>Choose a room</h2>
-          <p>Create a private match, enter a code, or join a public game.</p>
+      <div class="room-tools-hero">
+        <span>Play together</span>
+        <h2>Choose a room</h2>
+        <p>Create a private match, enter a code, or join a public game.</p>
+      </div>
+      <div class="lobby-section room-tools-tier" aria-labelledby="roomToolsTierTitle">
+        <div class="room-tools-tier-top">
+          <div class="room-tools-tier-copy">
+            <strong id="roomToolsTierTitle">Private room tier</strong>
+            <small>Pick the wager before creating a room. Both players pay the entry when the game starts.</small>
+          </div>
+          <div class="room-tools-tier-cost" id="roomToolsTierCost">Entry: 2 BRs</div>
         </div>
+        <div class="room-tools-tier-options" role="group" aria-label="Private room tier">
+          <button type="button" class="room-tools-tier-btn active" id="roomTierTier1" onclick="selectMatchTier('tier1')">Tier 1</button>
+          <button type="button" class="room-tools-tier-btn" id="roomTierTier2" onclick="selectMatchTier('tier2')">Tier 2</button>
+          <button type="button" class="room-tools-tier-btn" id="roomTierTier3" onclick="selectMatchTier('tier3')">Tier 3</button>
+        </div>
+        <div class="room-tools-tier-meta">
+          <span id="roomToolsTierMeta">Win +2 daily · 250 +1 daily</span>
+          <strong id="roomToolsTierReward">Winner +3 BRs</strong>
+        </div>
+      </div>
       <div class="lobby-section room-tools-create">
         <div class="room-tools-card-head">
           <div class="room-tools-card-copy">
             <strong>Create a game</strong>
             <small>Share the four-letter room code with a friend.</small>
           </div>
-          <button type="button" class="room-tools-action" onclick="createRoom()">Create</button>
+          <button type="button" class="room-tools-action" id="createRoomBtn" onclick="createRoom()">Create</button>
         </div>
         <div class="lobby-code" id="lobbyCode" hidden></div>
         <div class="lobby-status" id="lobbyStatus" hidden>Waiting for the other player…</div>
@@ -3148,7 +3637,13 @@ const DEFAULT_DAILY_GOAL = 20;
 const DEFAULT_DAILY_REWARD_BR = 5;
 const DAILY_STORAGE_KEY = 'yahtzee_pvp_daily_goal_v1';
 const PLAYER_META_STORAGE_KEY = 'yahtzee_pvp_player_meta_v2';
+const BR_ANALYTICS_PLAYER_KEY = 'yahtzee_pvp_br_analytics_player_v1';
+const BR_ANALYTICS_PATH = 'analytics/brEconomyV1';
 let playerMetaMemory = null;
+let brAnalyticsPlayerIdMemory = '';
+let brAnalyticsUnsubscribe = null;
+let brAnalyticsReturnFocus = null;
+let creatorWalletEditStart = null;
 const TIER_IDS = ['tier1', 'tier2', 'tier3'];
 const TIER_DEFAULTS = {
   tier1: { label: 'Tier 1', winMetaReward: 2, goalMetaReward: 1, winRewardBr: 3, entryCostBr: 2 },
@@ -3221,6 +3716,9 @@ function normalizeTierConfigs(tiers) {
   const normalized = {};
   TIER_IDS.forEach(id => { normalized[id] = tierConfigFrom({ tiers }, id); });
   return normalized;
+}
+function isPaidMatchMode(mode) {
+  return mode === 'matchmaking' || mode === 'private';
 }
 function readDailyState() {
   const today = todayKey();
@@ -3340,6 +3838,10 @@ function renderLobbyHome() {
   const matchCost = document.getElementById('matchCost');
   const playBtn = document.getElementById('matchPlayBtn');
   const status = document.getElementById('matchStatus');
+  const roomTierCost = document.getElementById('roomToolsTierCost');
+  const roomTierMeta = document.getElementById('roomToolsTierMeta');
+  const roomTierReward = document.getElementById('roomToolsTierReward');
+  const createRoomBtn = document.getElementById('createRoomBtn');
   if (walletEl) walletEl.textContent = brText(daily.walletBr);
   if (roomToolsWallet) roomToolsWallet.textContent = brText(daily.walletBr);
   if (goalText) goalText.textContent = `Earn ${goal} daily points`;
@@ -3370,6 +3872,19 @@ function renderLobbyHome() {
   if (matchReward) matchReward.textContent = `+${brText(tier.winRewardBr)}`;
   if (matchMeta) matchMeta.textContent = `Daily progress · Win +${tier.winMetaReward} · Reach 250 +${tier.goalMetaReward}`;
   if (matchCost) matchCost.textContent = `Entry: ${brText(tier.entryCostBr)}`;
+  if (roomTierCost) roomTierCost.textContent = `Entry: ${brText(tier.entryCostBr)}`;
+  if (roomTierMeta) roomTierMeta.textContent = `Win +${tier.winMetaReward} daily · 250 +${tier.goalMetaReward} daily`;
+  if (roomTierReward) roomTierReward.textContent = `Winner +${brText(tier.winRewardBr)}`;
+  TIER_IDS.forEach(id => {
+    const btn = document.getElementById(`roomTier${id[0].toUpperCase()}${id.slice(1)}`);
+    if (!btn) return;
+    btn.classList.toggle('active', id === selectedTierId);
+    btn.disabled = matchmakingQueued || matchmakingBusy;
+  });
+  if (createRoomBtn) {
+    createRoomBtn.disabled = matchmakingBusy || daily.walletBr < tier.entryCostBr;
+    createRoomBtn.textContent = daily.walletBr < tier.entryCostBr ? 'Need BRs' : 'Create';
+  }
   if (playBtn) {
     const canAfford = daily.walletBr >= tier.entryCostBr;
     playBtn.textContent = matchmakingQueued ? 'QUEUED' : matchmakingBusy ? '…' : 'PLAY';
@@ -3391,6 +3906,15 @@ function renderPublicDailyProgress(container, progress, goal) {
   if (!container) return;
   container.textContent = `${Math.min(cleanInt(progress), Math.max(1, cleanInt(goal, DEFAULT_DAILY_GOAL)))}/${Math.max(1, cleanInt(goal, DEFAULT_DAILY_GOAL))}`;
 }
+function renderPublicRoomTier(container, info) {
+  if (!container) return;
+  const tierId = (info && TIER_IDS.includes(info.tier)) ? info.tier : 'tier1';
+  const tier = info && info.tierConfig
+    ? tierConfigFrom({ tiers: { [tierId]: info.tierConfig } }, tierId)
+    : tierConfigFrom(creatorConfig, tierId);
+  container.textContent = `${tier.label} · ${brText(tier.entryCostBr)}`;
+  container.setAttribute('aria-label', `${tier.label}, ${brText(tier.entryCostBr)} entry`);
+}
 function gameTierId(gameOver) {
   return (gameOver && gameOver.tier)
     || (state && state.config && state.config.matchTier)
@@ -3402,7 +3926,7 @@ function gameTierConfig(gameOver) {
 }
 function dailyRewardParts(playerId, gameOver, scores) {
   const matchMode = (gameOver && gameOver.matchMode) || (state && state.config && state.config.matchMode);
-  if (matchMode !== 'matchmaking') {
+  if (!isPaidMatchMode(matchMode)) {
     const tier = gameTierConfig(gameOver);
     return { tier, tierId: gameTierId(gameOver), winProgress: 0, goalProgress: 0, progressTotal: 0, winRewardBr: 0 };
   }
@@ -3458,6 +3982,12 @@ function awardDailyProgressForGameOver(playerId, gameOver, scores) {
   daily.awardedGameIds.push(key);
   const saved = writeDailyState(daily);
   if (playerId === myRole) applyPlayerWalletBr(saved.walletBr);
+  if (parts.winRewardBr) {
+    recordBrFlow('source', 'win_reward', parts.winRewardBr, { eventId: `${key}_win`, tier: parts.tierId });
+  }
+  if (dailyRewardPaid) {
+    recordBrFlow('source', 'daily_reward', dailyRewardPaid, { eventId: `${key}_daily`, tier: parts.tierId });
+  }
   renderLobbyHome();
   return {
     parts,
@@ -3473,7 +4003,7 @@ function matchIdentity() {
   return (state && state.config && state.config.matchId) || roomCode || 'local';
 }
 function ensureMatchEntryCharged() {
-  if (!state || !state.config || state.config.matchMode !== 'matchmaking' || !myRole) {
+  if (!state || !state.config || !isPaidMatchMode(state.config.matchMode) || !myRole) {
     return { charged: 0 };
   }
   const tier = gameTierConfig();
@@ -3487,9 +4017,11 @@ function ensureMatchEntryCharged() {
   daily.chargedEntryGameIds.push(key);
   const saved = writeDailyState(daily);
   applyPlayerWalletBr(saved.walletBr);
+  const charged = before - saved.walletBr;
+  if (charged) recordBrFlow('sink', 'match_entry', charged, { eventId: `entry_${key}`, tier: gameTierId() });
   renderLobbyHome();
   if (applyingRemote) setTimeout(() => persistState(), 0);
-  return { charged: before - saved.walletBr, walletBr: saved.walletBr };
+  return { charged, walletBr: saved.walletBr };
 }
 function createGameOver(winner, reason, includeScores = false) {
   const scores = currentScores();
@@ -3761,7 +4293,7 @@ function animateBrSpend(amount) {
   return true;
 }
 
-function spendBonusRolls(player, amount) {
+function spendBonusRolls(player, amount, reason = 'extra_roll') {
   const cost = Math.max(0, Math.floor(Number(amount) || 0));
   if (!player || cost <= 0 || (Number(player.bonusRolls) || 0) < cost
       || !hasMatchBonusRollCapacity(player, cost)) return false;
@@ -3769,6 +4301,7 @@ function spendBonusRolls(player, amount) {
   player.bonusRollsSpent = bonusRollsSpent(player) + cost;
   if (myRole && state && state.players && state.players[myRole] === player) {
     savePlayerWalletBr(player.bonusRolls, { syncMatch: false });
+    recordBrFlow('sink', reason, cost, { tier: gameTierId() });
   }
   animateBrSpend(cost);
   return true;
@@ -3904,7 +4437,7 @@ function onRollClick() {
       showCurrencyPopup("You don't have enough bonus rolls.");
       return;
     }
-    if (!spendBonusRolls(me, cost)) return;
+    if (!spendBonusRolls(me, cost, 'extra_roll')) return;
     turnState().extraRollsUsed = used + 1;
     turnState().rollsLeft = 1;
     rollDice();
@@ -3921,7 +4454,7 @@ function onRollClick() {
       showCurrencyPopup("Not enough bonus rolls to restart the turn.");
       return;
     }
-    if (!spendBonusRolls(me, 5)) return;
+    if (!spendBonusRolls(me, 5, 'turn_restart')) return;
     turnState().extraRollsUsed = 0;
     turnState().restartUsed = true;
     turnState().rollsLeft = 3;
@@ -4024,6 +4557,7 @@ function confirmBonusPurchase() {
 
     me.bonusRolls = (me.bonusRolls || 0) + selectedBonusPack.amount;
     savePlayerWalletBr(me.bonusRolls, { syncMatch: false });
+    recordBrFlow('source', 'bonus_purchase', selectedBonusPack.amount, { tier: gameTierId() });
     render();
     if (action) action.textContent = '✓ Done';
     if (status) status.textContent = 'Done';
@@ -4327,6 +4861,223 @@ function fbWait(cb) {
   else window.addEventListener('firebase-ready', cb, { once: true });
 }
 
+function brAnalyticsPlayerId() {
+  if (brAnalyticsPlayerIdMemory) return brAnalyticsPlayerIdMemory;
+  try { brAnalyticsPlayerIdMemory = sessionStorage.getItem(BR_ANALYTICS_PLAYER_KEY) || ''; } catch (e) {}
+  if (!brAnalyticsPlayerIdMemory) {
+    brAnalyticsPlayerIdMemory = `player_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
+    try { sessionStorage.setItem(BR_ANALYTICS_PLAYER_KEY, brAnalyticsPlayerIdMemory); } catch (e) {}
+  }
+  return brAnalyticsPlayerIdMemory;
+}
+
+function analyticsObject(value) {
+  return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+}
+
+function analyticsSafeKey(value) {
+  return String(value || '').replace(/[.#$[\]\/]/g, '_').slice(0, 140);
+}
+
+async function recordBrFlow(kind, reason, amount, context = {}) {
+  const flowKind = kind === 'source' ? 'source' : kind === 'sink' ? 'sink' : '';
+  const quantity = cleanInt(amount);
+  if (!flowKind || quantity <= 0) return false;
+  if (!fbReady()) {
+    return new Promise(resolve => fbWait(() => resolve(recordBrFlow(flowKind, reason, quantity, context))));
+  }
+
+  const playerId = brAnalyticsPlayerId();
+  const reasonKey = analyticsSafeKey(reason || 'other');
+  const now = Date.now();
+  const eventId = analyticsSafeKey(context.eventId || `${now}_${playerId}_${Math.random().toString(36).slice(2, 8)}`);
+  const playerName = String(getMyName() || 'Player').trim().slice(0, 20) || 'Player';
+  const rootRef = window.FB.ref(window.FB.db, BR_ANALYTICS_PATH);
+
+  try {
+    await window.FB.runTransaction(rootRef, current => {
+      const data = analyticsObject(current);
+      data.version = 1;
+      data.totals = analyticsObject(data.totals);
+      data.sources = analyticsObject(data.sources);
+      data.sinks = analyticsObject(data.sinks);
+      data.players = analyticsObject(data.players);
+      data.eventIds = analyticsObject(data.eventIds);
+      data.recent = analyticsObject(data.recent);
+      if (data.eventIds[eventId]) return data;
+
+      const bucket = flowKind === 'source' ? data.sources : data.sinks;
+      bucket[reasonKey] = cleanInt(bucket[reasonKey]) + quantity;
+      data.totals.sourceBr = cleanInt(data.totals.sourceBr);
+      data.totals.sinkBr = cleanInt(data.totals.sinkBr);
+      data.totals.events = cleanInt(data.totals.events) + 1;
+      if (flowKind === 'source') data.totals.sourceBr += quantity;
+      else data.totals.sinkBr += quantity;
+
+      const player = analyticsObject(data.players[playerId]);
+      player.name = playerName;
+      player.sourceBr = cleanInt(player.sourceBr);
+      player.sinkBr = cleanInt(player.sinkBr);
+      player.events = cleanInt(player.events) + 1;
+      if (flowKind === 'source') player.sourceBr += quantity;
+      else player.sinkBr += quantity;
+      player.lastSeen = now;
+      data.players[playerId] = player;
+
+      data.eventIds[eventId] = now;
+      data.recent[eventId] = {
+        playerId,
+        playerName,
+        kind: flowKind,
+        reason: reasonKey,
+        amount: quantity,
+        tier: context.tier || ((state && state.config && state.config.matchTier) || selectedTierId || 'tier1'),
+        at: now,
+      };
+      const retainedEventIds = Object.entries(data.eventIds).sort((a, b) => cleanInt(b[1]) - cleanInt(a[1])).slice(0, 240);
+      data.eventIds = Object.fromEntries(retainedEventIds);
+      const retainedRecent = Object.entries(data.recent).sort((a, b) => cleanInt(b[1] && b[1].at) - cleanInt(a[1] && a[1].at)).slice(0, 20);
+      data.recent = Object.fromEntries(retainedRecent);
+      data.updatedAt = now;
+      return data;
+    });
+    return true;
+  } catch (error) {
+    console.error('[analytics] BR flow write failed', error);
+    return false;
+  }
+}
+
+function brAnalyticsValue(root, side, reason) {
+  return cleanInt(analyticsObject(analyticsObject(root)[side])[reason]);
+}
+
+function setBrBreakdown(prefix, value, total) {
+  const valueEl = document.getElementById(`${prefix}Value`);
+  const barEl = document.getElementById(`${prefix}Bar`);
+  if (valueEl) valueEl.textContent = brText(value);
+  if (barEl) barEl.style.width = `${total > 0 ? (value / total) * 100 : 0}%`;
+}
+
+function renderBrAnalytics(snapshot, errorMessage = '') {
+  const data = analyticsObject(snapshot);
+  const totals = analyticsObject(data.totals);
+  const sourceTotal = cleanInt(totals.sourceBr);
+  const sinkTotal = cleanInt(totals.sinkBr);
+  const net = sourceTotal - sinkTotal;
+  const flowTotal = sourceTotal + sinkTotal;
+  const players = Object.entries(analyticsObject(data.players))
+    .map(([id, player]) => [id, analyticsObject(player)])
+    .sort((a, b) => cleanInt(b[1].lastSeen) - cleanInt(a[1].lastSeen));
+
+  const sourceTotalEl = document.getElementById('economySourceTotal');
+  const sinkTotalEl = document.getElementById('economySinkTotal');
+  const netTotalEl = document.getElementById('economyNetTotal');
+  const netCard = document.getElementById('economyNetCard');
+  const sourceShare = document.getElementById('economySourceShare');
+  const sinkShare = document.getElementById('economySinkShare');
+  const status = document.getElementById('economyStatus');
+  if (sourceTotalEl) sourceTotalEl.textContent = `+${sourceTotal}`;
+  if (sinkTotalEl) sinkTotalEl.textContent = `−${sinkTotal}`;
+  if (netTotalEl) netTotalEl.textContent = `${net > 0 ? '+' : net < 0 ? '−' : ''}${Math.abs(net)}`;
+  if (netCard) {
+    netCard.classList.toggle('positive', net > 0);
+    netCard.classList.toggle('negative', net < 0);
+  }
+  if (sourceShare) sourceShare.style.width = `${flowTotal ? (sourceTotal / flowTotal) * 100 : 0}%`;
+  if (sinkShare) sinkShare.style.width = `${flowTotal ? (sinkTotal / flowTotal) * 100 : 0}%`;
+  if (status) {
+    status.textContent = errorMessage || `${players.length} player${players.length === 1 ? '' : 's'} · ${cleanInt(totals.events)} events`;
+  }
+
+  setBrBreakdown('economySourceWin', brAnalyticsValue(data, 'sources', 'win_reward'), sourceTotal);
+  setBrBreakdown('economySourceDaily', brAnalyticsValue(data, 'sources', 'daily_reward'), sourceTotal);
+  setBrBreakdown('economySourcePurchase', brAnalyticsValue(data, 'sources', 'bonus_purchase'), sourceTotal);
+  setBrBreakdown('economySourceAdmin', brAnalyticsValue(data, 'sources', 'admin_adjustment'), sourceTotal);
+  setBrBreakdown('economySinkEntry', brAnalyticsValue(data, 'sinks', 'match_entry'), sinkTotal);
+  setBrBreakdown('economySinkRoll', brAnalyticsValue(data, 'sinks', 'extra_roll'), sinkTotal);
+  setBrBreakdown('economySinkRestart', brAnalyticsValue(data, 'sinks', 'turn_restart'), sinkTotal);
+  setBrBreakdown('economySinkAdmin', brAnalyticsValue(data, 'sinks', 'admin_adjustment'), sinkTotal);
+
+  const playerCount = document.getElementById('economyPlayerCount');
+  if (playerCount) playerCount.textContent = `${players.length} tracked`;
+  const list = document.getElementById('economyPlayerList');
+  if (!list) return;
+  list.replaceChildren();
+  if (!players.length) {
+    const empty = document.createElement('div');
+    empty.className = 'economy-empty';
+    empty.textContent = errorMessage || 'No BR activity tracked yet.';
+    list.appendChild(empty);
+    return;
+  }
+  const myAnalyticsId = brAnalyticsPlayerId();
+  players.slice(0, 8).forEach(([id, player]) => {
+    const sourceBr = cleanInt(player.sourceBr);
+    const sinkBr = cleanInt(player.sinkBr);
+    const playerNet = sourceBr - sinkBr;
+    const row = document.createElement('div');
+    row.className = 'economy-player';
+    const copy = document.createElement('div');
+    copy.className = 'economy-player-copy';
+    const name = document.createElement('div');
+    name.className = 'economy-player-name';
+    name.textContent = id === myAnalyticsId ? `You · ${player.name || 'Player'}` : (player.name || 'Player');
+    const details = document.createElement('small');
+    details.textContent = `+${sourceBr} source · −${sinkBr} sink · ${cleanInt(player.events)} events`;
+    const netEl = document.createElement('div');
+    netEl.className = `economy-player-net ${playerNet >= 0 ? 'positive' : 'negative'}`;
+    netEl.textContent = `${playerNet > 0 ? '+' : playerNet < 0 ? '−' : ''}${Math.abs(playerNet)} BR`;
+    copy.appendChild(name);
+    copy.appendChild(details);
+    row.appendChild(copy);
+    row.appendChild(netEl);
+    list.appendChild(row);
+  });
+}
+
+function subscribeBrAnalytics() {
+  const panel = document.getElementById('economyPanel');
+  if (!panel || panel.hidden) return;
+  if (!fbReady()) {
+    fbWait(subscribeBrAnalytics);
+    return;
+  }
+  if (brAnalyticsUnsubscribe) { try { brAnalyticsUnsubscribe(); } catch (e) {} brAnalyticsUnsubscribe = null; }
+  const analyticsRef = window.FB.ref(window.FB.db, BR_ANALYTICS_PATH);
+  const handler = snap => renderBrAnalytics(snap.val() || {});
+  window.FB.onValue(analyticsRef, handler);
+  brAnalyticsUnsubscribe = () => window.FB.off(analyticsRef, 'value', handler);
+}
+
+function openBrAnalytics() {
+  const panel = document.getElementById('economyPanel');
+  const trigger = document.getElementById('economyTrigger');
+  if (!panel) return;
+  closeUserPanel();
+  brAnalyticsReturnFocus = document.activeElement;
+  panel.hidden = false;
+  if (trigger) trigger.setAttribute('aria-expanded', 'true');
+  renderBrAnalytics({});
+  subscribeBrAnalytics();
+  window.requestAnimationFrame(() => {
+    const backButton = document.getElementById('economyBackButton');
+    if (backButton) backButton.focus({ preventScroll: true });
+  });
+}
+
+function closeBrAnalytics() {
+  const panel = document.getElementById('economyPanel');
+  const trigger = document.getElementById('economyTrigger');
+  if (panel) panel.hidden = true;
+  if (trigger) trigger.setAttribute('aria-expanded', 'false');
+  if (brAnalyticsUnsubscribe) { try { brAnalyticsUnsubscribe(); } catch (e) {} brAnalyticsUnsubscribe = null; }
+  if (brAnalyticsReturnFocus && typeof brAnalyticsReturnFocus.focus === 'function') {
+    brAnalyticsReturnFocus.focus({ preventScroll: true });
+  }
+  brAnalyticsReturnFocus = null;
+}
+
 // Local settings chosen in the creator panel. Applied when this tab creates a room.
 let creatorConfig = {
   cooldownSec: 30,
@@ -4361,6 +5112,9 @@ function setCreatorConfig(key, value) {
   }
   renderLobbyHome();
 }
+function beginCreatorWalletEdit() {
+  creatorWalletEditStart = playerWalletBr();
+}
 function setCreatorBonusRolls(value) {
   const amount = value === ''
     ? 0
@@ -4371,8 +5125,14 @@ function setCreatorBonusRolls(value) {
 }
 function normalizeCreatorBonusRolls(input) {
   const amount = Math.max(0, Math.floor(Number(input.value) || 0));
+  const before = creatorWalletEditStart;
+  creatorWalletEditStart = null;
   input.value = amount;
   savePlayerWalletBr(amount);
+  if (Number.isFinite(before) && amount !== before) {
+    const kind = amount > before ? 'source' : 'sink';
+    recordBrFlow(kind, 'admin_adjustment', Math.abs(amount - before));
+  }
   renderLobbyHome();
   if (roomCode) persistState();
 }
@@ -4562,7 +5322,7 @@ function normalizeState(s) {
   if (s.config.dailyRewardBr == null) s.config.dailyRewardBr = DEFAULT_DAILY_REWARD_BR;
   s.config.tiers = normalizeTierConfigs(s.config.tiers);
   if (!TIER_IDS.includes(s.config.matchTier)) s.config.matchTier = 'tier1';
-  if (s.config.matchMode !== 'matchmaking') s.config.matchMode = 'manual';
+  if (!isPaidMatchMode(s.config.matchMode)) s.config.matchMode = 'manual';
   if (!s.config.matchId && roomCode) s.config.matchId = roomCode;
   if (s.config.brCapPerGame == null) s.config.brCapPerGame = 'none';
   if (s.config.brCapPerGame !== 'none'
@@ -4746,8 +5506,7 @@ function renderLobbyList(data) {
     name.textContent = (info && info.name) || 'Player';
     const meta = document.createElement('div');
     meta.className = 'lobby-public-meta';
-    renderPublicDailyProgress(meta, info && info.dailyProgress, info && info.dailyGoal);
-    meta.setAttribute('aria-label', `${cleanInt(info && info.dailyProgress)} daily progress`);
+    renderPublicRoomTier(meta, info);
     const codeEl = document.createElement('div');
     codeEl.className = 'lp-code';
     codeEl.textContent = code;
@@ -4769,6 +5528,7 @@ function openRoomTools() {
   const trigger = document.querySelector('.lobby-user-trigger');
   if (!panel) return;
   roomToolsReturnFocus = document.activeElement;
+  renderLobbyHome();
   panel.hidden = false;
   if (trigger) trigger.setAttribute('aria-expanded', 'true');
   window.requestAnimationFrame(() => {
@@ -4803,10 +5563,21 @@ function changeMatchTier(delta) {
   const idx = TIER_IDS.indexOf(selectedTierId);
   const next = Math.max(0, Math.min(TIER_IDS.length - 1, idx + delta));
   if (next === idx) return;
-  selectedTierId = TIER_IDS[next];
+  selectMatchTier(TIER_IDS[next]);
+}
+function selectMatchTier(tierId) {
+  if (matchmakingQueued || matchmakingBusy) return;
+  if (!TIER_IDS.includes(tierId)) return;
+  const previous = TIER_IDS.indexOf(selectedTierId);
+  const next = TIER_IDS.indexOf(tierId);
+  if (next === previous) {
+    renderLobbyHome();
+    return;
+  }
+  selectedTierId = tierId;
   setMatchStatus('');
   renderLobbyHome();
-  animateTierChange(next > idx ? 'up' : 'down');
+  animateTierChange(next > previous ? 'up' : 'down');
 }
 function animateTierChange(direction) {
   const card = document.getElementById('matchCard');
@@ -4828,10 +5599,12 @@ function animateTierChange(direction) {
 }
 function lobbySnapshotForListing(mode) {
   const daily = readDailyState();
+  const tier = currentTierConfig();
   return {
     name: getMyName(),
     mode,
     tier: selectedTierId,
+    tierConfig: tier,
     dailyProgress: daily.dailyProgress,
     dailyGoal: dailyGoalFromConfig(creatorConfig),
     walletBr: daily.walletBr,
@@ -4963,6 +5736,13 @@ async function createRoom() {
     fbWait(createRoom);
     return;
   }
+  const tier = currentTierConfig();
+  const daily = readDailyState();
+  if (daily.walletBr < tier.entryCostBr) {
+    if (err) err.textContent = `Need ${brText(tier.entryCostBr)} to create ${tier.label}`;
+    renderLobbyHome();
+    return;
+  }
   await cleanupMyWaitingRoom();
   roomCode = genCode();
   myRole = 'p1';
@@ -4971,7 +5751,7 @@ async function createRoom() {
   state = freshState({
     ...creatorConfig,
     initialBonusRolls: playerWalletBr(),
-    matchMode: 'manual',
+    matchMode: 'private',
     matchTier: selectedTierId,
     matchId: roomCode,
   });
@@ -4984,7 +5764,7 @@ async function createRoom() {
     // spurious null that would bounce us back to the lobby.
     await window.FB.set(fbRoomRef(), { state, p2Joined: false, updatedAt: Date.now() });
     // Public listing entry so other players can discover this room.
-    await window.FB.set(window.FB.ref(window.FB.db, `lobbies/${roomCode}`), lobbySnapshotForListing('manual'));
+    await window.FB.set(window.FB.ref(window.FB.db, `lobbies/${roomCode}`), lobbySnapshotForListing('private'));
     // If this client disconnects, also remove the public listing entry.
     window.FB.onDisconnect(window.FB.ref(window.FB.db, `lobbies/${roomCode}`)).remove().catch(()=>{});
   } catch (e) {
@@ -5033,11 +5813,13 @@ async function joinRoomByCode(code, options = {}) {
   // 2) Write our claim (non-atomic; concurrent joins are resolved in step 3).
   const claimedState = normalizeState(JSON.parse(JSON.stringify(data.state)));
   const roomTier = claimedState.config && claimedState.config.matchTier;
-  if (claimedState.config && claimedState.config.matchMode === 'matchmaking') {
+  if (claimedState.config && isPaidMatchMode(claimedState.config.matchMode)) {
     const tier = tierConfigFrom(claimedState.config, roomTier);
     const daily = readDailyState();
     if (daily.walletBr < tier.entryCostBr) {
-      setMatchStatus(`Need ${brText(tier.entryCostBr)} to enter ${tier.label}`);
+      const message = `Need ${brText(tier.entryCostBr)} to enter ${tier.label}`;
+      if (!options.auto && err) err.textContent = message;
+      setMatchStatus(message);
       renderLobbyHome();
       return false;
     }
@@ -5095,6 +5877,7 @@ async function joinRoomByCode(code, options = {}) {
 function enterGame() {
   matchmakingQueued = false;
   closeUserPanel();
+  closeBrAnalytics();
   document.getElementById('lobby').classList.add('hidden');
   setCreatorPanelVisible(false);
   closeSettingsOverlay();
@@ -5467,6 +6250,7 @@ function backToLobby() {
   hideCurrencyPopup();
   hideTimeoutFeedback();
   closeUserPanel();
+  closeBrAnalytics();
   closeAdminOverlay();
   closeSettingsOverlay();
   stopTimer();
@@ -5737,6 +6521,7 @@ window.addEventListener('DOMContentLoaded', () => {
             value="100"
             inputmode="numeric"
             aria-label="Starting bonus rolls"
+            onfocus="beginCreatorWalletEdit()"
             oninput="setCreatorBonusRolls(this.value)"
             onblur="normalizeCreatorBonusRolls(this)"
           >
