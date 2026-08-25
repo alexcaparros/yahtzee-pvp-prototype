@@ -1,0 +1,34 @@
+{
+  "name": "Yahtzee PvP",
+  "short_name": "Yahtzee PvP",
+  "description": "Real-time Yahtzee PvP prototype with tiered BR rewards.",
+  "id": "./?app=yahtzee-pvp",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#0f2c5c",
+  "theme_color": "#03a9e4",
+  "categories": ["games"],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
