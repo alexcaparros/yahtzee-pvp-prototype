@@ -3916,6 +3916,7 @@ let myRole = null;        // 'p1' (creator) | 'p2' (joiner)
 let applyingRemote = false;
 let fbUnsubscribe = null; // onValue detach fn
 let lastRemoteP2Joined = false;
+let lastP2ClaimId = null;
 
 function fbRoomRef() {
   return window.FB && roomCode ? window.FB.ref(window.FB.db, `rooms/${roomCode}`) : null;
@@ -4121,6 +4122,7 @@ function persistState() {
   if (!roomCode || applyingRemote || !fbReady()) return;
   const p2Joined = myRole === 'p2' ? true : lastRemoteP2Joined;
   const payload = { state, p2Joined, updatedAt: Date.now() };
+  if (lastP2ClaimId) payload.p2ClaimId = lastP2ClaimId;
   window.FB.set(fbRoomRef(), payload).catch(err => console.error('[fb] persist failed', err));
 }
 
@@ -4229,6 +4231,7 @@ function subscribeRoom() {
       return;
     }
     lastRemoteP2Joined = !!data.p2Joined;
+    if (data.p2ClaimId) lastP2ClaimId = data.p2ClaimId;
     applyingRemote = true;
     try {
       state = normalizeState(data.state);
@@ -4492,6 +4495,7 @@ async function createQueuedMatchmakingRoom() {
   });
   state.players.p1.name = getMyName();
   lastRemoteP2Joined = false;
+  lastP2ClaimId = null;
   try {
     await window.FB.set(fbRoomRef(), { state, p2Joined: false, updatedAt: Date.now() });
     await window.FB.set(window.FB.ref(window.FB.db, `lobbies/${roomCode}`), lobbySnapshotForListing('matchmaking'));
@@ -4525,6 +4529,7 @@ async function cleanupMyWaitingRoom() {
   roomCode = null;
   myRole = null;
   matchmakingQueued = false;
+  lastP2ClaimId = null;
   document.getElementById('lobbyCode').hidden = true;
   document.getElementById('lobbyCode').textContent = '';
   document.getElementById('lobbyStatus').hidden = true;
@@ -4553,6 +4558,7 @@ async function createRoom() {
   // Stamp creator's name on p1.
   state.players.p1.name = getMyName();
   lastRemoteP2Joined = false;
+  lastP2ClaimId = null;
   try {
     // Write the initial doc FIRST so the subsequent subscribe doesn't fire a
     // spurious null that would bounce us back to the lobby.
@@ -4659,6 +4665,7 @@ async function joinRoomByCode(code, options = {}) {
   selectedTierId = (state.config && state.config.matchTier) || selectedTierId;
   matchmakingQueued = false;
   lastRemoteP2Joined = true;
+  lastP2ClaimId = claimId;
   try { await window.FB.remove(window.FB.ref(window.FB.db, `lobbies/${code}`)); } catch (e) {}
   subscribeRoom();
   enterGame();
@@ -5052,6 +5059,7 @@ function backToLobby() {
   roomCode = null;
   myRole = null;
   matchmakingQueued = false;
+  lastP2ClaimId = null;
   gameOverHandled = false;
   prevCurrentTurn = null;
   state = freshState({ ...creatorConfig, initialBonusRolls: playerWalletBr() });
