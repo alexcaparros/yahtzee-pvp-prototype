@@ -2,7 +2,12 @@
 
 This standalone build preserves the real-time Yahtzee PvP prototype mechanics and adds one secondary goal: each player earns a star when their total score reaches 250 points. The star is awarded independently of the match result.
 
-The lobby variant replaces the dice-token meta with a configurable daily goal. Players progress the daily goal through random-matchmaking wins and by reaching the 250-point secondary goal. Completing the daily goal awards BRs.
+The lobby variant replaces the dice-token meta with a configurable daily goal. Players progress the daily goal through paid-match wins and by reaching the 250-point secondary goal. The Admin screen can switch between two reward models:
+
+- Fixed reward: the original tier-specific daily progress and a fixed 20 BR completion reward.
+- Growing pot: a personal pot starts at 5 BRs; every tier grants the same +2 win progress and +1 progress for reaching 250, while a win adds 1 / 3 / 10 BRs to the pot in tiers 1 / 2 / 3. The winner still receives the existing instant tier reward, and completing the daily goal pays the complete accumulated pot.
+
+The goal, fixed reward, starting pot, tier-independent progress, and each tier's pot contribution are editable in Admin.
 
 The lobby also adds simple tiered matchmaking:
 
@@ -27,7 +32,7 @@ The published variant URL is:
 
 Open `index.html` directly for a local preview, or serve this folder with any static HTTP server for realtime Firebase behavior.
 
-Run the two-client matchmaking regression test with:
+Run the two-client matchmaking and daily-pot regression test with:
 
 ```bash
 node tests/matchmaking-protocol.test.cjs

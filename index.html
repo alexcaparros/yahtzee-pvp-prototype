@@ -229,6 +229,29 @@ body {
 }
 .creator-btn-row-col { flex-direction: column; }
 .creator-btn-row-col .creator-btn { width: 100%; }
+.daily-model-selector {
+  margin-bottom: 12px;
+  padding: 4px;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 12px;
+  background: rgba(1,25,68,0.28);
+}
+.daily-model-selector .creator-btn {
+  min-height: 42px;
+  border: 0;
+}
+.daily-model-fields {
+  display: grid;
+  gap: 9px;
+}
+.daily-model-fields[hidden],
+[data-daily-mode-field][hidden] { display: none !important; }
+.daily-model-note {
+  margin: 0 0 10px;
+  color: rgba(223,247,255,0.72);
+  font-size: 10px;
+  line-height: 1.35;
+}
 .creator-field {
   display: flex;
   align-items: center;
@@ -2262,6 +2285,35 @@ body {
   border-radius: 14px;
   background: rgba(7,40,105,0.28);
 }
+.match-card-reward-values {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: stretch;
+  gap: 7px;
+}
+.match-card-reward-value {
+  min-width: 62px;
+  padding: 6px 8px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 10px;
+  background: rgba(4,30,82,0.24);
+  text-align: center;
+}
+.match-card-reward-value > span {
+  display: block;
+  margin-bottom: 3px;
+  color: rgba(228,246,255,0.68);
+  font-size: 8px;
+  line-height: 1;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.match-card-reward-value.pot {
+  border-color: rgba(121,239,255,0.36);
+  background: rgba(20,116,171,0.28);
+}
+.match-card-reward-value.pot .match-card-reward { color: #a8f5ff; }
+.match-card-reward-value[hidden] { display: none; }
 .match-card-reward-copy span {
   display: block;
   color: rgba(228,246,255,0.72);
@@ -2277,7 +2329,7 @@ body {
 }
 .match-card-reward {
   color: #fff3a2;
-  font-size: 29px;
+  font-size: 20px;
   line-height: 1;
   text-shadow: 0 2px 0 rgba(0,0,0,0.22);
 }
@@ -3048,8 +3100,8 @@ body {
           <span class="lobby-daily-title" id="lobbyDailyGoalText">Earn 20 daily points</span>
         </div>
         <div class="lobby-daily-reward-chip">
-          <span>Reward</span>
-          <strong class="lobby-daily-reward" id="lobbyDailyReward">5 BRs</strong>
+          <span id="lobbyDailyRewardLabel">Reward</span>
+          <strong class="lobby-daily-reward" id="lobbyDailyReward">20 BRs</strong>
         </div>
       </div>
       <div class="lobby-daily-progress-row">
@@ -3079,7 +3131,16 @@ body {
           <span>Immediate reward</span>
           <strong>Winner takes</strong>
         </div>
-        <div class="match-card-reward" id="matchReward">+3 BRs</div>
+        <div class="match-card-reward-values">
+          <div class="match-card-reward-value">
+            <span>Now</span>
+            <strong class="match-card-reward" id="matchReward">+3 BRs</strong>
+          </div>
+          <div class="match-card-reward-value pot" id="matchPotRewardGroup" hidden>
+            <span>Daily pot</span>
+            <strong class="match-card-reward" id="matchPotReward">+1 BR</strong>
+          </div>
+        </div>
       </div>
       <div class="match-card-meta" id="matchMetaReward">Daily progress · Win +2 · Reach 250 +1</div>
       <div class="tier-control">
@@ -3644,6 +3705,10 @@ const SECONDARY_GOAL_SCORE = 250;
 const DEFAULT_WALLET_BR = 100;
 const DEFAULT_DAILY_GOAL = 20;
 const DEFAULT_DAILY_REWARD_BR = 20;
+const DEFAULT_DAILY_POT_BASE_BR = 5;
+const DEFAULT_DAILY_POT_WIN_PROGRESS = 2;
+const DEFAULT_DAILY_POT_GOAL_PROGRESS = 1;
+const DAILY_REWARD_MODES = ['fixed', 'pot'];
 const DAILY_STORAGE_KEY = 'yahtzee_pvp_daily_goal_v1';
 const PLAYER_META_STORAGE_KEY = 'yahtzee_pvp_player_meta_v2';
 const BR_ANALYTICS_PLAYER_KEY = 'yahtzee_pvp_br_analytics_player_v1';
@@ -3655,9 +3720,9 @@ let brAnalyticsReturnFocus = null;
 let creatorWalletEditStart = null;
 const TIER_IDS = ['tier1', 'tier2', 'tier3'];
 const TIER_DEFAULTS = {
-  tier1: { label: 'Tier 1', winMetaReward: 2, goalMetaReward: 1, winRewardBr: 3, entryCostBr: 2 },
-  tier2: { label: 'Tier 2', winMetaReward: 5, goalMetaReward: 2, winRewardBr: 8, entryCostBr: 5 },
-  tier3: { label: 'Tier 3', winMetaReward: 12, goalMetaReward: 4, winRewardBr: 18, entryCostBr: 10 },
+  tier1: { label: 'Tier 1', winMetaReward: 2, goalMetaReward: 1, winRewardBr: 3, potContributionBr: 1, entryCostBr: 2 },
+  tier2: { label: 'Tier 2', winMetaReward: 5, goalMetaReward: 2, winRewardBr: 8, potContributionBr: 3, entryCostBr: 5 },
+  tier3: { label: 'Tier 3', winMetaReward: 12, goalMetaReward: 4, winRewardBr: 18, potContributionBr: 10, entryCostBr: 10 },
 };
 let selectedTierId = 'tier1';
 let matchmakingQueued = false;
@@ -3706,6 +3771,19 @@ function dailyGoalFromConfig(config) {
 function dailyRewardFromConfig(config) {
   return cleanInt(config && config.dailyRewardBr, DEFAULT_DAILY_REWARD_BR);
 }
+function dailyRewardModeFromConfig(config) {
+  const mode = config && config.dailyRewardMode;
+  return DAILY_REWARD_MODES.includes(mode) ? mode : 'fixed';
+}
+function dailyPotBaseFromConfig(config) {
+  return cleanInt(config && config.dailyPotBaseBr, DEFAULT_DAILY_POT_BASE_BR);
+}
+function dailyPotProgressFromConfig(config) {
+  return {
+    winProgress: cleanInt(config && config.dailyPotWinProgress, DEFAULT_DAILY_POT_WIN_PROGRESS),
+    goalProgress: cleanInt(config && config.dailyPotGoalProgress, DEFAULT_DAILY_POT_GOAL_PROGRESS),
+  };
+}
 function tierConfigFrom(config, tierId) {
   const id = TIER_IDS.includes(tierId) ? tierId : 'tier1';
   const defaults = TIER_DEFAULTS[id];
@@ -3715,8 +3793,14 @@ function tierConfigFrom(config, tierId) {
     winMetaReward: cleanInt(custom.winMetaReward, defaults.winMetaReward),
     goalMetaReward: cleanInt(custom.goalMetaReward, defaults.goalMetaReward),
     winRewardBr: cleanInt(custom.winRewardBr, defaults.winRewardBr),
+    potContributionBr: cleanInt(custom.potContributionBr, defaults.potContributionBr),
     entryCostBr: cleanInt(custom.entryCostBr, defaults.entryCostBr),
   };
+}
+function dailyProgressRewardsFromConfig(config, tierId) {
+  if (dailyRewardModeFromConfig(config) === 'pot') return dailyPotProgressFromConfig(config);
+  const tier = tierConfigFrom(config, tierId);
+  return { winProgress: tier.winMetaReward, goalProgress: tier.goalMetaReward };
 }
 function currentTierConfig() {
   return tierConfigFrom(creatorConfig, selectedTierId);
@@ -3740,6 +3824,7 @@ function readDailyState() {
     date: today,
     walletBr: startingWallet,
     dailyProgress: 0,
+    dailyPotEarnedBr: 0,
     dailyRewardClaimed: false,
     awardedGameIds: [],
     chargedEntryGameIds: [],
@@ -3761,6 +3846,7 @@ function readDailyState() {
         date: today,
         walletBr,
         dailyProgress: cleanInt(parsed.dailyProgress),
+        dailyPotEarnedBr: cleanInt(parsed.dailyPotEarnedBr),
         dailyRewardClaimed: !!parsed.dailyRewardClaimed,
         awardedGameIds: Array.isArray(parsed.awardedGameIds)
           ? parsed.awardedGameIds.filter(Boolean).slice(-40)
@@ -3777,6 +3863,7 @@ function writeDailyState(meta) {
     date: todayKey(),
     walletBr: cleanInt(meta && meta.walletBr, DEFAULT_WALLET_BR),
     dailyProgress: cleanInt(meta && meta.dailyProgress),
+    dailyPotEarnedBr: cleanInt(meta && meta.dailyPotEarnedBr),
     dailyRewardClaimed: !!(meta && meta.dailyRewardClaimed),
     awardedGameIds: Array.isArray(meta && meta.awardedGameIds)
       ? meta.awardedGameIds.filter(Boolean).slice(-40)
@@ -3816,16 +3903,29 @@ function syncPlayerWalletFromStorage(options = {}) {
   return applyPlayerWalletBr(playerWalletBr(), options);
 }
 
+function renderDailyModeAdmin(mode) {
+  document.querySelectorAll('[data-daily-mode-section]').forEach(section => {
+    section.hidden = section.dataset.dailyModeSection !== mode;
+  });
+  document.querySelectorAll('[data-daily-mode-field]').forEach(field => {
+    field.hidden = field.dataset.dailyModeField !== mode;
+  });
+}
+
 function renderLobbyHome() {
   const daily = readDailyState();
   applyPlayerWalletBr(daily.walletBr, { syncMatch: false });
   const goal = dailyGoalFromConfig(creatorConfig);
-  const rewardBr = dailyRewardFromConfig(creatorConfig);
+  const rewardMode = dailyRewardModeFromConfig(creatorConfig);
+  const fixedRewardBr = dailyRewardFromConfig(creatorConfig);
+  const currentPotBr = dailyPotBaseFromConfig(creatorConfig) + daily.dailyPotEarnedBr;
+  const completionRewardBr = rewardMode === 'pot' ? currentPotBr : fixedRewardBr;
   const progress = Math.min(daily.dailyProgress, goal);
   const progressPct = (progress / goal) * 100;
   const tier = currentTierConfig();
-  const winPreviewProgress = Math.min(goal, progress + tier.winMetaReward);
-  const fullPreviewProgress = Math.min(goal, winPreviewProgress + tier.goalMetaReward);
+  const progressRewards = dailyProgressRewardsFromConfig(creatorConfig, selectedTierId);
+  const winPreviewProgress = Math.min(goal, progress + progressRewards.winProgress);
+  const fullPreviewProgress = Math.min(goal, winPreviewProgress + progressRewards.goalProgress);
   const winPreviewPct = ((winPreviewProgress - progress) / goal) * 100;
   const goalPreviewPct = ((fullPreviewProgress - winPreviewProgress) / goal) * 100;
   const walletEl = document.getElementById('lobbyWallet');
@@ -3840,9 +3940,12 @@ function renderLobbyHome() {
   const winText = document.getElementById('lobbyDailyWinText');
   const goalRewardText = document.getElementById('lobbyDailyGoalRewardText');
   const potentialTotal = document.getElementById('lobbyDailyPotentialTotal');
+  const rewardLabel = document.getElementById('lobbyDailyRewardLabel');
   const reward = document.getElementById('lobbyDailyReward');
   const tierLabel = document.getElementById('matchTierLabel');
   const matchReward = document.getElementById('matchReward');
+  const matchPotRewardGroup = document.getElementById('matchPotRewardGroup');
+  const matchPotReward = document.getElementById('matchPotReward');
   const matchMeta = document.getElementById('matchMetaReward');
   const matchCost = document.getElementById('matchCost');
   const playBtn = document.getElementById('matchPlayBtn');
@@ -3853,6 +3956,7 @@ function renderLobbyHome() {
   const createRoomBtn = document.getElementById('createRoomBtn');
   if (walletEl) walletEl.textContent = brText(daily.walletBr);
   if (roomToolsWallet) roomToolsWallet.textContent = brText(daily.walletBr);
+  renderDailyModeAdmin(rewardMode);
   if (goalText) goalText.textContent = `Earn ${goal} daily points`;
   if (label) label.textContent = `${progress}/${goal}`;
   if (fill) fill.style.width = `${progressPct}%`;
@@ -3864,26 +3968,31 @@ function renderLobbyHome() {
     goalPreview.style.left = `${(winPreviewProgress / goal) * 100}%`;
     goalPreview.style.width = `${goalPreviewPct}%`;
   }
-  if (potentialLabel) potentialLabel.textContent = `${tier.label} preview`;
-  if (winText) winText.textContent = `Win +${tier.winMetaReward}`;
-  if (goalRewardText) goalRewardText.textContent = `250 +${tier.goalMetaReward}`;
-  if (potentialTotal) potentialTotal.textContent = `Up to +${tier.winMetaReward + tier.goalMetaReward}`;
+  if (potentialLabel) potentialLabel.textContent = rewardMode === 'pot' ? 'All tiers progress' : `${tier.label} preview`;
+  if (winText) winText.textContent = `Win +${progressRewards.winProgress}`;
+  if (goalRewardText) goalRewardText.textContent = `250 +${progressRewards.goalProgress}`;
+  if (potentialTotal) potentialTotal.textContent = `Up to +${progressRewards.winProgress + progressRewards.goalProgress}`;
+  if (rewardLabel) rewardLabel.textContent = rewardMode === 'pot' ? 'Current pot' : 'Reward';
   if (reward) {
     const complete = daily.dailyProgress >= goal;
     reward.textContent = complete
-      ? (daily.dailyRewardClaimed ? 'Claimed' : `${brText(rewardBr)} ready`)
-      : brText(rewardBr);
+      ? (daily.dailyRewardClaimed ? 'Claimed' : `${brText(completionRewardBr)} ready`)
+      : brText(completionRewardBr);
     reward.classList.toggle('complete', complete);
     if (root) root.classList.toggle('complete', complete);
   }
-  if (root) root.setAttribute('aria-label', `${progress} of ${goal} daily goal progress. ${tier.label} can add ${tier.winMetaReward} for a win and ${tier.goalMetaReward} for reaching 250 points.`);
+  if (root) root.setAttribute('aria-label', `${progress} of ${goal} daily goal progress. A win adds ${progressRewards.winProgress} and reaching 250 points adds ${progressRewards.goalProgress}.${rewardMode === 'pot' ? ` The current pot is ${brText(currentPotBr)}.` : ''}`);
   if (tierLabel) tierLabel.textContent = tier.label;
   if (matchReward) matchReward.textContent = `+${brText(tier.winRewardBr)}`;
-  if (matchMeta) matchMeta.textContent = `Daily progress · Win +${tier.winMetaReward} · Reach 250 +${tier.goalMetaReward}`;
+  if (matchPotRewardGroup) matchPotRewardGroup.hidden = rewardMode !== 'pot';
+  if (matchPotReward) matchPotReward.textContent = `+${brText(tier.potContributionBr)}`;
+  if (matchMeta) matchMeta.textContent = `Daily progress · Win +${progressRewards.winProgress} · Reach 250 +${progressRewards.goalProgress}`;
   if (matchCost) matchCost.textContent = `Entry: ${brText(tier.entryCostBr)}`;
   if (roomTierCost) roomTierCost.textContent = `Entry: ${brText(tier.entryCostBr)}`;
-  if (roomTierMeta) roomTierMeta.textContent = `Win +${tier.winMetaReward} daily · 250 +${tier.goalMetaReward} daily`;
-  if (roomTierReward) roomTierReward.textContent = `Winner +${brText(tier.winRewardBr)}`;
+  if (roomTierMeta) roomTierMeta.textContent = `Win +${progressRewards.winProgress} daily · 250 +${progressRewards.goalProgress} daily`;
+  if (roomTierReward) roomTierReward.textContent = rewardMode === 'pot'
+    ? `Winner +${brText(tier.winRewardBr)} now · +${brText(tier.potContributionBr)} to pot`
+    : `Winner +${brText(tier.winRewardBr)}`;
   TIER_IDS.forEach(id => {
     const btn = document.getElementById(`roomTier${id[0].toUpperCase()}${id.slice(1)}`);
     if (!btn) return;
@@ -3935,22 +4044,29 @@ function gameTierConfig(gameOver) {
 }
 function dailyRewardParts(playerId, gameOver, scores) {
   const matchMode = (gameOver && gameOver.matchMode) || (state && state.config && state.config.matchMode);
+  const config = (state && state.config) || creatorConfig;
+  const rewardMode = dailyRewardModeFromConfig(config);
   if (!isPaidMatchMode(matchMode)) {
     const tier = gameTierConfig(gameOver);
-    return { tier, tierId: gameTierId(gameOver), winProgress: 0, goalProgress: 0, progressTotal: 0, winRewardBr: 0 };
+    return { tier, tierId: gameTierId(gameOver), rewardMode, winProgress: 0, goalProgress: 0, progressTotal: 0, winRewardBr: 0, potContributionBr: 0 };
   }
   const stars = (gameOver && gameOver.stars) || starsForScores(scores || currentScores());
   const tier = gameTierConfig(gameOver);
-  const winProgress = gameOver && gameOver.winner === playerId ? tier.winMetaReward : 0;
-  const goalProgress = stars && stars[playerId] ? tier.goalMetaReward : 0;
-  const winRewardBr = gameOver && gameOver.winner === playerId ? tier.winRewardBr : 0;
+  const progressRewards = dailyProgressRewardsFromConfig(config, gameTierId(gameOver));
+  const won = !!(gameOver && gameOver.winner === playerId);
+  const winProgress = won ? progressRewards.winProgress : 0;
+  const goalProgress = stars && stars[playerId] ? progressRewards.goalProgress : 0;
+  const winRewardBr = won ? tier.winRewardBr : 0;
+  const potContributionBr = rewardMode === 'pot' && won ? tier.potContributionBr : 0;
   return {
     tier,
     tierId: gameTierId(gameOver),
+    rewardMode,
     winProgress,
     goalProgress,
     progressTotal: winProgress + goalProgress,
     winRewardBr,
+    potContributionBr,
   };
 }
 function dailyRewardKey(playerId, gameOver, scores) {
@@ -3965,27 +4081,33 @@ function formatDailyRewardParts(parts) {
   if (parts.winProgress) bits.push(`win +${parts.winProgress} daily`);
   if (parts.goalProgress) bits.push(`250 +${parts.goalProgress} daily`);
   if (parts.winRewardBr) bits.push(`+${brText(parts.winRewardBr)}`);
+  if (parts.potContributionBr) bits.push(`+${brText(parts.potContributionBr)} to pot`);
   return bits.join(' · ');
 }
 function awardDailyProgressForGameOver(playerId, gameOver, scores) {
   const parts = dailyRewardParts(playerId, gameOver, scores);
   const daily = readDailyState();
-  if (!parts.progressTotal && !parts.winRewardBr) {
-    return { parts, progressAwarded: 0, brAwarded: 0, dailyRewardBr: 0, progress: daily.dailyProgress, walletBr: daily.walletBr, duplicate: false };
+  if (daily.dailyRewardClaimed) parts.potContributionBr = 0;
+  const config = (state && state.config) || creatorConfig;
+  const currentPotBr = dailyPotBaseFromConfig(config) + daily.dailyPotEarnedBr;
+  if (!parts.progressTotal && !parts.winRewardBr && !parts.potContributionBr) {
+    return { parts, progressAwarded: 0, brAwarded: 0, potAddedBr: 0, potBr: currentPotBr, dailyRewardBr: 0, progress: daily.dailyProgress, walletBr: daily.walletBr, duplicate: false };
   }
   const key = dailyRewardKey(playerId, gameOver, scores);
   if (daily.awardedGameIds.includes(key)) {
-    return { parts, progressAwarded: 0, brAwarded: 0, dailyRewardBr: 0, progress: daily.dailyProgress, walletBr: daily.walletBr, duplicate: true };
+    return { parts, progressAwarded: 0, brAwarded: 0, potAddedBr: 0, potBr: currentPotBr, dailyRewardBr: 0, progress: daily.dailyProgress, walletBr: daily.walletBr, duplicate: true };
   }
-  const goal = dailyGoalFromConfig((state && state.config) || creatorConfig);
-  const dailyRewardBr = dailyRewardFromConfig((state && state.config) || creatorConfig);
+  const goal = dailyGoalFromConfig(config);
   const beforeProgress = daily.dailyProgress;
   daily.dailyProgress = Math.max(0, daily.dailyProgress + parts.progressTotal);
+  daily.dailyPotEarnedBr += parts.potContributionBr;
+  const potBr = dailyPotBaseFromConfig(config) + daily.dailyPotEarnedBr;
+  const completionRewardBr = parts.rewardMode === 'pot' ? potBr : dailyRewardFromConfig(config);
   let dailyRewardPaid = 0;
   if (!daily.dailyRewardClaimed && beforeProgress < goal && daily.dailyProgress >= goal) {
-    daily.walletBr += dailyRewardBr;
+    daily.walletBr += completionRewardBr;
     daily.dailyRewardClaimed = true;
-    dailyRewardPaid = dailyRewardBr;
+    dailyRewardPaid = completionRewardBr;
   }
   daily.walletBr += parts.winRewardBr;
   daily.awardedGameIds.push(key);
@@ -4002,6 +4124,8 @@ function awardDailyProgressForGameOver(playerId, gameOver, scores) {
     parts,
     progressAwarded: parts.progressTotal,
     brAwarded: parts.winRewardBr,
+    potAddedBr: parts.potContributionBr,
+    potBr,
     dailyRewardBr: dailyRewardPaid,
     progress: saved.dailyProgress,
     walletBr: saved.walletBr,
@@ -5101,6 +5225,10 @@ let creatorConfig = {
   brCapPerGame: 'none',
   dailyGoal: DEFAULT_DAILY_GOAL,
   dailyRewardBr: DEFAULT_DAILY_REWARD_BR,
+  dailyRewardMode: 'fixed',
+  dailyPotBaseBr: DEFAULT_DAILY_POT_BASE_BR,
+  dailyPotWinProgress: DEFAULT_DAILY_POT_WIN_PROGRESS,
+  dailyPotGoalProgress: DEFAULT_DAILY_POT_GOAL_PROGRESS,
   tiers: normalizeTierConfigs(),
   matchMode: 'manual',
   matchTier: 'tier1',
@@ -5188,11 +5316,16 @@ function freshState(config) {
     brCapPerGame: 'none',
     dailyGoal: DEFAULT_DAILY_GOAL,
     dailyRewardBr: DEFAULT_DAILY_REWARD_BR,
+    dailyRewardMode: 'fixed',
+    dailyPotBaseBr: DEFAULT_DAILY_POT_BASE_BR,
+    dailyPotWinProgress: DEFAULT_DAILY_POT_WIN_PROGRESS,
+    dailyPotGoalProgress: DEFAULT_DAILY_POT_GOAL_PROGRESS,
     tiers: normalizeTierConfigs(),
     matchMode: 'manual',
     matchTier: selectedTierId,
     ...(config || {}),
   };
+  cfg.dailyRewardMode = dailyRewardModeFromConfig(cfg);
   cfg.tiers = normalizeTierConfigs(cfg.tiers);
   if (!TIER_IDS.includes(cfg.matchTier)) cfg.matchTier = 'tier1';
   const simul = cfg.gameMode === 'simultaneous';
@@ -5325,10 +5458,14 @@ function normalizeState(s) {
   if (s.extraRollsUsed == null) s.extraRollsUsed = 0;
   s.restartUsed = !!s.restartUsed;
   s.extraTime = !!s.extraTime;
-  if (s.config == null) s.config = { cooldownSec: 30, initialBonusRolls: 100, gameMode: 'different', oppTurnMode: 'show', simulAnticipate: false, hintsEnabled: false, submitMode: 'play', extraRollLimit: 2, extraRollCost: 1, restartTurn: false, brCapPerGame: 'none', dailyGoal: DEFAULT_DAILY_GOAL, dailyRewardBr: DEFAULT_DAILY_REWARD_BR, tiers: normalizeTierConfigs(), matchMode: 'manual', matchTier: 'tier1' };
+  if (s.config == null) s.config = { cooldownSec: 30, initialBonusRolls: 100, gameMode: 'different', oppTurnMode: 'show', simulAnticipate: false, hintsEnabled: false, submitMode: 'play', extraRollLimit: 2, extraRollCost: 1, restartTurn: false, brCapPerGame: 'none', dailyGoal: DEFAULT_DAILY_GOAL, dailyRewardBr: DEFAULT_DAILY_REWARD_BR, dailyRewardMode: 'fixed', dailyPotBaseBr: DEFAULT_DAILY_POT_BASE_BR, dailyPotWinProgress: DEFAULT_DAILY_POT_WIN_PROGRESS, dailyPotGoalProgress: DEFAULT_DAILY_POT_GOAL_PROGRESS, tiers: normalizeTierConfigs(), matchMode: 'manual', matchTier: 'tier1' };
   if (s.config.initialBonusRolls == null) s.config.initialBonusRolls = 100;
   if (s.config.dailyGoal == null) s.config.dailyGoal = DEFAULT_DAILY_GOAL;
   if (s.config.dailyRewardBr == null) s.config.dailyRewardBr = DEFAULT_DAILY_REWARD_BR;
+  s.config.dailyRewardMode = dailyRewardModeFromConfig(s.config);
+  if (s.config.dailyPotBaseBr == null) s.config.dailyPotBaseBr = DEFAULT_DAILY_POT_BASE_BR;
+  if (s.config.dailyPotWinProgress == null) s.config.dailyPotWinProgress = DEFAULT_DAILY_POT_WIN_PROGRESS;
+  if (s.config.dailyPotGoalProgress == null) s.config.dailyPotGoalProgress = DEFAULT_DAILY_POT_GOAL_PROGRESS;
   s.config.tiers = normalizeTierConfigs(s.config.tiers);
   if (!TIER_IDS.includes(s.config.matchTier)) s.config.matchTier = 'tier1';
   if (!isPaidMatchMode(s.config.matchMode)) s.config.matchMode = 'manual';
@@ -6412,6 +6549,10 @@ if (pwaNavigator && 'serviceWorker' in pwaNavigator && /^https?:$/.test(window.l
       <div class="settings-scroll">
       <div class="creator-panel-group">
         <h3>Daily goal</h3>
+        <div class="creator-btn-row daily-model-selector" data-group="dailyRewardMode" aria-label="Daily goal reward model">
+          <button type="button" class="creator-btn active" data-value="fixed" onclick="setCreatorConfig('dailyRewardMode', 'fixed')">Fixed reward</button>
+          <button type="button" class="creator-btn" data-value="pot" onclick="setCreatorConfig('dailyRewardMode', 'pot')">Growing pot</button>
+        </div>
         <label class="creator-field" for="dailyGoalInput">
           <span>Goal progress</span>
           <input
@@ -6426,28 +6567,47 @@ if (pwaNavigator && 'serviceWorker' in pwaNavigator && /^https?:$/.test(window.l
             onblur="normalizeCreatorNumberConfig(this, 'dailyGoal', 1)"
           >
         </label>
-        <label class="creator-field" for="dailyRewardInput">
-          <span>Daily reward BRs</span>
-          <input
-            id="dailyRewardInput"
-            class="creator-number-input"
-            type="number"
-            min="0"
-            step="1"
-            value="20"
-            inputmode="numeric"
-            oninput="setCreatorNumberConfig('dailyRewardBr', this.value)"
-            onblur="normalizeCreatorNumberConfig(this, 'dailyRewardBr')"
-          >
-        </label>
+        <div class="daily-model-fields" data-daily-mode-section="fixed">
+          <label class="creator-field" for="dailyRewardInput">
+            <span>Daily reward BRs</span>
+            <input
+              id="dailyRewardInput"
+              class="creator-number-input"
+              type="number"
+              min="0"
+              step="1"
+              value="20"
+              inputmode="numeric"
+              oninput="setCreatorNumberConfig('dailyRewardBr', this.value)"
+              onblur="normalizeCreatorNumberConfig(this, 'dailyRewardBr')"
+            >
+          </label>
+        </div>
+        <div class="daily-model-fields" data-daily-mode-section="pot" hidden>
+          <p class="daily-model-note">The pot is personal. A win pays the instant tier reward and also grows the daily payout.</p>
+          <label class="creator-field" for="dailyPotBaseInput">
+            <span>Starting pot BRs</span>
+            <input id="dailyPotBaseInput" class="creator-number-input" type="number" min="0" step="1" value="5" inputmode="numeric" oninput="setCreatorNumberConfig('dailyPotBaseBr', this.value)" onblur="normalizeCreatorNumberConfig(this, 'dailyPotBaseBr')">
+          </label>
+          <label class="creator-field" for="dailyPotWinProgressInput">
+            <span>Win progress</span>
+            <input id="dailyPotWinProgressInput" class="creator-number-input" type="number" min="0" step="1" value="2" inputmode="numeric" oninput="setCreatorNumberConfig('dailyPotWinProgress', this.value)" onblur="normalizeCreatorNumberConfig(this, 'dailyPotWinProgress')">
+          </label>
+          <label class="creator-field" for="dailyPotGoalProgressInput">
+            <span>250 progress</span>
+            <input id="dailyPotGoalProgressInput" class="creator-number-input" type="number" min="0" step="1" value="1" inputmode="numeric" oninput="setCreatorNumberConfig('dailyPotGoalProgress', this.value)" onblur="normalizeCreatorNumberConfig(this, 'dailyPotGoalProgress')">
+          </label>
+        </div>
       </div>
       <div class="creator-panel-group">
         <h3>Tier 1</h3>
         <div class="creator-tier-grid">
-          <label for="tier1WinMetaInput">Win meta reward</label>
-          <input id="tier1WinMetaInput" class="creator-number-input" type="number" min="0" step="1" value="2" inputmode="numeric" oninput="setCreatorTierConfig('tier1', 'winMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier1', 'winMetaReward')">
-          <label for="tier1GoalMetaInput">250 meta reward</label>
-          <input id="tier1GoalMetaInput" class="creator-number-input" type="number" min="0" step="1" value="1" inputmode="numeric" oninput="setCreatorTierConfig('tier1', 'goalMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier1', 'goalMetaReward')">
+          <label for="tier1WinMetaInput" data-daily-mode-field="fixed">Win meta reward</label>
+          <input id="tier1WinMetaInput" data-daily-mode-field="fixed" class="creator-number-input" type="number" min="0" step="1" value="2" inputmode="numeric" oninput="setCreatorTierConfig('tier1', 'winMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier1', 'winMetaReward')">
+          <label for="tier1GoalMetaInput" data-daily-mode-field="fixed">250 meta reward</label>
+          <input id="tier1GoalMetaInput" data-daily-mode-field="fixed" class="creator-number-input" type="number" min="0" step="1" value="1" inputmode="numeric" oninput="setCreatorTierConfig('tier1', 'goalMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier1', 'goalMetaReward')">
+          <label for="tier1PotInput" data-daily-mode-field="pot" hidden>Pot on win</label>
+          <input id="tier1PotInput" data-daily-mode-field="pot" hidden class="creator-number-input" type="number" min="0" step="1" value="1" inputmode="numeric" oninput="setCreatorTierConfig('tier1', 'potContributionBr', this.value)" onblur="normalizeCreatorTierInput(this, 'tier1', 'potContributionBr')">
           <label for="tier1WinRewardInput">Win reward BRs</label>
           <input id="tier1WinRewardInput" class="creator-number-input" type="number" min="0" step="1" value="3" inputmode="numeric" oninput="setCreatorTierConfig('tier1', 'winRewardBr', this.value)" onblur="normalizeCreatorTierInput(this, 'tier1', 'winRewardBr')">
           <label for="tier1EntryCostInput">Entry cost BRs</label>
@@ -6457,10 +6617,12 @@ if (pwaNavigator && 'serviceWorker' in pwaNavigator && /^https?:$/.test(window.l
       <div class="creator-panel-group">
         <h3>Tier 2</h3>
         <div class="creator-tier-grid">
-          <label for="tier2WinMetaInput">Win meta reward</label>
-          <input id="tier2WinMetaInput" class="creator-number-input" type="number" min="0" step="1" value="5" inputmode="numeric" oninput="setCreatorTierConfig('tier2', 'winMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier2', 'winMetaReward')">
-          <label for="tier2GoalMetaInput">250 meta reward</label>
-          <input id="tier2GoalMetaInput" class="creator-number-input" type="number" min="0" step="1" value="2" inputmode="numeric" oninput="setCreatorTierConfig('tier2', 'goalMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier2', 'goalMetaReward')">
+          <label for="tier2WinMetaInput" data-daily-mode-field="fixed">Win meta reward</label>
+          <input id="tier2WinMetaInput" data-daily-mode-field="fixed" class="creator-number-input" type="number" min="0" step="1" value="5" inputmode="numeric" oninput="setCreatorTierConfig('tier2', 'winMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier2', 'winMetaReward')">
+          <label for="tier2GoalMetaInput" data-daily-mode-field="fixed">250 meta reward</label>
+          <input id="tier2GoalMetaInput" data-daily-mode-field="fixed" class="creator-number-input" type="number" min="0" step="1" value="2" inputmode="numeric" oninput="setCreatorTierConfig('tier2', 'goalMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier2', 'goalMetaReward')">
+          <label for="tier2PotInput" data-daily-mode-field="pot" hidden>Pot on win</label>
+          <input id="tier2PotInput" data-daily-mode-field="pot" hidden class="creator-number-input" type="number" min="0" step="1" value="3" inputmode="numeric" oninput="setCreatorTierConfig('tier2', 'potContributionBr', this.value)" onblur="normalizeCreatorTierInput(this, 'tier2', 'potContributionBr')">
           <label for="tier2WinRewardInput">Win reward BRs</label>
           <input id="tier2WinRewardInput" class="creator-number-input" type="number" min="0" step="1" value="8" inputmode="numeric" oninput="setCreatorTierConfig('tier2', 'winRewardBr', this.value)" onblur="normalizeCreatorTierInput(this, 'tier2', 'winRewardBr')">
           <label for="tier2EntryCostInput">Entry cost BRs</label>
@@ -6470,10 +6632,12 @@ if (pwaNavigator && 'serviceWorker' in pwaNavigator && /^https?:$/.test(window.l
       <div class="creator-panel-group">
         <h3>Tier 3</h3>
         <div class="creator-tier-grid">
-          <label for="tier3WinMetaInput">Win meta reward</label>
-          <input id="tier3WinMetaInput" class="creator-number-input" type="number" min="0" step="1" value="12" inputmode="numeric" oninput="setCreatorTierConfig('tier3', 'winMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier3', 'winMetaReward')">
-          <label for="tier3GoalMetaInput">250 meta reward</label>
-          <input id="tier3GoalMetaInput" class="creator-number-input" type="number" min="0" step="1" value="4" inputmode="numeric" oninput="setCreatorTierConfig('tier3', 'goalMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier3', 'goalMetaReward')">
+          <label for="tier3WinMetaInput" data-daily-mode-field="fixed">Win meta reward</label>
+          <input id="tier3WinMetaInput" data-daily-mode-field="fixed" class="creator-number-input" type="number" min="0" step="1" value="12" inputmode="numeric" oninput="setCreatorTierConfig('tier3', 'winMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier3', 'winMetaReward')">
+          <label for="tier3GoalMetaInput" data-daily-mode-field="fixed">250 meta reward</label>
+          <input id="tier3GoalMetaInput" data-daily-mode-field="fixed" class="creator-number-input" type="number" min="0" step="1" value="4" inputmode="numeric" oninput="setCreatorTierConfig('tier3', 'goalMetaReward', this.value)" onblur="normalizeCreatorTierInput(this, 'tier3', 'goalMetaReward')">
+          <label for="tier3PotInput" data-daily-mode-field="pot" hidden>Pot on win</label>
+          <input id="tier3PotInput" data-daily-mode-field="pot" hidden class="creator-number-input" type="number" min="0" step="1" value="10" inputmode="numeric" oninput="setCreatorTierConfig('tier3', 'potContributionBr', this.value)" onblur="normalizeCreatorTierInput(this, 'tier3', 'potContributionBr')">
           <label for="tier3WinRewardInput">Win reward BRs</label>
           <input id="tier3WinRewardInput" class="creator-number-input" type="number" min="0" step="1" value="18" inputmode="numeric" oninput="setCreatorTierConfig('tier3', 'winRewardBr', this.value)" onblur="normalizeCreatorTierInput(this, 'tier3', 'winRewardBr')">
           <label for="tier3EntryCostInput">Entry cost BRs</label>

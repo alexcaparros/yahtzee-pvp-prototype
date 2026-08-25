@@ -11,6 +11,11 @@ assert.ok(appScript, 'Main prototype script was not found');
 for (const reason of ['win_reward', 'daily_reward', 'bonus_purchase', 'admin_adjustment', 'match_entry', 'extra_roll', 'turn_restart']) {
   assert.ok(appScript[2].includes(`'${reason}'`), `BR ledger should map ${reason}`);
 }
+for (const fieldId of ['dailyPotBaseInput', 'dailyPotWinProgressInput', 'dailyPotGoalProgressInput', 'tier1PotInput', 'tier2PotInput', 'tier3PotInput']) {
+  assert.ok(html.includes(`id="${fieldId}"`), `Admin should expose ${fieldId}`);
+}
+assert.ok(html.includes("setCreatorConfig('dailyRewardMode', 'fixed')"), 'Admin should retain the fixed reward model');
+assert.ok(html.includes("setCreatorConfig('dailyRewardMode', 'pot')"), 'Admin should expose the growing pot model');
 
 function clone(value) {
   return value == null ? value : JSON.parse(JSON.stringify(value));
@@ -244,6 +249,68 @@ async function run() {
   assert.equal(host.element('roomToolsTierMeta').textContent, 'Win +2 daily · 250 +1 daily', 'Room tools should preview private-room daily rewards');
   assert.equal(host.element('roomTierTier1').classList.contains('active'), true, 'Room tools should mark the selected tier');
 
+  const potFirebase = createRealtimeDatabase();
+  const potClient = createClient('PotPlayer', potFirebase, new Map());
+  vm.runInContext(`
+    setCreatorConfig('dailyRewardMode', 'pot');
+    selectedTierId = 'tier3';
+    writeDailyState({
+      date: todayKey(),
+      walletBr: 50,
+      dailyProgress: 17,
+      dailyPotEarnedBr: 4,
+      dailyRewardClaimed: false,
+      awardedGameIds: [],
+      chargedEntryGameIds: [],
+    });
+    renderLobbyHome();
+  `, potClient.context);
+  const tierProgress = vm.runInContext(`TIER_IDS.map(id => dailyProgressRewardsFromConfig(creatorConfig, id))`, potClient.context);
+  for (const reward of tierProgress) {
+    assert.equal(reward.winProgress, 2, 'Every pot tier should grant +2 progress for a win');
+    assert.equal(reward.goalProgress, 1, 'Every pot tier should grant +1 progress for reaching 250');
+  }
+  assert.equal(potClient.element('lobbyDailyFill').style.width, '85%', 'Growing pot should retain earned progress');
+  assert.equal(potClient.element('lobbyDailyWinPreview').style.width, '10%', 'Every pot tier should preview the same +2 win progress');
+  assert.equal(potClient.element('lobbyDailyGoalPreview').style.width, '5%', 'Every pot tier should preview the same +1 250 progress');
+  assert.equal(potClient.element('lobbyDailyPotentialLabel').textContent, 'All tiers progress');
+  assert.equal(potClient.element('lobbyDailyRewardLabel').textContent, 'Current pot');
+  assert.equal(potClient.element('lobbyDailyReward').textContent, '9 BRs', 'Current pot should include the 5 BR base plus earned value');
+  assert.equal(potClient.element('matchReward').textContent, '+18 BRs', 'Tier 3 should retain its instant win reward');
+  assert.equal(potClient.element('matchPotRewardGroup').hidden, false, 'Growing pot should reveal the pot component');
+  assert.equal(potClient.element('matchPotReward').textContent, '+10 BRs', 'Tier 3 should grow the pot faster');
+  assert.equal(potClient.element('roomToolsTierMeta').textContent, 'Win +2 daily · 250 +1 daily', 'Private pot matches should use tier-independent progress');
+  assert.equal(potClient.element('roomToolsTierReward').textContent, 'Winner +18 BRs now · +10 BRs to pot');
+
+  const potAward = vm.runInContext(`
+    state = freshState({
+      ...creatorConfig,
+      matchMode: 'matchmaking',
+      matchTier: 'tier3',
+      matchId: 'pot-test',
+    });
+    myRole = 'p1';
+    awardDailyProgressForGameOver('p1', {
+      winner: 'p1',
+      reason: 'complete',
+      stars: { p1: true, p2: false },
+      metaId: 'pot-award-1',
+      tier: 'tier3',
+      matchMode: 'matchmaking',
+    }, { p1: 260, p2: 180 });
+  `, potClient.context);
+  assert.equal(potAward.progressAwarded, 3, 'Tier 3 pot matches should award the same 2+1 progress as Tier 1');
+  assert.equal(potAward.potAddedBr, 10, 'Tier 3 win should add 10 BRs to the pot');
+  assert.equal(potAward.potBr, 19, 'Pot should include base and all accumulated contributions');
+  assert.equal(potAward.dailyRewardBr, 19, 'Completing the goal should pay the full accumulated pot');
+  assert.equal(potAward.brAwarded, 18, 'The instant Tier 3 reward should remain separate');
+  assert.equal(potAward.walletBr, 87, 'Wallet should receive both 18 instant BRs and the 19 BR pot');
+  const duplicatePotAward = vm.runInContext(`awardDailyProgressForGameOver('p1', {
+    winner: 'p1', reason: 'complete', stars: { p1: true, p2: false }, metaId: 'pot-award-1', tier: 'tier3', matchMode: 'matchmaking'
+  }, { p1: 260, p2: 180 })`, potClient.context);
+  assert.equal(duplicatePotAward.duplicate, true, 'Pot rewards should remain idempotent');
+  assert.equal(duplicatePotAward.walletBr, 87, 'A duplicate game-over event must not pay the pot twice');
+
   const privateFirebase = createRealtimeDatabase();
   const privateStorage = new Map();
   const privateHost = createClient('PrivateHost', privateFirebase, privateStorage);
@@ -323,7 +390,7 @@ async function run() {
   assert.equal(host.element('yahtzeeRollFeedback').classList.contains('show'), true, 'Yahtzee label should show');
   assert.equal(host.element('yahtzeeRollFeedback').hidden, false, 'Yahtzee label should be visible');
 
-  console.log(`matchmakingProtocol=ok room=${roomCode} hostWallet=66 guestWallet=28 animations=ok analytics=ok isolatedSessions=true`);
+  console.log(`matchmakingProtocol=ok room=${roomCode} hostWallet=66 guestWallet=28 animations=ok analytics=ok dailyPot=19 isolatedSessions=true`);
 }
 
 run().catch((error) => {
