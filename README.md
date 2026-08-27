@@ -2,12 +2,18 @@
 
 This standalone build preserves the real-time Yahtzee PvP prototype mechanics and adds one secondary goal: each player earns a star when their total score reaches 250 points. The star is awarded independently of the match result.
 
-The lobby variant replaces the dice-token meta with a configurable daily goal. Players progress the daily goal through paid-match wins and by reaching the 250-point secondary goal. The Admin screen can switch between two reward models:
+The lobby variant replaces the dice-token meta with a configurable daily goal. Players progress the daily goal through paid-match wins and by reaching the 250-point secondary goal. The growing-pot model is the default, while the Admin screen can still switch between two reward models:
 
 - Fixed reward: the original tier-specific daily progress and a fixed 20 BR completion reward.
 - Growing pot: a personal pot starts at 5 BRs; every tier grants the same +2 win progress and +1 progress for reaching 250, while a win adds 1 / 3 / 10 BRs to the pot in tiers 1 / 2 / 3. The winner still receives the existing instant tier reward, and completing the daily goal pays the complete accumulated pot.
 
 The goal, fixed reward, starting pot, tier-independent progress, and each tier's pot contribution are editable in Admin.
+
+The main lobby also includes a weekly achievement screen with twelve challenges arranged in bronze, silver, and gold tiers. It tracks match wins, the best score in one game, distinct opponents, and the most Yahtzee rolls submitted in one game. All challenges are available immediately, completed challenges receive a visual stamp, and progress resets every Monday at 09:00 UTC. Cosmetic rewards are intentionally deferred until the future reward layer exists.
+
+The prototype now requires an `@scopely.com` email identity. Wallet, daily-goal state, achievement progress, and custom player names are stored in an isolated browser profile keyed by that email, so the same user resumes after closing and reopening the browser. BR analytics use a stable anonymized ID derived from the email and never store the raw address. This is a prototype identity layer for same-browser persistence, not secure authentication or cross-device SSO.
+
+Admin settings include a two-step economy reset action that clears all shared BR source, sink, player, and recent-event analytics.
 
 The lobby also adds simple tiered matchmaking:
 
@@ -18,7 +24,7 @@ The lobby also adds simple tiered matchmaking:
 Manual create, join, and public-game tools remain available behind the user icon in the lobby.
 They open as a dedicated full-screen room browser with a back action to return to matchmaking.
 
-Each player tab owns a session-scoped wallet and daily meta record. Within that tab, the lobby and in-game BR displays use the same persistent balance, and entry costs, in-game spending, purchases, rewards, and Admin edits all update it without affecting the other player.
+Each signed-in Scopely email owns a separate persistent wallet and progress record. Within that profile, the lobby and in-game BR displays use the same balance, and entry costs, in-game spending, purchases, rewards, and Admin edits all update it without affecting another signed-in profile.
 
 In-game feedback includes a compact wallet pulse with the deducted BR amount and a brief dice glow/label when a settled roll is a Yahtzee. Both effects respect reduced-motion preferences.
 

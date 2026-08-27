@@ -344,6 +344,199 @@ body {
   --bg-bot: #6a1414;
 }
 
+/* Persistent prototype identity */
+.login-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 50% 13%, rgba(108,232,255,0.32), transparent 28%),
+    radial-gradient(circle at 82% 78%, rgba(255,215,81,0.14), transparent 25%),
+    linear-gradient(180deg, #04a8e3 0%, #197bd4 46%, #5034cc 100%);
+  color: #fff;
+  text-align: center;
+}
+.login-screen[hidden] { display: none; }
+.login-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0.75), transparent 62%);
+}
+.login-card {
+  position: relative;
+  width: 100%;
+  padding: 28px 24px 24px;
+  border: 2px solid rgba(255,255,255,0.28);
+  border-radius: 26px;
+  background: linear-gradient(155deg, rgba(13,91,174,0.88), rgba(31,48,139,0.9));
+  box-shadow: 0 15px 0 rgba(7,35,99,0.19), 0 30px 70px rgba(3,18,65,0.28), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.login-mark {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 17px;
+  place-items: center;
+  border: 3px solid rgba(255,255,255,0.8);
+  border-radius: 20px;
+  background: linear-gradient(145deg, #fff3a7, #ffc943);
+  box-shadow: 0 7px 0 rgba(4,32,89,0.28), inset 0 2px 0 rgba(255,255,255,0.65);
+  color: #623900;
+  font-size: 30px;
+  font-weight: 1000;
+  transform: rotate(-4deg);
+}
+.login-eyebrow {
+  display: block;
+  color: #a6f1ff;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.login-card h1 {
+  margin-top: 4px;
+  font-size: 30px;
+  line-height: 1;
+  text-shadow: 0 3px 0 rgba(4,35,89,0.22);
+}
+.login-card > p {
+  margin: 9px auto 20px;
+  max-width: 260px;
+  color: rgba(230,248,255,0.76);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.login-field {
+  display: block;
+  text-align: left;
+}
+.login-field span {
+  display: block;
+  margin: 0 0 6px 3px;
+  color: rgba(236,250,255,0.82);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+.login-field input {
+  width: 100%;
+  height: 50px;
+  padding: 0 14px;
+  border: 2px solid rgba(255,255,255,0.32);
+  border-radius: 14px;
+  outline: none;
+  background: rgba(3,36,95,0.42);
+  color: #fff;
+  font: 800 15px/1 'Nunito', sans-serif;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.18);
+}
+.login-field input::placeholder { color: rgba(222,245,255,0.42); }
+.login-field input:focus {
+  border-color: #a9f2ff;
+  box-shadow: 0 0 0 3px rgba(102,227,255,0.17), inset 0 2px 4px rgba(0,0,0,0.18);
+}
+.login-submit {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 12px;
+  border: 2px solid rgba(255,255,255,0.72);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffe875, #ffc83e);
+  box-shadow: 0 5px 0 rgba(4,30,82,0.31);
+  color: #573300;
+  font: 950 16px/1 'Nunito', sans-serif;
+  cursor: pointer;
+}
+.login-submit:active { transform: translateY(2px); box-shadow: 0 3px 0 rgba(4,30,82,0.31); }
+.login-error {
+  min-height: 17px;
+  margin-top: 9px;
+  color: #ffb0ad;
+  font-size: 10px;
+  line-height: 1.3;
+}
+.login-note {
+  display: block;
+  margin-top: 12px;
+  color: rgba(221,244,255,0.5);
+  font-size: 8px;
+  line-height: 1.35;
+}
+.room-tools-account {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 14px;
+  background: rgba(3,39,98,0.27);
+}
+.room-tools-account-copy { min-width: 0; }
+.room-tools-account-copy span,
+.room-tools-account-copy strong { display: block; }
+.room-tools-account-copy span {
+  color: #a8f2ff;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.75px;
+  text-transform: uppercase;
+}
+.room-tools-account-copy strong {
+  margin-top: 2px;
+  overflow: hidden;
+  color: #fff;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lobby .room-tools-signout {
+  min-width: 0;
+  padding: 7px 9px !important;
+  border: 1px solid rgba(255,255,255,0.26) !important;
+  border-radius: 9px !important;
+  background: rgba(255,255,255,0.09) !important;
+  box-shadow: none !important;
+  color: rgba(242,251,255,0.86) !important;
+  font-size: 9px !important;
+}
+.admin-danger-btn {
+  width: 100%;
+  min-height: 43px;
+  padding: 10px 12px;
+  border: 2px solid rgba(255,184,179,0.42);
+  border-radius: 11px;
+  background: linear-gradient(180deg, rgba(213,71,75,0.92), rgba(157,35,52,0.94));
+  box-shadow: 0 3px 0 rgba(2,17,45,0.28);
+  color: #fff;
+  font: 900 12px/1.15 'Nunito', sans-serif;
+  cursor: pointer;
+}
+.admin-danger-btn.confirming {
+  border-color: #ffe6a1;
+  background: linear-gradient(180deg, #e48d34, #bd5628);
+  color: #fff8d2;
+}
+.admin-danger-btn:disabled { opacity: 0.58; cursor: wait; }
+.admin-action-status {
+  min-height: 15px;
+  margin-top: 7px;
+  color: rgba(225,246,255,0.68);
+  font-size: 9px;
+  line-height: 1.3;
+}
+
 /* Pattern background using SVG (replaces the broken Pattern_01-B.png) */
 .phone::before {
   content: "";
@@ -2728,6 +2921,357 @@ body {
   max-height: none;
 }
 
+/* Weekly achievements */
+.lobby .achievement-trigger {
+  width: 100%;
+  min-height: 34px;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto 12px;
+  align-items: center;
+  gap: 7px;
+  margin-top: 1px;
+  padding: 6px 9px !important;
+  border: 1px solid rgba(173,239,255,0.3) !important;
+  border-radius: 11px !important;
+  background: rgba(2,39,101,0.32) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1) !important;
+  color: #fff !important;
+  text-align: left;
+}
+.lobby .achievement-trigger:active { transform: translateY(1px); }
+.achievement-trigger-icon {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 1px solid rgba(255,236,145,0.55);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffe889, #f6aa2e);
+  box-shadow: 0 0 8px rgba(255,208,77,0.34);
+  color: #724000;
+  font-size: 12px;
+  line-height: 1;
+}
+.achievement-trigger-copy {
+  min-width: 0;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.65px;
+  text-transform: uppercase;
+}
+.achievement-trigger-progress {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(134,226,255,0.14);
+  color: #b9f4ff;
+  font-size: 10px;
+  font-weight: 950;
+}
+.achievement-trigger-arrow {
+  color: rgba(255,255,255,0.65);
+  font-size: 18px;
+  line-height: 1;
+}
+.achievement-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 82% 5%, rgba(255,222,91,0.22), transparent 27%),
+    radial-gradient(circle at 8% 48%, rgba(107,226,255,0.14), transparent 32%),
+    linear-gradient(180deg, #075dad 0%, #173886 50%, #35216f 100%);
+  color: #fff;
+  text-align: left;
+  z-index: 32 !important;
+}
+.achievement-panel[hidden] { display: none; }
+.achievement-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(125deg, rgba(255,255,255,0.06), transparent 32% 72%, rgba(8,5,58,0.18));
+}
+.achievement-header {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 78px;
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 17px 20px 9px;
+  border-bottom: 1px solid rgba(255,255,255,0.14);
+  background: rgba(2,31,89,0.16);
+}
+.lobby .achievement-back {
+  width: 42px;
+  height: 42px;
+  padding: 0 0 4px !important;
+  border: 2px solid rgba(255,255,255,0.35) !important;
+  border-radius: 13px !important;
+  background: rgba(3,43,103,0.34) !important;
+  box-shadow: 0 3px 0 rgba(2,22,64,0.24), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+  color: #fff !important;
+  font-size: 30px !important;
+}
+.achievement-header-copy span {
+  display: block;
+  color: #ffe894;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.achievement-header-copy h2 {
+  margin: 2px 0 0;
+  font-size: 21px;
+  line-height: 1;
+}
+.achievement-header-score {
+  min-width: 58px;
+  padding: 7px 9px;
+  border: 1px solid rgba(255,235,148,0.28);
+  border-radius: 12px;
+  background: rgba(94,61,8,0.24);
+  text-align: center;
+}
+.achievement-header-score span {
+  display: block;
+  color: rgba(255,244,196,0.68);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.achievement-header-score strong {
+  display: block;
+  margin-top: 2px;
+  color: #fff0a0;
+  font-size: 16px;
+  line-height: 1;
+}
+.achievement-body {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 18px 26px;
+  scrollbar-width: none;
+}
+.achievement-body::-webkit-scrollbar { display: none; }
+.achievement-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+.achievement-hero h3 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.02;
+}
+.achievement-hero p {
+  max-width: 226px;
+  margin: 5px 0 0;
+  color: rgba(225,246,255,0.67);
+  font-size: 10px;
+  line-height: 1.3;
+}
+.achievement-all-live {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border: 1px solid rgba(108,247,168,0.3);
+  border-radius: 999px;
+  background: rgba(14,105,67,0.25);
+  color: #aaffcb;
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.65px;
+  text-transform: uppercase;
+}
+.achievement-reset {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  margin: 13px 0;
+  padding: 9px 11px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px;
+  background: rgba(3,31,84,0.3);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.achievement-reset-icon {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(109,225,255,0.13);
+  color: #aef2ff;
+  font-size: 15px;
+}
+.achievement-reset-copy span,
+.achievement-reset-copy strong { display: block; }
+.achievement-reset-copy span {
+  color: rgba(224,246,255,0.58);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+.achievement-reset-copy strong {
+  margin-top: 2px;
+  font-size: 11px;
+}
+.achievement-countdown {
+  color: #fff0a0;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 950;
+  white-space: nowrap;
+}
+.achievement-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.achievement-card {
+  position: relative;
+  min-width: 0;
+  min-height: 126px;
+  overflow: hidden;
+  padding: 9px 8px 10px;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at 80% 14%, rgba(255,255,255,0.09), transparent 28%),
+    rgba(4,32,84,0.4);
+  box-shadow: 0 4px 0 rgba(2,17,57,0.14), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.achievement-card.tier-bronze { border-color: rgba(220,150,95,0.42); }
+.achievement-card.tier-silver { border-color: rgba(206,231,244,0.4); }
+.achievement-card.tier-gold { border-color: rgba(255,220,90,0.48); }
+.achievement-tier {
+  display: inline-block;
+  max-width: 100%;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.09);
+  color: rgba(235,248,255,0.72);
+  font-size: 7px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: 0.65px;
+  text-transform: uppercase;
+}
+.tier-bronze .achievement-tier { color: #f3b17e; }
+.tier-silver .achievement-tier { color: #d8f1ff; }
+.tier-gold .achievement-tier { color: #ffe878; }
+.achievement-card-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  margin-top: 7px;
+  place-items: center;
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(86,214,255,0.22), rgba(94,87,222,0.24));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.14);
+  color: #d9f8ff;
+  font-size: 11px;
+  font-weight: 1000;
+}
+.achievement-card h4 {
+  min-height: 23px;
+  margin: 7px 0 0;
+  color: #fff;
+  font-size: 10px;
+  line-height: 1.15;
+}
+.achievement-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+}
+.achievement-progress-track {
+  flex: 1 1 auto;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(0,16,55,0.55);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.28);
+}
+.achievement-progress-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #4edcff, #8ef5d0);
+  transition: width 0.35s ease;
+}
+.achievement-progress-value {
+  flex: 0 0 auto;
+  color: rgba(230,249,255,0.72);
+  font-size: 8px;
+  font-weight: 950;
+}
+.achievement-card.complete {
+  background:
+    radial-gradient(circle at 80% 14%, rgba(255,240,147,0.17), transparent 31%),
+    linear-gradient(145deg, rgba(12,91,92,0.58), rgba(24,55,109,0.54));
+  box-shadow: 0 4px 0 rgba(2,17,57,0.14), inset 0 0 0 1px rgba(132,255,190,0.13);
+}
+.achievement-card.complete .achievement-progress-fill {
+  background: linear-gradient(90deg, #55df94, #d8ff9a);
+  box-shadow: 0 0 7px rgba(100,242,160,0.5);
+}
+.achievement-stamp {
+  position: absolute;
+  top: 28px;
+  right: 6px;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 2px solid rgba(126,255,182,0.9);
+  border-radius: 50%;
+  opacity: 0;
+  color: #a1ffc8;
+  font-size: 7px;
+  line-height: 1.05;
+  font-weight: 1000;
+  letter-spacing: 0.6px;
+  text-align: center;
+  text-transform: uppercase;
+  transform: rotate(-13deg) scale(0.72);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+}
+.achievement-card.complete .achievement-stamp {
+  opacity: 0.94;
+  transform: rotate(-13deg) scale(1);
+  animation: achievement-stamp-in 0.42s cubic-bezier(.2,.9,.25,1.2) both;
+}
+@keyframes achievement-stamp-in {
+  0% { opacity: 0; transform: rotate(-13deg) scale(1.35); }
+  72% { opacity: 1; transform: rotate(-13deg) scale(0.92); }
+  100% { opacity: 0.94; transform: rotate(-13deg) scale(1); }
+}
+.achievement-footnote {
+  margin: 13px 4px 0;
+  color: rgba(218,241,255,0.48);
+  font-size: 8px;
+  line-height: 1.35;
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .achievement-progress-fill { transition: none; }
+  .achievement-card.complete .achievement-stamp { animation: none; }
+}
+
 /* Shared BR economy analytics */
 .economy-trigger {
   position: absolute;
@@ -3117,6 +3661,22 @@ body {
 
 <div class="phone">
 
+  <div class="login-screen" id="loginScreen" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="login-card">
+      <div class="login-mark" aria-hidden="true">Y</div>
+      <span class="login-eyebrow">Persistent player profile</span>
+      <h1 id="loginTitle">Scopely login</h1>
+      <p>Use your company email to keep wallet, daily-goal, and achievement progress between sessions.</p>
+      <label class="login-field" for="scopelyEmailInput">
+        <span>Scopely email</span>
+        <input id="scopelyEmailInput" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="name@scopely.com" aria-describedby="loginError">
+      </label>
+      <button type="button" class="login-submit" id="loginSubmitButton" onclick="loginWithScopelyEmail()">Continue</button>
+      <div class="login-error" id="loginError" role="alert"></div>
+      <small class="login-note">Prototype identity for this browser. Production authentication will be added with the future account layer.</small>
+    </div>
+  </div>
+
   <!-- Lobby (PvP via localStorage) -->
   <div class="lobby" id="lobby">
     <button type="button" class="admin-open-btn" id="lobbyAdminButton" aria-haspopup="dialog" aria-controls="settingsOverlay">⚙ Admin</button>
@@ -3132,8 +3692,8 @@ body {
           <span class="lobby-daily-title" id="lobbyDailyGoalText">Earn 20 daily points</span>
         </div>
         <div class="lobby-daily-reward-chip">
-          <span id="lobbyDailyRewardLabel">Reward</span>
-          <strong class="lobby-daily-reward" id="lobbyDailyReward">20 BRs</strong>
+          <span id="lobbyDailyRewardLabel">Current pot</span>
+          <strong class="lobby-daily-reward" id="lobbyDailyReward">5 BRs</strong>
         </div>
       </div>
       <div class="lobby-daily-progress-row">
@@ -3150,6 +3710,12 @@ body {
         <span class="lobby-daily-potential-item goal"><i class="lobby-daily-potential-swatch"></i><span id="lobbyDailyGoalRewardText">250 +1</span></span>
         <strong class="lobby-daily-potential-total" id="lobbyDailyPotentialTotal">Up to +3</strong>
       </div>
+      <button type="button" class="achievement-trigger" id="achievementTrigger" onclick="openAchievements()" aria-label="Open weekly achievements" aria-controls="achievementPanel" aria-expanded="false">
+        <span class="achievement-trigger-icon" aria-hidden="true">★</span>
+        <span class="achievement-trigger-copy">Achievements</span>
+        <strong class="achievement-trigger-progress" id="achievementTriggerProgress">0/12</strong>
+        <span class="achievement-trigger-arrow" aria-hidden="true">›</span>
+      </button>
     </div>
 
     <div class="match-card" id="matchCard">
@@ -3168,7 +3734,7 @@ body {
             <span>Now</span>
             <strong class="match-card-reward" id="matchReward">+3 BRs</strong>
           </div>
-          <div class="match-card-reward-value pot" id="matchPotRewardGroup" hidden>
+          <div class="match-card-reward-value pot" id="matchPotRewardGroup">
             <span>Daily pot</span>
             <strong class="match-card-reward" id="matchPotReward">+1 BR</strong>
           </div>
@@ -3271,6 +3837,39 @@ body {
       </div>
     </div>
 
+    <div class="achievement-panel" id="achievementPanel" role="region" aria-label="Weekly achievements" hidden>
+      <div class="achievement-header">
+        <button type="button" class="achievement-back" id="achievementBackButton" onclick="closeAchievements()" aria-label="Back to main lobby">‹</button>
+        <div class="achievement-header-copy">
+          <span>Weekly collection</span>
+          <h2>Achievements</h2>
+        </div>
+        <div class="achievement-header-score">
+          <span>Stamped</span>
+          <strong id="achievementHeaderProgress">0/12</strong>
+        </div>
+      </div>
+      <div class="achievement-body">
+        <div class="achievement-hero">
+          <div>
+            <h3>Make your mark</h3>
+            <p>Every challenge is active from the start. Push each track as far as you can this week.</p>
+          </div>
+          <div class="achievement-all-live">All unlocked</div>
+        </div>
+        <div class="achievement-reset">
+          <span class="achievement-reset-icon" aria-hidden="true">↻</span>
+          <div class="achievement-reset-copy">
+            <span>Weekly reset</span>
+            <strong>Monday · 09:00 UTC</strong>
+          </div>
+          <strong class="achievement-countdown" id="achievementCountdown" aria-live="off">--d --h --m</strong>
+        </div>
+        <div class="achievement-grid" id="achievementGrid"></div>
+        <p class="achievement-footnote">Progress and stamps reset together at the weekly deadline.</p>
+      </div>
+    </div>
+
     <button type="button" class="lobby-user-trigger" onclick="openRoomTools()" aria-label="Open room tools" aria-controls="lobbyUserPanel" aria-expanded="false"><span class="lobby-user-icon" aria-hidden="true"></span></button>
     <div class="lobby-user-panel" id="lobbyUserPanel" role="region" aria-label="Room tools" hidden>
       <div class="room-tools-header">
@@ -3282,6 +3881,13 @@ body {
         <div class="room-tools-wallet"><span>Wallet</span><strong id="roomToolsWallet">100 BRs</strong></div>
       </div>
       <div class="room-tools-body">
+      <div class="room-tools-account">
+        <div class="room-tools-account-copy">
+          <span>Signed in</span>
+          <strong id="roomToolsAccountEmail">name@scopely.com</strong>
+        </div>
+        <button type="button" class="room-tools-signout" onclick="logoutScopelyPlayer()">Sign out</button>
+      </div>
       <div class="room-tools-hero">
         <span>Play together</span>
         <h2>Choose a room</h2>
@@ -3604,8 +4210,8 @@ let state = {
   // duration and is consumed only while extra time is active.
   extraTimeRemainingMs: 30_000,
   players: {
-    p1: { scorecard: {}, bonusRolls: 100, bonusRollsSpent: 0, freeUsed: false, timeoutZeroUsed: false },
-    p2: { scorecard: {}, bonusRolls: 100, bonusRollsSpent: 0, freeUsed: false, timeoutZeroUsed: false }
+    p1: { scorecard: {}, bonusRolls: 100, bonusRollsSpent: 0, freeUsed: false, timeoutZeroUsed: false, yahtzeesSubmitted: 0 },
+    p2: { scorecard: {}, bonusRolls: 100, bonusRollsSpent: 0, freeUsed: false, timeoutZeroUsed: false, yahtzeesSubmitted: 0 }
   }
 };
 
@@ -3743,12 +4349,38 @@ const DEFAULT_DAILY_POT_GOAL_PROGRESS = 1;
 const DAILY_REWARD_MODES = ['fixed', 'pot'];
 const DAILY_STORAGE_KEY = 'yahtzee_pvp_daily_goal_v1';
 const PLAYER_META_STORAGE_KEY = 'yahtzee_pvp_player_meta_v2';
+const ACHIEVEMENT_STORAGE_KEY = 'yahtzee_pvp_achievements_v1';
+const SCOPELY_EMAIL_DOMAIN = 'scopely.com';
+const SCOPELY_LAST_EMAIL_KEY = 'yahtzee_pvp_scopely_email_v1';
+const SCOPELY_SESSION_EMAIL_KEY = 'yahtzee_pvp_scopely_email_session_v1';
+const SCOPELY_PROFILE_MIGRATION_KEY = 'yahtzee_pvp_profile_migrated_v1';
+const ACHIEVEMENT_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const ACHIEVEMENT_DEFINITIONS = [
+  { id: 'wins_3', metric: 'wins', target: 3, tier: 'bronze', icon: 'W', label: 'Win 3 games' },
+  { id: 'wins_5', metric: 'wins', target: 5, tier: 'silver', icon: 'W', label: 'Win 5 games' },
+  { id: 'wins_15', metric: 'wins', target: 15, tier: 'gold', icon: 'W', label: 'Win 15 games' },
+  { id: 'score_250', metric: 'bestScore', target: 250, tier: 'bronze', icon: '250', label: 'Score 250' },
+  { id: 'score_300', metric: 'bestScore', target: 300, tier: 'silver', icon: '300', label: 'Score 300' },
+  { id: 'score_350', metric: 'bestScore', target: 350, tier: 'gold', icon: '350', label: 'Score 350' },
+  { id: 'opponents_3', metric: 'opponents', target: 3, tier: 'bronze', icon: 'VS', label: 'Face 3 players' },
+  { id: 'opponents_5', metric: 'opponents', target: 5, tier: 'silver', icon: 'VS', label: 'Face 5 players' },
+  { id: 'opponents_10', metric: 'opponents', target: 10, tier: 'gold', icon: 'VS', label: 'Face 10 players' },
+  { id: 'yahtzees_2', metric: 'bestYahtzees', target: 2, tier: 'bronze', icon: 'Y', label: '2 Yahtzees in one game' },
+  { id: 'yahtzees_3', metric: 'bestYahtzees', target: 3, tier: 'silver', icon: 'Y', label: '3 Yahtzees in one game' },
+  { id: 'yahtzees_5', metric: 'bestYahtzees', target: 5, tier: 'gold', icon: 'Y', label: '5 Yahtzees in one game' },
+];
 const BR_ANALYTICS_PLAYER_KEY = 'yahtzee_pvp_br_analytics_player_v1';
 const BR_ANALYTICS_PATH = 'analytics/brEconomyV1';
 let playerMetaMemory = null;
+let achievementMemory = null;
+let activeScopelyEmailMemory = '';
+let achievementCountdownTimer = null;
+let achievementRenderedWeekKey = '';
+let achievementReturnFocus = null;
 let brAnalyticsPlayerIdMemory = '';
 let brAnalyticsUnsubscribe = null;
 let brAnalyticsReturnFocus = null;
+let economyResetConfirmTimer = null;
 let creatorWalletEditStart = null;
 const TIER_IDS = ['tier1', 'tier2', 'tier3'];
 const TIER_DEFAULTS = {
@@ -3797,6 +4429,366 @@ function brText(value) {
   const amount = cleanInt(value);
   return `${amount} BR${amount === 1 ? '' : 's'}`;
 }
+function normalizeScopelyEmail(value) {
+  return String(value || '').trim().toLowerCase();
+}
+function isValidScopelyEmail(value) {
+  const email = normalizeScopelyEmail(value);
+  return /^[^\s@]+@scopely\.com$/.test(email);
+}
+function activeScopelyEmail() {
+  if (activeScopelyEmailMemory) return activeScopelyEmailMemory;
+  try {
+    const stored = normalizeScopelyEmail(sessionStorage.getItem(SCOPELY_SESSION_EMAIL_KEY));
+    if (isValidScopelyEmail(stored)) activeScopelyEmailMemory = stored;
+  } catch (e) {}
+  return activeScopelyEmailMemory;
+}
+function playerProfileStorage() {
+  return activeScopelyEmail() ? localStorage : sessionStorage;
+}
+function playerProfileStorageKey(baseKey, email = activeScopelyEmail()) {
+  return email ? `${baseKey}:${normalizeScopelyEmail(email)}` : baseKey;
+}
+function stableProfileTrackingId(email) {
+  const input = normalizeScopelyEmail(email);
+  let hash = 2166136261;
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return `scopely_${(hash >>> 0).toString(36)}`;
+}
+function scopelyDisplayName(email) {
+  const localPart = normalizeScopelyEmail(email).split('@')[0] || 'Player';
+  return localPart
+    .split(/[._-]+/)
+    .filter(Boolean)
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('')
+    .slice(0, 20) || 'Player';
+}
+function updateActiveProfileUi() {
+  const email = activeScopelyEmail();
+  const roomEmail = document.getElementById('roomToolsAccountEmail');
+  if (roomEmail) roomEmail.textContent = email || 'Not signed in';
+}
+function showPlayerLogin() {
+  const screen = document.getElementById('loginScreen');
+  const error = document.getElementById('loginError');
+  if (screen) screen.hidden = false;
+  if (error) error.textContent = '';
+  window.requestAnimationFrame(() => {
+    const input = document.getElementById('scopelyEmailInput');
+    if (input) input.focus({ preventScroll: true });
+  });
+}
+function activatePlayerLobby() {
+  const screen = document.getElementById('loginScreen');
+  const nameInput = document.getElementById('myNameInput');
+  if (screen) screen.hidden = true;
+  if (nameInput) nameInput.value = '';
+  _sessionName = null;
+  updateActiveProfileUi();
+  initMyNameInput();
+  syncPlayerWalletFromStorage({ syncMatch: false });
+  renderLobbyHome();
+  subscribeLobbyList();
+}
+function initializePlayerLogin() {
+  let email = '';
+  try {
+    email = normalizeScopelyEmail(sessionStorage.getItem(SCOPELY_SESSION_EMAIL_KEY));
+    if (!isValidScopelyEmail(email)) email = normalizeScopelyEmail(localStorage.getItem(SCOPELY_LAST_EMAIL_KEY));
+  } catch (e) {}
+  if (!isValidScopelyEmail(email)) {
+    activeScopelyEmailMemory = '';
+    showPlayerLogin();
+    return false;
+  }
+  activeScopelyEmailMemory = email;
+  try {
+    sessionStorage.setItem(SCOPELY_SESSION_EMAIL_KEY, email);
+    localStorage.setItem(SCOPELY_LAST_EMAIL_KEY, email);
+  } catch (e) {}
+  return true;
+}
+function loginWithScopelyEmail() {
+  const input = document.getElementById('scopelyEmailInput');
+  const error = document.getElementById('loginError');
+  const email = normalizeScopelyEmail(input && input.value);
+  if (!isValidScopelyEmail(email)) {
+    if (error) error.textContent = `Use a valid @${SCOPELY_EMAIL_DOMAIN} email.`;
+    if (input) input.focus({ preventScroll: true });
+    return false;
+  }
+
+  const anonymousDaily = readDailyState();
+  const anonymousAchievements = readAchievementState();
+  const profileMetaKey = playerProfileStorageKey(PLAYER_META_STORAGE_KEY, email);
+  const profileAchievementKey = playerProfileStorageKey(ACHIEVEMENT_STORAGE_KEY, email);
+  let profileExists = false;
+  let migrationAvailable = false;
+  try {
+    profileExists = !!(localStorage.getItem(profileMetaKey) || localStorage.getItem(profileAchievementKey));
+    migrationAvailable = !localStorage.getItem(SCOPELY_PROFILE_MIGRATION_KEY);
+    sessionStorage.setItem(SCOPELY_SESSION_EMAIL_KEY, email);
+    localStorage.setItem(SCOPELY_LAST_EMAIL_KEY, email);
+  } catch (e) {}
+  activeScopelyEmailMemory = email;
+  playerMetaMemory = null;
+  achievementMemory = null;
+  brAnalyticsPlayerIdMemory = '';
+  _sessionName = null;
+
+  if (!profileExists && migrationAvailable) {
+    writeDailyState(anonymousDaily);
+    writeAchievementState(anonymousAchievements);
+    try {
+      localStorage.setItem(SCOPELY_PROFILE_MIGRATION_KEY, 'true');
+      sessionStorage.removeItem(PLAYER_META_STORAGE_KEY);
+      sessionStorage.removeItem(ACHIEVEMENT_STORAGE_KEY);
+    } catch (e) {}
+  }
+  if (error) error.textContent = '';
+  activatePlayerLobby();
+  return true;
+}
+async function logoutScopelyPlayer() {
+  await cleanupMyWaitingRoom();
+  unsubscribeLobbyList();
+  closeUserPanel();
+  closeBrAnalytics();
+  closeAchievements(false);
+  closeSettingsOverlay();
+  try {
+    sessionStorage.removeItem(SCOPELY_SESSION_EMAIL_KEY);
+    localStorage.removeItem(SCOPELY_LAST_EMAIL_KEY);
+  } catch (e) {}
+  activeScopelyEmailMemory = '';
+  playerMetaMemory = null;
+  achievementMemory = null;
+  brAnalyticsPlayerIdMemory = '';
+  _sessionName = null;
+  const input = document.getElementById('scopelyEmailInput');
+  const nameInput = document.getElementById('myNameInput');
+  if (input) input.value = '';
+  if (nameInput) nameInput.value = '';
+  showPlayerLogin();
+}
+function bindPlayerLoginControls() {
+  const input = document.getElementById('scopelyEmailInput');
+  if (!input || input.dataset.loginBound) return;
+  input.dataset.loginBound = 'true';
+  input.addEventListener('keydown', event => {
+    if (event.key === 'Enter') loginWithScopelyEmail();
+  });
+  input.addEventListener('input', () => {
+    const error = document.getElementById('loginError');
+    if (error) error.textContent = '';
+  });
+}
+function achievementWeekWindow(nowValue = Date.now()) {
+  const now = new Date(nowValue);
+  const mondayOffset = (now.getUTCDay() + 6) % 7;
+  let startAt = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() - mondayOffset,
+    9, 0, 0, 0,
+  );
+  if (now.getTime() < startAt) startAt -= ACHIEVEMENT_WEEK_MS;
+  return {
+    key: new Date(startAt).toISOString(),
+    startAt,
+    nextResetAt: startAt + ACHIEVEMENT_WEEK_MS,
+  };
+}
+function defaultAchievementState(nowValue = Date.now()) {
+  const week = achievementWeekWindow(nowValue);
+  return {
+    weekKey: week.key,
+    wins: 0,
+    bestScore: 0,
+    opponents: [],
+    bestYahtzees: 0,
+    recordedGameIds: [],
+  };
+}
+function readAchievementState(nowValue = Date.now()) {
+  const week = achievementWeekWindow(nowValue);
+  const storage = playerProfileStorage();
+  const storageKey = playerProfileStorageKey(ACHIEVEMENT_STORAGE_KEY);
+  let parsed = achievementMemory;
+  try {
+    const stored = JSON.parse(storage.getItem(storageKey) || 'null');
+    if (stored && typeof stored === 'object') parsed = stored;
+  } catch (e) {}
+  if (!parsed || typeof parsed !== 'object' || parsed.weekKey !== week.key) {
+    const reset = defaultAchievementState(nowValue);
+    achievementMemory = reset;
+    try { storage.setItem(storageKey, JSON.stringify(reset)); } catch (e) {}
+    return { ...reset, opponents: [], recordedGameIds: [] };
+  }
+  const opponents = Array.isArray(parsed.opponents)
+    ? [...new Set(parsed.opponents.map(value => String(value || '').trim().toLowerCase()).filter(Boolean))].slice(-40)
+    : [];
+  const normalized = {
+    weekKey: week.key,
+    wins: cleanInt(parsed.wins),
+    bestScore: cleanInt(parsed.bestScore),
+    opponents,
+    bestYahtzees: cleanInt(parsed.bestYahtzees),
+    recordedGameIds: Array.isArray(parsed.recordedGameIds)
+      ? parsed.recordedGameIds.filter(Boolean).slice(-80)
+      : [],
+  };
+  achievementMemory = normalized;
+  return { ...normalized, opponents: [...opponents], recordedGameIds: [...normalized.recordedGameIds] };
+}
+function writeAchievementState(meta, nowValue = Date.now()) {
+  const week = achievementWeekWindow(nowValue);
+  const storage = playerProfileStorage();
+  const storageKey = playerProfileStorageKey(ACHIEVEMENT_STORAGE_KEY);
+  const opponents = Array.isArray(meta && meta.opponents)
+    ? [...new Set(meta.opponents.map(value => String(value || '').trim().toLowerCase()).filter(Boolean))].slice(-40)
+    : [];
+  const safe = {
+    weekKey: week.key,
+    wins: cleanInt(meta && meta.wins),
+    bestScore: cleanInt(meta && meta.bestScore),
+    opponents,
+    bestYahtzees: cleanInt(meta && meta.bestYahtzees),
+    recordedGameIds: Array.isArray(meta && meta.recordedGameIds)
+      ? meta.recordedGameIds.filter(Boolean).slice(-80)
+      : [],
+  };
+  achievementMemory = safe;
+  try { storage.setItem(storageKey, JSON.stringify(safe)); } catch (e) {}
+  return { ...safe, opponents: [...opponents], recordedGameIds: [...safe.recordedGameIds] };
+}
+function achievementProgress(definition, achievementState) {
+  if (definition.metric === 'opponents') return achievementState.opponents.length;
+  return cleanInt(achievementState[definition.metric]);
+}
+function achievementCompletedCount(achievementState) {
+  return ACHIEVEMENT_DEFINITIONS.reduce((count, definition) => (
+    count + (achievementProgress(definition, achievementState) >= definition.target ? 1 : 0)
+  ), 0);
+}
+function formatAchievementCountdown(milliseconds) {
+  const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+}
+function renderAchievementShortcut() {
+  const progress = document.getElementById('achievementTriggerProgress');
+  if (!progress) return;
+  const achievements = readAchievementState();
+  progress.textContent = `${achievementCompletedCount(achievements)}/${ACHIEVEMENT_DEFINITIONS.length}`;
+}
+function renderAchievementCountdown() {
+  const countdown = document.getElementById('achievementCountdown');
+  if (!countdown) return;
+  const now = Date.now();
+  const week = achievementWeekWindow(now);
+  if (achievementRenderedWeekKey && achievementRenderedWeekKey !== week.key) {
+    renderAchievements();
+    return;
+  }
+  countdown.textContent = formatAchievementCountdown(week.nextResetAt - now);
+}
+function renderAchievements() {
+  const grid = document.getElementById('achievementGrid');
+  if (!grid) return;
+  const achievements = readAchievementState();
+  achievementRenderedWeekKey = achievements.weekKey;
+  const completed = achievementCompletedCount(achievements);
+  const headerProgress = document.getElementById('achievementHeaderProgress');
+  const triggerProgress = document.getElementById('achievementTriggerProgress');
+  if (headerProgress) headerProgress.textContent = `${completed}/${ACHIEVEMENT_DEFINITIONS.length}`;
+  if (triggerProgress) triggerProgress.textContent = `${completed}/${ACHIEVEMENT_DEFINITIONS.length}`;
+  grid.replaceChildren();
+  ACHIEVEMENT_DEFINITIONS.forEach(definition => {
+    const rawProgress = achievementProgress(definition, achievements);
+    const shownProgress = Math.min(rawProgress, definition.target);
+    const complete = rawProgress >= definition.target;
+    const card = document.createElement('article');
+    card.className = `achievement-card tier-${definition.tier}${complete ? ' complete' : ''}`;
+    card.dataset.achievementId = definition.id;
+    card.setAttribute('aria-label', `${definition.label}. ${shownProgress} of ${definition.target}${complete ? '. Completed' : ''}`);
+
+    const tier = document.createElement('span');
+    tier.className = 'achievement-tier';
+    tier.textContent = definition.tier;
+    const icon = document.createElement('span');
+    icon.className = 'achievement-card-icon';
+    icon.textContent = definition.icon;
+    const title = document.createElement('h4');
+    title.textContent = definition.label;
+    const progressRow = document.createElement('div');
+    progressRow.className = 'achievement-progress-row';
+    const track = document.createElement('div');
+    track.className = 'achievement-progress-track';
+    track.setAttribute('aria-hidden', 'true');
+    const fill = document.createElement('div');
+    fill.className = 'achievement-progress-fill';
+    fill.style.width = `${Math.min(100, (rawProgress / definition.target) * 100)}%`;
+    const value = document.createElement('span');
+    value.className = 'achievement-progress-value';
+    value.textContent = `${shownProgress}/${definition.target}`;
+    const stamp = document.createElement('span');
+    stamp.className = 'achievement-stamp';
+    stamp.textContent = '✓ DONE';
+    stamp.setAttribute('aria-hidden', 'true');
+
+    track.appendChild(fill);
+    progressRow.appendChild(track);
+    progressRow.appendChild(value);
+    card.appendChild(tier);
+    card.appendChild(icon);
+    card.appendChild(title);
+    card.appendChild(progressRow);
+    card.appendChild(stamp);
+    grid.appendChild(card);
+  });
+  renderAchievementCountdown();
+}
+function openAchievements() {
+  const lobby = document.getElementById('lobby');
+  const panel = document.getElementById('achievementPanel');
+  const trigger = document.getElementById('achievementTrigger');
+  if (!lobby || lobby.classList.contains('hidden') || !panel) return;
+  achievementReturnFocus = document.activeElement;
+  closeUserPanel();
+  closeBrAnalytics();
+  panel.hidden = false;
+  if (trigger) trigger.setAttribute('aria-expanded', 'true');
+  renderAchievements();
+  if (achievementCountdownTimer) clearInterval(achievementCountdownTimer);
+  achievementCountdownTimer = setInterval(renderAchievementCountdown, 1000);
+  window.requestAnimationFrame(() => {
+    const backButton = document.getElementById('achievementBackButton');
+    if (backButton) backButton.focus({ preventScroll: true });
+  });
+}
+function closeAchievements(restoreFocus = true) {
+  const panel = document.getElementById('achievementPanel');
+  const trigger = document.getElementById('achievementTrigger');
+  if (panel) panel.hidden = true;
+  if (trigger) trigger.setAttribute('aria-expanded', 'false');
+  if (achievementCountdownTimer) {
+    clearInterval(achievementCountdownTimer);
+    achievementCountdownTimer = null;
+  }
+  if (restoreFocus && achievementReturnFocus && typeof achievementReturnFocus.focus === 'function') {
+    achievementReturnFocus.focus({ preventScroll: true });
+  }
+  achievementReturnFocus = null;
+}
 function dailyGoalFromConfig(config) {
   return Math.max(1, cleanInt(config && config.dailyGoal, DEFAULT_DAILY_GOAL));
 }
@@ -3805,7 +4797,7 @@ function dailyRewardFromConfig(config) {
 }
 function dailyRewardModeFromConfig(config) {
   const mode = config && config.dailyRewardMode;
-  return DAILY_REWARD_MODES.includes(mode) ? mode : 'fixed';
+  return DAILY_REWARD_MODES.includes(mode) ? mode : 'pot';
 }
 function dailyPotBaseFromConfig(config) {
   return cleanInt(config && config.dailyPotBaseBr, DEFAULT_DAILY_POT_BASE_BR);
@@ -3847,11 +4839,16 @@ function isPaidMatchMode(mode) {
 }
 function readDailyState() {
   const today = todayKey();
+  const profileEmail = activeScopelyEmail();
+  const storage = playerProfileStorage();
+  const storageKey = playerProfileStorageKey(PLAYER_META_STORAGE_KEY);
   let startingWallet = DEFAULT_WALLET_BR;
-  try {
-    const legacy = JSON.parse(localStorage.getItem(DAILY_STORAGE_KEY) || 'null');
-    if (legacy && typeof legacy === 'object') startingWallet = cleanInt(legacy.walletBr, DEFAULT_WALLET_BR);
-  } catch (e) {}
+  if (!profileEmail) {
+    try {
+      const legacy = JSON.parse(localStorage.getItem(DAILY_STORAGE_KEY) || 'null');
+      if (legacy && typeof legacy === 'object') startingWallet = cleanInt(legacy.walletBr, DEFAULT_WALLET_BR);
+    } catch (e) {}
+  }
   const fallback = {
     date: today,
     walletBr: startingWallet,
@@ -3863,12 +4860,12 @@ function readDailyState() {
   };
   let parsed = playerMetaMemory;
   try {
-    const stored = JSON.parse(sessionStorage.getItem(PLAYER_META_STORAGE_KEY) || 'null');
+    const stored = JSON.parse(storage.getItem(storageKey) || 'null');
     if (stored && typeof stored === 'object') parsed = stored;
   } catch (e) {}
   if (!parsed || typeof parsed !== 'object') {
     playerMetaMemory = fallback;
-    try { sessionStorage.setItem(PLAYER_META_STORAGE_KEY, JSON.stringify(fallback)); } catch (e) {}
+    try { storage.setItem(storageKey, JSON.stringify(fallback)); } catch (e) {}
     return { ...fallback };
   }
   const walletBr = cleanInt(parsed.walletBr, DEFAULT_WALLET_BR);
@@ -3891,6 +4888,8 @@ function readDailyState() {
   return { ...normalized };
 }
 function writeDailyState(meta) {
+  const storage = playerProfileStorage();
+  const storageKey = playerProfileStorageKey(PLAYER_META_STORAGE_KEY);
   const safe = {
     date: todayKey(),
     walletBr: cleanInt(meta && meta.walletBr, DEFAULT_WALLET_BR),
@@ -3905,7 +4904,7 @@ function writeDailyState(meta) {
       : [],
   };
   playerMetaMemory = safe;
-  try { sessionStorage.setItem(PLAYER_META_STORAGE_KEY, JSON.stringify(safe)); } catch (e) {}
+  try { storage.setItem(storageKey, JSON.stringify(safe)); } catch (e) {}
   return safe;
 }
 
@@ -4051,6 +5050,7 @@ function renderLobbyHome() {
   } else if (status && !matchmakingQueued && !status.dataset.locked) {
     status.textContent = '';
   }
+  renderAchievementShortcut();
 }
 function renderPublicDailyProgress(container, progress, goal) {
   if (!container) return;
@@ -4115,6 +5115,58 @@ function formatDailyRewardParts(parts) {
   if (parts.winRewardBr) bits.push(`+${brText(parts.winRewardBr)}`);
   if (parts.potContributionBr) bits.push(`+${brText(parts.potContributionBr)} to pot`);
   return bits.join(' · ');
+}
+function achievementGameKey(playerId, gameOver, scores) {
+  const scoreSnapshot = scores || currentScores();
+  const base = gameOver && (gameOver.metaId || gameOver.matchId)
+    ? (gameOver.metaId || gameOver.matchId)
+    : `${roomCode || 'local'}:${gameOver && gameOver.winner}:${gameOver && gameOver.reason}:${scoreSnapshot.p1}-${scoreSnapshot.p2}`;
+  return `${base}:${playerId}`;
+}
+function recordAchievementsForGameOver(playerId, gameOver, scores) {
+  if (!playerId || !gameOver) return { duplicate: false, completed: 0, newlyCompleted: [] };
+  const achievements = readAchievementState();
+  const scoreSnapshot = scores || currentScores();
+  const key = achievementGameKey(playerId, gameOver, scoreSnapshot);
+  if (achievements.recordedGameIds.includes(key)) {
+    return {
+      duplicate: true,
+      completed: achievementCompletedCount(achievements),
+      newlyCompleted: [],
+      state: achievements,
+    };
+  }
+  const beforeCompleted = new Set(ACHIEVEMENT_DEFINITIONS
+    .filter(definition => achievementProgress(definition, achievements) >= definition.target)
+    .map(definition => definition.id));
+  if (gameOver.winner === playerId) achievements.wins += 1;
+  achievements.bestScore = Math.max(achievements.bestScore, cleanInt(scoreSnapshot[playerId]));
+  const opponentId = playerId === 'p1' ? 'p2' : 'p1';
+  const opponentName = (gameOver.opponents && gameOver.opponents[playerId])
+    || (state && state.players && state.players[opponentId] && state.players[opponentId].name)
+    || '';
+  const opponentKey = String(opponentName).trim().toLowerCase();
+  if (opponentKey && !achievements.opponents.includes(opponentKey)) achievements.opponents.push(opponentKey);
+  const submittedYahtzees = cleanInt(
+    gameOver.yahtzeesSubmitted && gameOver.yahtzeesSubmitted[playerId],
+    state && state.players && state.players[playerId] && state.players[playerId].yahtzeesSubmitted,
+  );
+  achievements.bestYahtzees = Math.max(achievements.bestYahtzees, submittedYahtzees);
+  achievements.recordedGameIds.push(key);
+  const saved = writeAchievementState(achievements);
+  const newlyCompleted = ACHIEVEMENT_DEFINITIONS
+    .filter(definition => !beforeCompleted.has(definition.id)
+      && achievementProgress(definition, saved) >= definition.target)
+    .map(definition => definition.id);
+  renderAchievementShortcut();
+  const panel = document.getElementById('achievementPanel');
+  if (panel && !panel.hidden) renderAchievements();
+  return {
+    duplicate: false,
+    completed: achievementCompletedCount(saved),
+    newlyCompleted,
+    state: saved,
+  };
 }
 function awardDailyProgressForGameOver(playerId, gameOver, scores) {
   const parts = dailyRewardParts(playerId, gameOver, scores);
@@ -4194,6 +5246,14 @@ function createGameOver(winner, reason, includeScores = false) {
     winner,
     reason,
     stars: starsForScores(scores),
+    opponents: {
+      p1: (state.players.p2 && state.players.p2.name) || 'Opponent',
+      p2: (state.players.p1 && state.players.p1.name) || 'Opponent',
+    },
+    yahtzeesSubmitted: {
+      p1: cleanInt(state.players.p1 && state.players.p1.yahtzeesSubmitted),
+      p2: cleanInt(state.players.p2 && state.players.p2.yahtzeesSubmitted),
+    },
     metaId: `${roomCode || 'local'}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     tier: (state && state.config && state.config.matchTier) || selectedTierId,
     matchMode: (state && state.config && state.config.matchMode) || 'manual',
@@ -4929,7 +5989,7 @@ function submitCategory() {
   if (isSimul()) {
     // Simultaneous: record submission, wait for the opponent before revealing.
     const myId = myRole || 'p1';
-    state.players[myId].pendingSubmit = { category: catId, value: score, dice: diceBefore, scorecardBefore };
+    state.players[myId].pendingSubmit = { category: catId, value: score, dice: diceBefore, scorecardBefore, isYahtzee: isYahtzeeRoll(diceBefore) };
     // In simul + anticipate, give the player a fresh turn state so they can
     // start preparing the next round while waiting for the opponent.
     if (isAnticipate()) {
@@ -4946,6 +6006,9 @@ function submitCategory() {
   detectScoreToasts(submitterId, catId, score, diceBefore, scorecardBefore);
   // Different turns (rotate currentTurn)
   const prevActive = state.currentTurn;
+  if (isYahtzeeRoll(diceBefore)) {
+    state.players[prevActive].yahtzeesSubmitted = cleanInt(state.players[prevActive].yahtzeesSubmitted) + 1;
+  }
   state.players[prevActive].scorecard[catId] = score;
   if (checkGameEnd()) { render(); return; }
   state.currentTurn = prevActive === 'p1' ? 'p2' : 'p1';
@@ -5028,6 +6091,11 @@ function fbWait(cb) {
 
 function brAnalyticsPlayerId() {
   if (brAnalyticsPlayerIdMemory) return brAnalyticsPlayerIdMemory;
+  const email = activeScopelyEmail();
+  if (email) {
+    brAnalyticsPlayerIdMemory = stableProfileTrackingId(email);
+    return brAnalyticsPlayerIdMemory;
+  }
   try { brAnalyticsPlayerIdMemory = sessionStorage.getItem(BR_ANALYTICS_PLAYER_KEY) || ''; } catch (e) {}
   if (!brAnalyticsPlayerIdMemory) {
     brAnalyticsPlayerIdMemory = `player_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
@@ -5219,6 +6287,7 @@ function openBrAnalytics() {
   const panel = document.getElementById('economyPanel');
   const trigger = document.getElementById('economyTrigger');
   if (!panel) return;
+  closeAchievements(false);
   closeUserPanel();
   brAnalyticsReturnFocus = document.activeElement;
   panel.hidden = false;
@@ -5243,6 +6312,68 @@ function closeBrAnalytics() {
   brAnalyticsReturnFocus = null;
 }
 
+function cancelEconomyResetConfirmation() {
+  const button = document.getElementById('resetEconomyButton');
+  if (economyResetConfirmTimer) {
+    clearTimeout(economyResetConfirmTimer);
+    economyResetConfirmTimer = null;
+  }
+  if (!button || button.disabled) return;
+  delete button.dataset.confirming;
+  button.classList.remove('confirming');
+  button.textContent = 'Reset economy data';
+}
+async function performEconomyReset() {
+  const button = document.getElementById('resetEconomyButton');
+  const status = document.getElementById('resetEconomyStatus');
+  if (!fbReady()) {
+    if (status) status.textContent = 'Connecting to server…';
+    fbWait(performEconomyReset);
+    return false;
+  }
+  if (button) {
+    button.disabled = true;
+    button.textContent = 'Resetting…';
+  }
+  if (status) status.textContent = 'Clearing the shared BR economy ledger…';
+  try {
+    await window.FB.remove(window.FB.ref(window.FB.db, BR_ANALYTICS_PATH));
+    renderBrAnalytics({});
+    if (status) status.textContent = 'Economy analytics reset complete.';
+    return true;
+  } catch (error) {
+    console.error('[analytics] reset failed', error);
+    if (status) status.textContent = 'Reset failed. Check the connection and try again.';
+    return false;
+  } finally {
+    if (button) {
+      button.disabled = false;
+      delete button.dataset.confirming;
+      button.classList.remove('confirming');
+      button.textContent = 'Reset economy data';
+    }
+  }
+}
+function requestEconomyReset() {
+  const button = document.getElementById('resetEconomyButton');
+  const status = document.getElementById('resetEconomyStatus');
+  if (!button || button.disabled) return false;
+  if (button.dataset.confirming === 'true') {
+    cancelEconomyResetConfirmation();
+    return performEconomyReset();
+  }
+  button.dataset.confirming = 'true';
+  button.classList.add('confirming');
+  button.textContent = 'Tap again to confirm';
+  if (status) status.textContent = 'This clears economy analytics for every player.';
+  if (economyResetConfirmTimer) clearTimeout(economyResetConfirmTimer);
+  economyResetConfirmTimer = setTimeout(() => {
+    cancelEconomyResetConfirmation();
+    if (status) status.textContent = '';
+  }, 5000);
+  return false;
+}
+
 // Local settings chosen in the creator panel. Applied when this tab creates a room.
 let creatorConfig = {
   cooldownSec: 30,
@@ -5257,7 +6388,7 @@ let creatorConfig = {
   brCapPerGame: 'none',
   dailyGoal: DEFAULT_DAILY_GOAL,
   dailyRewardBr: DEFAULT_DAILY_REWARD_BR,
-  dailyRewardMode: 'fixed',
+  dailyRewardMode: 'pot',
   dailyPotBaseBr: DEFAULT_DAILY_POT_BASE_BR,
   dailyPotWinProgress: DEFAULT_DAILY_POT_WIN_PROGRESS,
   dailyPotGoalProgress: DEFAULT_DAILY_POT_GOAL_PROGRESS,
@@ -5348,7 +6479,7 @@ function freshState(config) {
     brCapPerGame: 'none',
     dailyGoal: DEFAULT_DAILY_GOAL,
     dailyRewardBr: DEFAULT_DAILY_REWARD_BR,
-    dailyRewardMode: 'fixed',
+    dailyRewardMode: 'pot',
     dailyPotBaseBr: DEFAULT_DAILY_POT_BASE_BR,
     dailyPotWinProgress: DEFAULT_DAILY_POT_WIN_PROGRESS,
     dailyPotGoalProgress: DEFAULT_DAILY_POT_GOAL_PROGRESS,
@@ -5378,9 +6509,9 @@ function freshState(config) {
     gameOver: null,
     config: { ...cfg },
     players: {
-      p1: { scorecard: {}, bonusRolls: cfg.initialBonusRolls, bonusRollsSpent: 0, freeUsed: false, timeoutZeroUsed: false,
+      p1: { scorecard: {}, bonusRolls: cfg.initialBonusRolls, bonusRollsSpent: 0, freeUsed: false, timeoutZeroUsed: false, yahtzeesSubmitted: 0,
             turn: perPlayerTurn ? makeTurnState() : null, pendingSubmit: null },
-      p2: { scorecard: {}, bonusRolls: cfg.initialBonusRolls, bonusRollsSpent: 0, freeUsed: false, timeoutZeroUsed: false,
+      p2: { scorecard: {}, bonusRolls: cfg.initialBonusRolls, bonusRollsSpent: 0, freeUsed: false, timeoutZeroUsed: false, yahtzeesSubmitted: 0,
             turn: perPlayerTurn ? makeTurnState() : null, pendingSubmit: null }
     }
   };
@@ -5471,6 +6602,7 @@ function normalizeState(s) {
     p.bonusRollsSpent = Math.max(0, Math.floor(Number(p.bonusRollsSpent) || 0));
     p.freeUsed = !!p.freeUsed;
     p.timeoutZeroUsed = !!p.timeoutZeroUsed;
+    p.yahtzeesSubmitted = cleanInt(p.yahtzeesSubmitted);
     if (p.pendingSubmit === undefined) p.pendingSubmit = null;
     if (p.turn) {
       const t = p.turn;
@@ -5490,7 +6622,7 @@ function normalizeState(s) {
   if (s.extraRollsUsed == null) s.extraRollsUsed = 0;
   s.restartUsed = !!s.restartUsed;
   s.extraTime = !!s.extraTime;
-  if (s.config == null) s.config = { cooldownSec: 30, initialBonusRolls: 100, gameMode: 'different', oppTurnMode: 'show', simulAnticipate: false, hintsEnabled: false, submitMode: 'play', extraRollLimit: 2, extraRollCost: 1, restartTurn: false, brCapPerGame: 'none', dailyGoal: DEFAULT_DAILY_GOAL, dailyRewardBr: DEFAULT_DAILY_REWARD_BR, dailyRewardMode: 'fixed', dailyPotBaseBr: DEFAULT_DAILY_POT_BASE_BR, dailyPotWinProgress: DEFAULT_DAILY_POT_WIN_PROGRESS, dailyPotGoalProgress: DEFAULT_DAILY_POT_GOAL_PROGRESS, tiers: normalizeTierConfigs(), matchMode: 'manual', matchTier: 'tier1' };
+  if (s.config == null) s.config = { cooldownSec: 30, initialBonusRolls: 100, gameMode: 'different', oppTurnMode: 'show', simulAnticipate: false, hintsEnabled: false, submitMode: 'play', extraRollLimit: 2, extraRollCost: 1, restartTurn: false, brCapPerGame: 'none', dailyGoal: DEFAULT_DAILY_GOAL, dailyRewardBr: DEFAULT_DAILY_REWARD_BR, dailyRewardMode: 'pot', dailyPotBaseBr: DEFAULT_DAILY_POT_BASE_BR, dailyPotWinProgress: DEFAULT_DAILY_POT_WIN_PROGRESS, dailyPotGoalProgress: DEFAULT_DAILY_POT_GOAL_PROGRESS, tiers: normalizeTierConfigs(), matchMode: 'manual', matchTier: 'tier1' };
   if (s.config.initialBonusRolls == null) s.config.initialBonusRolls = 100;
   if (s.config.dailyGoal == null) s.config.dailyGoal = DEFAULT_DAILY_GOAL;
   if (s.config.dailyRewardBr == null) s.config.dailyRewardBr = DEFAULT_DAILY_REWARD_BR;
@@ -5619,22 +6751,29 @@ function randomName() {
 let _sessionName = null;
 function getMyName() {
   if (_sessionName) return _sessionName;
+  const email = activeScopelyEmail();
+  const nameKey = playerProfileStorageKey('yahtzee_name_custom');
   try {
     // Migrate away from the previous key that auto-saved random names.
     localStorage.removeItem('yahtzee_name');
-    const custom = (localStorage.getItem('yahtzee_name_custom') || '').trim();
+    const custom = (localStorage.getItem(nameKey) || '').trim();
     if (custom) { _sessionName = custom; return _sessionName; }
   } catch (e) {}
+  if (email) {
+    _sessionName = scopelyDisplayName(email);
+    return _sessionName;
+  }
   _sessionName = randomName();
   return _sessionName;
 }
 function setMyName(n) {
   const trimmed = (n || '').trim();
+  const nameKey = playerProfileStorageKey('yahtzee_name_custom');
   if (trimmed) {
     _sessionName = trimmed;
-    try { localStorage.setItem('yahtzee_name_custom', trimmed); } catch (e) {}
+    try { localStorage.setItem(nameKey, trimmed); } catch (e) {}
   } else {
-    try { localStorage.removeItem('yahtzee_name_custom'); } catch (e) {}
+    try { localStorage.removeItem(nameKey); } catch (e) {}
     // Keep _sessionName so createRoom/join still have a valid fallback.
   }
 }
@@ -5705,6 +6844,8 @@ function openRoomTools() {
   const panel = document.getElementById('lobbyUserPanel');
   const trigger = document.querySelector('.lobby-user-trigger');
   if (!panel) return;
+  closeAchievements(false);
+  closeBrAnalytics();
   roomToolsReturnFocus = document.activeElement;
   renderLobbyHome();
   panel.hidden = false;
@@ -6056,6 +7197,7 @@ function enterGame() {
   matchmakingQueued = false;
   closeUserPanel();
   closeBrAnalytics();
+  closeAchievements(false);
   document.getElementById('lobby').classList.add('hidden');
   setCreatorPanelVisible(false);
   closeSettingsOverlay();
@@ -6090,6 +7232,7 @@ function openSettingsOverlay() {
 function closeSettingsOverlay() {
   const el = document.getElementById('settingsOverlay');
   if (!el) return;
+  cancelEconomyResetConfirmation();
   el.hidden = true;
   el.setAttribute('aria-hidden', 'true');
   if (settingsReturnFocus && typeof settingsReturnFocus.focus === 'function') {
@@ -6117,7 +7260,17 @@ function bindSettingsOverlayControls() {
       return;
     }
     const roomTools = document.getElementById('lobbyUserPanel');
-    if (roomTools && !roomTools.hidden) closeUserPanel();
+    if (roomTools && !roomTools.hidden) {
+      closeUserPanel();
+      return;
+    }
+    const achievements = document.getElementById('achievementPanel');
+    if (achievements && !achievements.hidden) {
+      closeAchievements();
+      return;
+    }
+    const economy = document.getElementById('economyPanel');
+    if (economy && !economy.hidden) closeBrAnalytics();
   });
 }
 function openAdminOverlay() {
@@ -6390,6 +7543,7 @@ function maybeShowGameOver() {
   const scoreSnapshot = scores || currentScores();
   const stars = state.gameOver.stars || starsForScores(scoreSnapshot);
   const dailyAward = awardDailyProgressForGameOver(myId, state.gameOver, scoreSnapshot);
+  recordAchievementsForGameOver(myId, state.gameOver, scoreSnapshot);
   const earnedStars = [];
   if (stars[myId]) earnedStars.push('You ★');
   if (stars[oppId]) earnedStars.push('Opponent ★');
@@ -6429,6 +7583,7 @@ function backToLobby() {
   hideTimeoutFeedback();
   closeUserPanel();
   closeBrAnalytics();
+  closeAchievements(false);
   closeAdminOverlay();
   closeSettingsOverlay();
   stopTimer();
@@ -6528,6 +7683,8 @@ function commitSimulReveal() {
   }
   detectScoreToasts('p1', p1s.category, p1s.value, p1s.dice || [], p1s.scorecardBefore || state.players.p1.scorecard);
   detectScoreToasts('p2', p2s.category, p2s.value, p2s.dice || [], p2s.scorecardBefore || state.players.p2.scorecard);
+  if (p1s.isYahtzee) state.players.p1.yahtzeesSubmitted = cleanInt(state.players.p1.yahtzeesSubmitted) + 1;
+  if (p2s.isYahtzee) state.players.p2.yahtzeesSubmitted = cleanInt(state.players.p2.yahtzeesSubmitted) + 1;
   state.players.p1.scorecard[p1s.category] = p1s.value;
   state.players.p2.scorecard[p2s.category] = p2s.value;
   state.players.p1.pendingSubmit = null;
@@ -6552,10 +7709,8 @@ function commitSimulReveal() {
 // Lobby init: prefill the name input and subscribe to the public games list.
 window.addEventListener('DOMContentLoaded', () => {
   bindSettingsOverlayControls();
-  initMyNameInput();
-  syncPlayerWalletFromStorage({ syncMatch: false });
-  renderLobbyHome();
-  subscribeLobbyList();
+  bindPlayerLoginControls();
+  if (initializePlayerLogin()) activatePlayerLobby();
 });
 
 const pwaNavigator = window.navigator;
@@ -6582,8 +7737,8 @@ if (pwaNavigator && 'serviceWorker' in pwaNavigator && /^https?:$/.test(window.l
       <div class="creator-panel-group">
         <h3>Daily goal</h3>
         <div class="creator-btn-row daily-model-selector" data-group="dailyRewardMode" aria-label="Daily goal reward model">
-          <button type="button" class="creator-btn active" data-value="fixed" onclick="setCreatorConfig('dailyRewardMode', 'fixed')">Fixed reward</button>
-          <button type="button" class="creator-btn" data-value="pot" onclick="setCreatorConfig('dailyRewardMode', 'pot')">Growing pot</button>
+          <button type="button" class="creator-btn" data-value="fixed" onclick="setCreatorConfig('dailyRewardMode', 'fixed')">Fixed reward</button>
+          <button type="button" class="creator-btn active" data-value="pot" onclick="setCreatorConfig('dailyRewardMode', 'pot')">Growing pot</button>
         </div>
         <label class="creator-field" for="dailyGoalInput">
           <span>Goal progress</span>
@@ -6630,6 +7785,12 @@ if (pwaNavigator && 'serviceWorker' in pwaNavigator && /^https?:$/.test(window.l
             <input id="dailyPotGoalProgressInput" class="creator-number-input" type="number" min="0" step="1" value="1" inputmode="numeric" oninput="setCreatorNumberConfig('dailyPotGoalProgress', this.value)" onblur="normalizeCreatorNumberConfig(this, 'dailyPotGoalProgress')">
           </label>
         </div>
+      </div>
+      <div class="creator-panel-group">
+        <h3>BR economy analytics</h3>
+        <p class="daily-model-note">Clears sources, sinks, player totals, and recent BR activity for every tracked player.</p>
+        <button type="button" class="admin-danger-btn" id="resetEconomyButton" onclick="requestEconomyReset()">Reset economy data</button>
+        <div class="admin-action-status" id="resetEconomyStatus" aria-live="polite"></div>
       </div>
       <div class="creator-panel-group">
         <h3>Tier 1</h3>

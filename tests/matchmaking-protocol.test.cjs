@@ -16,6 +16,12 @@ for (const fieldId of ['dailyPotBaseInput', 'dailyPotWinProgressInput', 'dailyPo
 }
 assert.ok(html.includes("setCreatorConfig('dailyRewardMode', 'fixed')"), 'Admin should retain the fixed reward model');
 assert.ok(html.includes("setCreatorConfig('dailyRewardMode', 'pot')"), 'Admin should expose the growing pot model');
+assert.ok(html.includes('id="achievementPanel"'), 'Lobby should include the achievement screen');
+assert.ok(html.includes('id="achievementTrigger"'), 'Daily goal should expose the achievement shortcut');
+assert.ok(html.includes('id="loginScreen"'), 'Prototype should require a Scopely profile');
+assert.ok(html.includes('id="resetEconomyButton"'), 'Admin should expose an economy reset action');
+assert.ok(appScript[2].includes("const ACHIEVEMENT_STORAGE_KEY = 'yahtzee_pvp_achievements_v1'"));
+assert.ok(appScript[2].includes('isYahtzee: isYahtzeeRoll(diceBefore)'), 'Submitted Yahtzee rolls should be tracked');
 
 function clone(value) {
   return value == null ? value : JSON.parse(JSON.stringify(value));
@@ -222,6 +228,38 @@ async function run() {
   const reloadedHost = createClient('HostReload', firebase, sharedLocalStorage, host.playerSessionStorage);
   assert.equal(reloadedHost.context.playerWalletBr(), 70, 'Host wallet should survive a refresh in the same tab session');
 
+  const profileFirebase = createRealtimeDatabase();
+  const profileLocalStorage = new Map();
+  const firstProfileSession = new Map();
+  const profileClient = createClient('ProfilePlayer', profileFirebase, profileLocalStorage, firstProfileSession);
+  profileClient.element('scopelyEmailInput').value = 'alex.caparros@scopely.com';
+  assert.equal(profileClient.context.loginWithScopelyEmail(), true, 'A valid Scopely email should activate a profile');
+  profileClient.context.setCreatorBonusRolls(77);
+  vm.runInContext(`
+    writeAchievementState({
+      ...readAchievementState(),
+      wins: 2,
+      bestScore: 281,
+      opponents: ['rival one', 'rival two'],
+      bestYahtzees: 2,
+    });
+  `, profileClient.context);
+  const profileTrackingId = profileClient.context.brAnalyticsPlayerId();
+  assert.match(profileTrackingId, /^scopely_[a-z0-9]+$/, 'Scopely analytics identity should be anonymized');
+
+  const reopenedProfile = createClient('ReopenedProfile', profileFirebase, profileLocalStorage, new Map());
+  assert.equal(reopenedProfile.context.initializePlayerLogin(), true, 'The last Scopely profile should survive browser restart');
+  assert.equal(reopenedProfile.context.activeScopelyEmail(), 'alex.caparros@scopely.com');
+  assert.equal(reopenedProfile.context.playerWalletBr(), 77, 'Profile wallet should survive browser restart');
+  assert.equal(reopenedProfile.context.readAchievementState().wins, 2, 'Achievement progress should survive browser restart');
+  assert.equal(reopenedProfile.context.readAchievementState().bestScore, 281);
+  assert.equal(reopenedProfile.context.brAnalyticsPlayerId(), profileTrackingId, 'Analytics identity should remain stable across sessions');
+
+  const invalidProfile = createClient('InvalidProfile', createRealtimeDatabase(), new Map(), new Map());
+  invalidProfile.element('scopelyEmailInput').value = 'player@gmail.com';
+  assert.equal(invalidProfile.context.loginWithScopelyEmail(), false, 'Non-Scopely email domains should be rejected');
+  assert.match(invalidProfile.element('loginError').textContent, /@scopely\.com/);
+
   host.context.writeDailyState({
     date: host.context.todayKey(),
     walletBr: 70,
@@ -230,7 +268,8 @@ async function run() {
     awardedGameIds: [],
     chargedEntryGameIds: [],
   });
-  vm.runInContext(`selectedTierId = 'tier3'; renderLobbyHome();`, host.context);
+  assert.equal(vm.runInContext(`dailyRewardModeFromConfig({})`, host.context), 'pot', 'Growing pot should be the default model');
+  vm.runInContext(`setCreatorConfig('dailyRewardMode', 'fixed'); selectedTierId = 'tier3'; renderLobbyHome();`, host.context);
   assert.equal(host.element('lobbyDailyFill').style.width, '20%', 'Earned daily progress should remain solid');
   assert.equal(host.element('lobbyDailyWinPreview').style.left, '20%', 'Win preview should begin after earned progress');
   assert.equal(host.element('lobbyDailyWinPreview').style.width, '60%', 'Tier 3 win should preview twelve daily points');
@@ -311,6 +350,62 @@ async function run() {
   assert.equal(duplicatePotAward.duplicate, true, 'Pot rewards should remain idempotent');
   assert.equal(duplicatePotAward.walletBr, 87, 'A duplicate game-over event must not pay the pot twice');
 
+  const achievementClient = createClient('AchievementPlayer', createRealtimeDatabase(), new Map());
+  const achievementResult = vm.runInContext(`
+    state = freshState({ matchMode: 'matchmaking', matchId: 'achievement-match' });
+    myRole = 'p1';
+    state.players.p1.name = 'AchievementPlayer';
+    state.players.p2.name = 'Rival One';
+    recordAchievementsForGameOver('p1', {
+      winner: 'p1', reason: 'finished', metaId: 'achievement-1',
+      opponents: { p1: 'Rival One' }, yahtzeesSubmitted: { p1: 3 }
+    }, { p1: 310, p2: 190 });
+    const duplicate = recordAchievementsForGameOver('p1', {
+      winner: 'p1', reason: 'finished', metaId: 'achievement-1',
+      opponents: { p1: 'Rival One' }, yahtzeesSubmitted: { p1: 3 }
+    }, { p1: 310, p2: 190 });
+    recordAchievementsForGameOver('p1', {
+      winner: 'p1', reason: 'finished', metaId: 'achievement-2',
+      opponents: { p1: 'Rival Two' }, yahtzeesSubmitted: { p1: 2 }
+    }, { p1: 260, p2: 210 });
+    recordAchievementsForGameOver('p1', {
+      winner: 'p1', reason: 'finished', metaId: 'achievement-3',
+      opponents: { p1: 'Rival Three' }, yahtzeesSubmitted: { p1: 5 }
+    }, { p1: 360, p2: 220 });
+    ({ duplicate, achievements: readAchievementState() });
+  `, achievementClient.context);
+  assert.equal(achievementResult.duplicate.duplicate, true, 'Repeated game-over events must not duplicate achievement progress');
+  assert.equal(achievementResult.achievements.wins, 3);
+  assert.equal(achievementResult.achievements.bestScore, 360);
+  assert.equal(achievementResult.achievements.opponents.length, 3);
+  assert.equal(achievementResult.achievements.bestYahtzees, 5);
+  assert.equal(vm.runInContext(`achievementCompletedCount(readAchievementState())`, achievementClient.context), 8);
+  achievementClient.context.openAchievements();
+  assert.equal(achievementClient.element('achievementPanel').hidden, false, 'Achievement shortcut should open the full-screen panel');
+  assert.equal(achievementClient.element('achievementGrid').children.length, 12, 'All twelve achievements should be unlocked and visible');
+  assert.equal(achievementClient.element('achievementHeaderProgress').textContent, '8/12');
+  assert.equal(achievementClient.element('achievementTriggerProgress').textContent, '8/12');
+  achievementClient.context.closeAchievements();
+  assert.equal(achievementClient.element('achievementPanel').hidden, true, 'Achievement back action should return to the lobby');
+
+  const beforeMondayReset = Date.UTC(2026, 7, 31, 8, 59, 59);
+  const atMondayReset = Date.UTC(2026, 7, 31, 9, 0, 0);
+  achievementClient.context.writeAchievementState({
+    wins: 9,
+    bestScore: 360,
+    opponents: ['rival'],
+    bestYahtzees: 5,
+    recordedGameIds: ['old-game'],
+  }, beforeMondayReset);
+  const resetState = achievementClient.context.readAchievementState(atMondayReset);
+  assert.equal(resetState.wins, 0, 'Achievements should reset exactly Monday at 09:00 UTC');
+  assert.equal(resetState.recordedGameIds.length, 0, 'Weekly reset should clear game deduplication history');
+  assert.equal(
+    achievementClient.context.achievementWeekWindow(atMondayReset).nextResetAt - atMondayReset,
+    7 * 24 * 60 * 60 * 1000,
+    'The reset countdown should target the next Monday at 09:00 UTC',
+  );
+
   const privateFirebase = createRealtimeDatabase();
   const privateStorage = new Map();
   const privateHost = createClient('PrivateHost', privateFirebase, privateStorage);
@@ -390,7 +485,14 @@ async function run() {
   assert.equal(host.element('yahtzeeRollFeedback').classList.contains('show'), true, 'Yahtzee label should show');
   assert.equal(host.element('yahtzeeRollFeedback').hidden, false, 'Yahtzee label should be visible');
 
-  console.log(`matchmakingProtocol=ok room=${roomCode} hostWallet=66 guestWallet=28 animations=ok analytics=ok dailyPot=19 isolatedSessions=true`);
+  assert.equal(host.context.requestEconomyReset(), false, 'Economy reset should require a second confirmation tap');
+  assert.equal(host.element('resetEconomyButton').dataset.confirming, 'true');
+  assert.equal(host.element('resetEconomyButton').textContent, 'Tap again to confirm');
+  assert.equal(await host.context.requestEconomyReset(), true, 'Confirmed economy reset should complete');
+  assert.equal(firebase.data.analytics && firebase.data.analytics.brEconomyV1, undefined, 'Economy reset should remove the shared ledger');
+  assert.equal(host.element('resetEconomyStatus').textContent, 'Economy analytics reset complete.');
+
+  console.log(`matchmakingProtocol=ok room=${roomCode} profiles=persistent login=scopely-only economyReset=ok animations=ok achievements=8/12 weeklyReset=ok dailyPot=19 isolatedSessions=true`);
 }
 
 run().catch((error) => {

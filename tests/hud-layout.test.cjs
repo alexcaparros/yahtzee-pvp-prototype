@@ -42,6 +42,29 @@ assert.match(analyticsCss, /\.economy-summary[\s\S]*grid-template-columns:\s*rep
 assert.ok(html.includes('id="economyPanel"'), 'Analytics screen should be mounted inside the lobby');
 assert.ok(html.includes('id="economyTrigger"'), 'Lobby should expose the analytics shortcut');
 
+const achievementMarker = '/* Weekly achievements */';
+const achievementStart = html.indexOf(achievementMarker);
+const achievementEnd = html.indexOf('/* Shared BR economy analytics */', achievementStart);
+assert.ok(achievementStart > 0 && achievementEnd > achievementStart, 'Achievement screen styles should exist');
+const achievementCss = html.slice(achievementStart, achievementEnd);
+assert.match(achievementCss, /\.achievement-panel[\s\S]*inset:\s*0[\s\S]*overflow:\s*hidden/);
+assert.match(achievementCss, /\.achievement-body[\s\S]*overflow-y:\s*auto/);
+assert.match(achievementCss, /\.achievement-grid[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+assert.match(achievementCss, /\.achievement-card\.complete \.achievement-stamp[\s\S]*opacity:\s*0\.94/);
+assert.ok(html.includes('id="achievementPanel"'), 'Achievement screen should be mounted inside the lobby');
+assert.ok(html.includes('id="achievementTrigger"'), 'Daily goal should expose the achievement shortcut');
+
+const loginMarker = '/* Persistent prototype identity */';
+const loginStart = html.indexOf(loginMarker);
+const loginEnd = html.indexOf('/* Pattern background', loginStart);
+assert.ok(loginStart > 0 && loginEnd > loginStart, 'Persistent profile styles should exist');
+const loginCss = html.slice(loginStart, loginEnd);
+assert.match(loginCss, /\.login-screen[\s\S]*position:\s*absolute[\s\S]*inset:\s*0/);
+assert.match(loginCss, /\.room-tools-account[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\) auto/);
+assert.ok(html.includes('id="loginScreen"'), 'Scopely login should be mounted inside the phone');
+assert.ok(html.includes('id="roomToolsAccountEmail"'), 'Room tools should show the active profile');
+assert.ok(html.includes('id="resetEconomyButton"'), 'Admin should expose the economy reset control');
+
 assert.match(
   html,
   /\.lobby:not\(\.hidden\) \.lobby-daily-preview::after\s*\{[\s\S]*?animation:\s*daily-preview-shine 1\.75s ease-in-out infinite/,
