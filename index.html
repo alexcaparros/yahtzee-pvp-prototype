@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=overlays-content">
 <title>Yahtzee PvP</title>
 <meta name="application-name" content="Yahtzee PvP">
 <meta name="theme-color" content="#03a9e4">
@@ -3635,12 +3635,14 @@ body {
 <body>
 
 <script>
-  // Scale the fixed-size phone (417×876) to fit the *real* visible viewport.
-  // On mobile, window.visualViewport excludes the browser chrome (URL bar, etc.),
-  // which is what we want.
+  // Scale the fixed-size phone (417×876) to fit the visible viewport. While the
+  // lobby name is being edited, keep the existing scale so the software keyboard
+  // overlays the app instead of shrinking and reflowing the whole interface.
   (function () {
     var PHONE_W = 417, PHONE_H = 876, MARGIN = 16;
+    var nameKeyboardOpen = false;
     function fit() {
+      if (nameKeyboardOpen) return;
       var vv = window.visualViewport;
       var w = vv ? vv.width  : window.innerWidth;
       var h = vv ? vv.height : window.innerHeight;
@@ -3649,6 +3651,15 @@ body {
       var phone = document.querySelector('.phone');
       if (phone) phone.style.transform = 'scale(' + s + ')';
     }
+    document.addEventListener('focusin', function (event) {
+      if (event.target && event.target.id === 'myNameInput') nameKeyboardOpen = true;
+    });
+    document.addEventListener('focusout', function (event) {
+      if (!event.target || event.target.id !== 'myNameInput') return;
+      nameKeyboardOpen = false;
+      // Wait for the keyboard viewport animation to settle before fitting again.
+      window.setTimeout(fit, 180);
+    });
     fit();
     window.addEventListener('resize', fit);
     window.addEventListener('orientationchange', fit);
@@ -3673,7 +3684,7 @@ body {
       </label>
       <button type="button" class="login-submit" id="loginSubmitButton" onclick="loginWithScopelyEmail()">Continue</button>
       <div class="login-error" id="loginError" role="alert"></div>
-      <small class="login-note">Prototype identity for this browser. Production authentication will be added with the future account layer.</small>
+      <small class="login-note">Your last profile is remembered on this device, but you must continue again when opening a new browser session.</small>
     </div>
   </div>
 
@@ -3683,7 +3694,7 @@ body {
     <div class="lobby-wallet"><span>Wallet</span><strong id="lobbyWallet">100 BRs</strong></div>
     <h1>Yahtzee PvP</h1>
     <div class="lobby-name">
-      <input id="myNameInput" placeholder="Your name" maxlength="20" autocomplete="off" oninput="onMyNameInput(this.value)" />
+      <input id="myNameInput" placeholder="Your name" maxlength="20" autocomplete="off" enterkeyhint="done" oninput="onMyNameInput(this.value)" />
     </div>
     <div class="lobby-daily" id="lobbyDaily" aria-label="0 of 20 daily goal progress">
       <div class="lobby-daily-head">
@@ -4473,13 +4484,14 @@ function updateActiveProfileUi() {
   const roomEmail = document.getElementById('roomToolsAccountEmail');
   if (roomEmail) roomEmail.textContent = email || 'Not signed in';
 }
-function showPlayerLogin() {
+function showPlayerLogin(prefillEmail = '') {
   const screen = document.getElementById('loginScreen');
   const error = document.getElementById('loginError');
+  const input = document.getElementById('scopelyEmailInput');
   if (screen) screen.hidden = false;
   if (error) error.textContent = '';
+  if (input && prefillEmail && !input.value) input.value = prefillEmail;
   window.requestAnimationFrame(() => {
-    const input = document.getElementById('scopelyEmailInput');
     if (input) input.focus({ preventScroll: true });
   });
 }
@@ -4496,20 +4508,20 @@ function activatePlayerLobby() {
   subscribeLobbyList();
 }
 function initializePlayerLogin() {
-  let email = '';
+  let sessionEmail = '';
+  let lastEmail = '';
   try {
-    email = normalizeScopelyEmail(sessionStorage.getItem(SCOPELY_SESSION_EMAIL_KEY));
-    if (!isValidScopelyEmail(email)) email = normalizeScopelyEmail(localStorage.getItem(SCOPELY_LAST_EMAIL_KEY));
+    sessionEmail = normalizeScopelyEmail(sessionStorage.getItem(SCOPELY_SESSION_EMAIL_KEY));
+    lastEmail = normalizeScopelyEmail(localStorage.getItem(SCOPELY_LAST_EMAIL_KEY));
   } catch (e) {}
-  if (!isValidScopelyEmail(email)) {
+  if (!isValidScopelyEmail(sessionEmail)) {
     activeScopelyEmailMemory = '';
-    showPlayerLogin();
+    showPlayerLogin(isValidScopelyEmail(lastEmail) ? lastEmail : '');
     return false;
   }
-  activeScopelyEmailMemory = email;
+  activeScopelyEmailMemory = sessionEmail;
   try {
-    sessionStorage.setItem(SCOPELY_SESSION_EMAIL_KEY, email);
-    localStorage.setItem(SCOPELY_LAST_EMAIL_KEY, email);
+    localStorage.setItem(SCOPELY_LAST_EMAIL_KEY, sessionEmail);
   } catch (e) {}
   return true;
 }

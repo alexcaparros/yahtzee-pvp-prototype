@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yahtzee-pvp-shell-v5';
+const CACHE_NAME = 'yahtzee-pvp-shell-v7';
 const SHELL_ASSETS = [
   './',
   './index.html',
